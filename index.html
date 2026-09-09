@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mutumanikam</title>
+
+<style>
+body {
+    margin: 0;
+    background-color: #111;
+}
+  /* MENU */
+nav {
+    background: #8a6a50;
+    padding: 10px;
+}
+nav ul {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    list-style: none;
+</style>
+</head>
+    <body>
+       <div id="mobileMenu" class="mobile-menu-overlay" style="display: none;">
+    <div class="menu-header">
+      <span class="close-btn" onclick="toggleMenu()">&times;</span>
+    </div>
+    <!-- Daftar Menu Navigasi -->
+    <ul class="menu-list">
+      <li class="menu-item">
+        <a href="#" class="menu-link toggle-submenu">
+          SHOP <i class="fa-solid fa-chevron-down"></i>
+        </a>
+        <ul class="submenu">
+          <li><a href="#">Necklace</a></li>
+          <li><a href="#">Bracelet</a></li>
+          <li><a href="#">Purse</a></li>
+          <li><a href="#">Belt</a></li>
+        </ul>
+      </li>
+
+      <li class="menu-item">
+        <a href="#" class="menu-link toggle-submenu">
+          STYLE <i class="fa-solid fa-chevron-down"></i>
+        </a>
+       
+        <ul class="submenu">
+          <li><a href="#">Boho Collection</a></li>
+          <li><a href="#">Minimalist</a></li>
+        </ul>
+      </li>
+
+      <li class="menu-item">
+        <a href="#" class="menu-link">NEW</a>
+      </li>
+
+      <li class="menu-item">
+        <a href="#" class="menu-link">SALE</a>
+      </li>
+    </ul>
+
+    <!-- Kontak & Telepon -->
+    <div class="contact-info">
+      <div><strong>Contact us</strong></div>
+      <div style="text-align: right;">
+        <strong>Tel (+62)</strong>
+        <span>81353885155</span>
+      </div>
+    <!-- Login & Bahasa -->
+    <a href="#" class="login-link">Log in</a>
+    <div class="language-selector">English &#x25BE;</div>
+
+    <!-- Media Sosial -->
+    <div class="social-links">
+      <a href="#" class="social-btn"><i class="fa-brands fa-instagram"></i></a>
+      <a href="#" class="social-btn"><i class="fa-brands fa-facebook-f"></i></a>
+      <a href="#" class="social-btn"><i class="fa-brands fa-pinterest-p"></i></a>
+    </div>
+  </div>
+
+
+
+<!-- Header Utama -->
+  <header>
+    <button onclick="toggleMenu()" style="background:none; border:none; font-size:24px; color:#d4af37; cursor:pointer;">
+      &#9776;
+    </button>
+
+    <div class="logo-container">
+      <span class="brand-name">mutumanikam</span>
+    </div>
+  </header>
+
+  <!-- Hero Section & konten web lainnya -->
+
+
+  <!-- Script JavaScript Buka-Tutup Menu -->
+  <script>
+    function toggleMenu() {
+      const menu = document.getElementById("mobileMenu");
+      menu.style.display = (menu.style.display === "none" || menu.style.display === "") ? "flex" : "none";
+    }
+
+    document.querySelectorAll('.toggle-submenu').forEach(item => {
+      item.addEventListener('click', function(e) {
+        e.preventDefault();
+        const submenu = this.nextElementSibling;
+        if (submenu) {
+          submenu.style.display = (submenu.style.display === 'block') ? 'none' : 'block';
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
