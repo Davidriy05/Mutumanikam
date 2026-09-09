@@ -1,110 +1,119 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mutumanikam</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mutumanikam</title>
 
-<style>
-body {
-    margin: 0;
-    background-color: #111;
-}
-  /* MENU */
-nav {
-    background: #8a6a50;
-    padding: 10px;
-}
-nav ul {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    list-style: none;
-</style>
+  <style>
+    body {
+      margin: 0;
+      background-color: #111;
+      color: #fff;
+      font-family: Arial, sans-serif;
+    }
+    /* MENU */
+    nav {
+      background: #8a6a50;
+      padding: 10px;
+    }
+    nav ul {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    /* Grid Tampilan Produk */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+    .product-card {
+      background: #222;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 15px;
+      text-align: center;
+    }
+    .product-card img {
+      max-width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+    .product-card h3 {
+      margin: 10px 0 5px;
+      color: #d4af37;
+    }
+    .product-card .category {
+      font-size: 0.85em;
+      color: #888;
+    }
+    .product-card .price {
+      font-weight: bold;
+      color: #fff;
+    }
+  </style>
 </head>
-    <body>
+<body>
 
-      <div id="product-container" class="product-grid"></div>
-       <div id="mobileMenu" class="mobile-menu-overlay" style="display: none;">
-    <div class="menu-header">
-      <span class="close-btn" onclick="toggleMenu()">&times;</span>
-    </div>
-    <!-- Daftar Menu Navigasi -->
-    <ul class="menu-list">
-      <li class="menu-item">
-        <a href="#" class="menu-link toggle-submenu">
-          SHOP <i class="fa-solid fa-chevron-down"></i>
-        </a>
-        <ul class="submenu">
-          <li><a href="#">Necklace</a></li>
-          <li><a href="#">Bracelet</a></li>
-          <li><a href="#">Purse</a></li>
-          <li><a href="#">Belt</a></li>
-        </ul>
-      </li>
-
-      <li class="menu-item">
-        <a href="#" class="menu-link toggle-submenu">
-          STYLE <i class="fa-solid fa-chevron-down"></i>
-        </a>
-       
-        <ul class="submenu">
-          <li><a href="#">Boho Collection</a></li>
-          <li><a href="#">Minimalist</a></li>
-        </ul>
-      </li>
-
-      <li class="menu-item">
-        <a href="#" class="menu-link">NEW</a>
-      </li>
-
-      <li class="menu-item">
-        <a href="#" class="menu-link">SALE</a>
-      </li>
-    </ul>
-
-    <!-- Kontak & Telepon -->
-    <div class="contact-info">
-      <div><strong>Contact us</strong></div>
-      <div style="text-align: right;">
-        <strong>Tel (+62)</strong>
-        <span>81353885155</span>
-      </div>
-    <!-- Login & Bahasa -->
-    <a href="#" class="login-link">Log in</a>
-    <div class="language-selector">English &#x25BE;</div>
-
-    <!-- Media Sosial -->
-    <div class="social-links">
-      <a href="#" class="social-btn"><i class="fa-brands fa-instagram"></i></a>
-      <a href="#" class="social-btn"><i class="fa-brands fa-facebook-f"></i></a>
-      <a href="#" class="social-btn"><i class="fa-brands fa-pinterest-p"></i></a>
-    </div>
-  </div>
-
-
-
-<!-- Header Utama -->
-  <header>
+  <!-- Header Utama -->
+  <header style="padding: 15px; display: flex; align-items: center; gap: 15px;">
     <button onclick="toggleMenu()" style="background:none; border:none; font-size:24px; color:#d4af37; cursor:pointer;">
       &#9776;
     </button>
-
     <div class="logo-container">
-      <span class="brand-name">mutumanikam</span>
+      <span class="brand-name" style="font-size: 20px; font-weight: bold; color: #d4af37;">mutumanikam</span>
     </div>
   </header>
 
-  <!-- Hero Section & konten web lainnya -->
+  <!-- Mobile Menu Overlay -->
+  <div id="mobileMenu" class="mobile-menu-overlay" style="display: none; flex-direction: column; padding: 20px; background: #222;">
+    <div class="menu-header">
+      <span class="close-btn" onclick="toggleMenu()" style="cursor: pointer; font-size: 24px;">&times;</span>
+    </div>
+    <ul class="menu-list" style="list-style: none; padding: 0;">
+      <li class="menu-item">
+        <a href="#" class="menu-link toggle-submenu" style="color: #fff; text-decoration: none;">SHOP</a>
+        <ul class="submenu" style="display: none;">
+          <li><a href="#" style="color: #ccc;">Necklace</a></li>
+          <li><a href="#" style="color: #ccc;">Bracelet</a></li>
+          <li><a href="#" style="color: #ccc;">Purse</a></li>
+          <li><a href="#" style="color: #ccc;">Belt</a></li>
+        </ul>
+      </li>
+      <li class="menu-item">
+        <a href="#" class="menu-link toggle-submenu" style="color: #fff; text-decoration: none;">STYLE</a>
+        <ul class="submenu" style="display: none;">
+          <li><a href="#" style="color: #ccc;">Boho Collection</a></li>
+          <li><a href="#" style="color: #ccc;">Minimalist</a></li>
+        </ul>
+      </li>
+      <li class="menu-item"><a href="#" class="menu-link" style="color: #fff; text-decoration: none;">NEW</a></li>
+      <li class="menu-item"><a href="#" class="menu-link" style="color: #fff; text-decoration: none;">SALE</a></li>
+    </ul>
 
+    <div class="contact-info">
+      <div><strong>Contact us</strong></div>
+      <div><strong>Tel (+62)</strong> <span>81353885155</span></div>
+      <a href="#" class="login-link" style="color: #d4af37;">Log in</a>
+    </div>
+  </div>
 
-  <!-- Script JavaScript Buka-Tutup Menu -->
+  <!-- Wadah Produk Firestore -->
+  <div id="product-container" class="product-grid"></div>
+
+  <!-- Script Menu Navigation -->
   <script>
     function toggleMenu() {
       const menu = document.getElementById("mobileMenu");
       menu.style.display = (menu.style.display === "none" || menu.style.display === "") ? "flex" : "none";
     }
-<script>
+
     document.querySelectorAll('.toggle-submenu').forEach(item => {
       item.addEventListener('click', function(e) {
         e.preventDefault();
@@ -115,51 +124,47 @@ nav ul {
       });
     });
   </script>
-      <!-- Wadah Produk -->
-    <div id="product-container" class="product-grid"></div>
 
-    <!-- Panggil Library Firebase terlebih dahulu -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
-    <!-- Kode Logika Firebase -->
-    <script>
-      const firebaseConfig = {
-        apiKey: "AIzaSyBNlsnzbMHKq9gKWe-EvYgrzwohxXLAOs",
-        authDomain: "mutumanikam-store.firebaseapp.com",
-        projectId: "mutumanikam-store",
-        storageBucket: "mutumanikam-store.firebasestorage.app",
-        messagingSenderId: "28963833581",
-        appId: "1:28963833581:web:1a8001fec139a7ace1abe4",
-        measurementId: "G-08EDBKUFBU"
-      };
+  <!-- Logika Fetch Data Firestore -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBNlsnzbMHKq9gKWe-EvYgrzwohxXLAOs",
+      authDomain: "mutumanikam-store.firebaseapp.com",
+      projectId: "mutumanikam-store",
+      storageBucket: "mutumanikam-store.firebasestorage.app",
+      messagingSenderId: "28963833581",
+      appId: "1:28963833581:web:1a8001fec139a7ace1abe4",
+      measurementId: "G-08EDBKUFBU"
+    };
 
-      firebase.initializeApp(firebaseConfig);
-      const db = firebase.firestore();
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-      function loadProducts() {
-        db.collection("Products").get().then((querySnapshot) => {
-          let productHTML = "";
-          querySnapshot.forEach((doc) => {
-            const product = doc.data();
-            productHTML += `
-              <div class="product-card">
-                <img src="${product.image}" alt="${product.name}">
-                <h3>${product.name}</h3>
-                <p class="category">${product.category}</p>
-                <p class="price">Rp ${Number(product.price).toLocaleString('id-ID')}</p>
-              </div>
-            `;
-          });
-          document.getElementById("product-container").innerHTML = productHTML;
+    function loadProducts() {
+      db.collection("Products").get().then((querySnapshot) => {
+        let productHTML = "";
+        querySnapshot.forEach((doc) => {
+          const product = doc.data();
+          productHTML += `
+            <div class="product-card">
+              <img src="${product.image}" alt="${product.name}">
+              <h3>${product.name}</h3>
+              <p class="category">${product.category}</p>
+              <p class="price">Rp ${Number(product.price).toLocaleString('id-ID')}</p>
+            </div>
+          `;
         });
-      }
+        document.getElementById("product-container").innerHTML = productHTML;
+      }).catch((error) => {
+        console.error("Gagal memuat produk:", error);
+      });
+    }
 
-      loadProducts();
-    </script>
-  </body>
-</html>
+    loadProducts();
   </script>
-
 </body>
 </html>
