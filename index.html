@@ -23,6 +23,8 @@ nav ul {
 </style>
 </head>
     <body>
+
+      <div id="product-container" class="product-grid"></div>
        <div id="mobileMenu" class="mobile-menu-overlay" style="display: none;">
     <div class="menu-header">
       <span class="close-btn" onclick="toggleMenu()">&times;</span>
@@ -102,7 +104,7 @@ nav ul {
       const menu = document.getElementById("mobileMenu");
       menu.style.display = (menu.style.display === "none" || menu.style.display === "") ? "flex" : "none";
     }
-
+<script>
     document.querySelectorAll('.toggle-submenu').forEach(item => {
       item.addEventListener('click', function(e) {
         e.preventDefault();
@@ -112,6 +114,51 @@ nav ul {
         }
       });
     });
+  </script>
+      <!-- Wadah Produk -->
+    <div id="product-container" class="product-grid"></div>
+
+    <!-- Panggil Library Firebase terlebih dahulu -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+    <!-- Kode Logika Firebase -->
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyBNlsnzbMHKq9gKWe-EvYgrzwohxXLAOs",
+        authDomain: "mutumanikam-store.firebaseapp.com",
+        projectId: "mutumanikam-store",
+        storageBucket: "mutumanikam-store.firebasestorage.app",
+        messagingSenderId: "28963833581",
+        appId: "1:28963833581:web:1a8001fec139a7ace1abe4",
+        measurementId: "G-08EDBKUFBU"
+      };
+
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.firestore();
+
+      function loadProducts() {
+        db.collection("Products").get().then((querySnapshot) => {
+          let productHTML = "";
+          querySnapshot.forEach((doc) => {
+            const product = doc.data();
+            productHTML += `
+              <div class="product-card">
+                <img src="${product.image}" alt="${product.name}">
+                <h3>${product.name}</h3>
+                <p class="category">${product.category}</p>
+                <p class="price">Rp ${Number(product.price).toLocaleString('id-ID')}</p>
+              </div>
+            `;
+          });
+          document.getElementById("product-container").innerHTML = productHTML;
+        });
+      }
+
+      loadProducts();
+    </script>
+  </body>
+</html>
   </script>
 
 </body>
