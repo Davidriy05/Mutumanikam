@@ -12,19 +12,6 @@
       color: #fff;
       font-family: Arial, sans-serif;
     }
-    /* MENU */
-    nav {
-      background: #8a6a50;
-      padding: 10px;
-    }
-    nav ul {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
     /* Grid Tampilan Produk */
     .product-grid {
       display: grid;
@@ -44,6 +31,11 @@
       height: 200px;
       object-fit: cover;
       border-radius: 4px;
+      cursor: pointer; /* Indikator bahwa gambar bisa diklik */
+      transition: transform 0.2s;
+    }
+    .product-card img:hover {
+      transform: scale(1.03); /* Efek zoom tipis saat kursor di atas gambar */
     }
     .product-card h3 {
       margin: 10px 0 5px;
@@ -56,6 +48,41 @@
     .product-card .price {
       font-weight: bold;
       color: #fff;
+    }
+
+    /* MODAL POP-UP GAMBAR */
+    .image-modal {
+      display: none; 
+      position: fixed; 
+      z-index: 1000; 
+      padding-top: 50px; 
+      left: 0;
+      top: 0;
+      width: 100%; 
+      height: 100%; 
+      background-color: rgba(0, 0, 0, 0.85); /* Latar belakang gelap transparan */
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      margin: auto;
+      display: block;
+      max-width: 90%;
+      max-height: 80vh;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    .close-modal {
+      position: absolute;
+      top: 20px;
+      right: 35px;
+      color: #fff;
+      font-size: 40px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .close-modal:hover {
+      color: #d4af37;
     }
   </style>
 </head>
@@ -86,51 +113,28 @@
           <li><a href="#" class="category-filter" data-category="Belt" style="color: #ccc;">Belt</a></li>
         </ul>
       </li>
-      <li class="menu-item">
-        <a href="#" class="menu-link toggle-submenu" style="color: #fff; text-decoration: none;">STYLE</a>
-        <ul class="submenu" style="display: none;">
-          <li><a href="#" style="color: #ccc;">Boho Collection</a></li>
-          <li><a href="#" style="color: #ccc;">Minimalist</a></li>
-        </ul>
-      </li>
-      <li class="menu-item"><a href="#" class="menu-link" style="color: #fff; text-decoration: none;">NEW</a></li>
-      <li class="menu-item"><a href="#" class="menu-link" style="color: #fff; text-decoration: none;">SALE</a></li>
     </ul>
-
-    <div class="contact-info">
-      <div><strong>Contact us</strong></div>
-      <div><strong>Tel (+62)</strong> <span>81353885155</span></div>
-      <a href="#" class="login-link" style="color: #d4af37;">Log in</a>
-    </div>
   </div>
 
   <!-- Wadah Produk Firestore -->
   <div id="product-container" class="product-grid"></div>
 
-  <!-- Script Menu Navigation -->
+  <!-- POP-UP MODAL UNTUK GAMBAR MESAR -->
+  <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+    <span class="close-modal">&times;</span>
+    <img class="modal-content" id="imgFull">
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
   <script>
     function toggleMenu() {
       const menu = document.getElementById("mobileMenu");
       menu.style.display = (menu.style.display === "none" || menu.style.display === "") ? "flex" : "none";
     }
 
-    document.querySelectorAll('.toggle-submenu').forEach(item => {
-      item.addEventListener('click', function(e) {
-        e.preventDefault();
-        const submenu = this.nextElementSibling;
-        if (submenu) {
-          submenu.style.display = (submenu.style.display === 'block') ? 'none' : 'block';
-        }
-      });
-    });
-  </script>
-
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-
-  <!-- Logika Fetch Data Firestore -->
-  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyBNlsnzbMHKq9gKWe-EvYgrzwohxXLAOs",
       authDomain: "mutumanikam-store.firebaseapp.com",
@@ -141,15 +145,12 @@
       measurementId: "G-08EDBKUFBU"
     };
 
-    // Inisialisasi Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // Fungsi untuk memuat produk (bisa semua atau berdasarkan kategori)
     function loadProducts(categoryFilter = null) {
       let query = db.collection("Products");
 
-      // Jika ada kategori yang dipilih, lakukan filter di Firestore
       if (categoryFilter) {
         query = query.where("category", "==", categoryFilter);
       }
@@ -163,7 +164,7 @@
             const product = doc.data();
             productHTML += `
               <div class="product-card">
-                <img src="${product.image}" alt="${product.name}">
+                <img src="${product.image}" alt="${product.name}" onclick="openImageModal('${product.image}')">
                 <h3>${product.name}</h3>
                 <p class="category">${product.category}</p>
                 <p class="price">Rp ${Number(product.price).toLocaleString('id-ID')}</p>
@@ -177,19 +178,26 @@
       });
     }
 
-    // Muat semua produk saat pertama kali dibuka
+    // Fungsi untuk membuka gambar membesar
+    function openImageModal(imageSrc) {
+      const modal = document.getElementById("imageModal");
+      const imgFull = document.getElementById("imgFull");
+      modal.style.display = "flex";
+      imgFull.src = imageSrc;
+    }
+
+    // Fungsi untuk menutup modal
+    function closeImageModal() {
+      document.getElementById("imageModal").style.display = "none";
+    }
+
     loadProducts();
 
-    // Event Listener untuk Tombol Filter Kategori
     document.querySelectorAll('.category-filter').forEach(button => {
       button.addEventListener('click', function(e) {
         e.preventDefault();
         const selectedCategory = this.getAttribute('data-category');
-        
-        // Jalankan pemfilteran
         loadProducts(selectedCategory);
-        
-        // Tutup menu navigasi setelah memilih kategori
         toggleMenu();
       });
     });
