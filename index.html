@@ -80,10 +80,10 @@
       <li class="menu-item">
         <a href="#" class="menu-link toggle-submenu" style="color: #fff; text-decoration: none;">SHOP</a>
         <ul class="submenu" style="display: none;">
-          <li><a href="#" style="color: #ccc;">Necklace</a></li>
-          <li><a href="#" style="color: #ccc;">Bracelet</a></li>
-          <li><a href="#" style="color: #ccc;">Purse</a></li>
-          <li><a href="#" style="color: #ccc;">Belt</a></li>
+          <li><a href="#" class="category-filter" data-category="Necklace" style="color: #ccc;">Necklace</a></li>
+          <li><a href="#" class="category-filter" data-category="Bracelet" style="color: #ccc;">Bracelet</a></li>
+          <li><a href="#" class="category-filter" data-category="Purse" style="color: #ccc;">Purse</a></li>
+          <li><a href="#" class="category-filter" data-category="Belt" style="color: #ccc;">Belt</a></li>
         </ul>
       </li>
       <li class="menu-item">
@@ -141,30 +141,58 @@
       measurementId: "G-08EDBKUFBU"
     };
 
+    // Inisialisasi Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    function loadProducts() {
-      db.collection("Products").get().then((querySnapshot) => {
+    // Fungsi untuk memuat produk (bisa semua atau berdasarkan kategori)
+    function loadProducts(categoryFilter = null) {
+      let query = db.collection("Products");
+
+      // Jika ada kategori yang dipilih, lakukan filter di Firestore
+      if (categoryFilter) {
+        query = query.where("category", "==", categoryFilter);
+      }
+
+      query.get().then((querySnapshot) => {
         let productHTML = "";
-        querySnapshot.forEach((doc) => {
-          const product = doc.data();
-          productHTML += `
-            <div class="product-card">
-              <img src="${product.image}" alt="${product.name}">
-              <h3>${product.name}</h3>
-              <p class="category">${product.category}</p>
-              <p class="price">Rp ${Number(product.price).toLocaleString('id-ID')}</p>
-            </div>
-          `;
-        });
+        if (querySnapshot.empty) {
+          productHTML = "<p style='padding: 20px;'>Tidak ada produk untuk kategori ini.</p>";
+        } else {
+          querySnapshot.forEach((doc) => {
+            const product = doc.data();
+            productHTML += `
+              <div class="product-card">
+                <img src="${product.image}" alt="${product.name}">
+                <h3>${product.name}</h3>
+                <p class="category">${product.category}</p>
+                <p class="price">Rp ${Number(product.price).toLocaleString('id-ID')}</p>
+              </div>
+            `;
+          });
+        }
         document.getElementById("product-container").innerHTML = productHTML;
       }).catch((error) => {
         console.error("Gagal memuat produk:", error);
       });
     }
 
+    // Muat semua produk saat pertama kali dibuka
     loadProducts();
+
+    // Event Listener untuk Tombol Filter Kategori
+    document.querySelectorAll('.category-filter').forEach(button => {
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+        const selectedCategory = this.getAttribute('data-category');
+        
+        // Jalankan pemfilteran
+        loadProducts(selectedCategory);
+        
+        // Tutup menu navigasi setelah memilih kategori
+        toggleMenu();
+      });
+    });
   </script>
 </body>
 </html>
