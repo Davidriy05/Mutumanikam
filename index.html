@@ -6,36 +6,77 @@
   <title>Mutumanikam</title>
 
   <style>
+    /* Baseline Styles */
     body {
       margin: 0;
       background-color: #111;
       color: #fff;
       font-family: Arial, sans-serif;
+      letter-spacing:0.5px;
     }
+
     /* Grid Tampilan Produk */
     .product-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 20px;
       padding: 20px;
+      transition: 0.3s;
     }
-    .product-card {
+.product-card {
       background: #222;
       border: 1px solid #333;
       border-radius: 8px;
       padding: 15px;
       text-align: center;
+      transition: 0.3s;
+      /* Animasi fadeUp dimasukkan ke dalam .product-card */
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.6s ease forwards;
+    } /* Tag penutup .product-card */
+
+    /* Efek menyala lembut untuk logo atau tombol */
+    .brand-name {
+      transition: text-shadow 0.3s ease;
     }
+
+    .brand-name:hover {
+      text-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+      border-color: #d4af37;
+    }
+
+    /* Staggered delay untuk tiap kartu */
+    .product-card:nth-child(1) { animation-delay: 0.1s; }
+    .product-card:nth-child(2) { animation-delay: 0.2s; }
+    .product-card:nth-child(3) { animation-delay: 0.3s; }
+    .product-card:nth-child(4) { animation-delay: 0.4s; }
+    .product-card:nth-child(5) { animation-delay: 0.5s; }
+
+    /* Keyframes animasi fadeUp */
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .product-card:hover {
+      transform: translateY(-5px);
+      border-color: #d4af37;}
     .product-card img {
       max-width: 100%;
       height: 200px;
       object-fit: cover;
       border-radius: 4px;
-      cursor: pointer; /* Indikator bahwa gambar bisa diklik */
+      cursor: pointer;
       transition: transform 0.2s;
     }
     .product-card img:hover {
-      transform: scale(1.03); /* Efek zoom tipis saat kursor di atas gambar */
+      transform: scale(1.05);
     }
     .product-card h3 {
       margin: 10px 0 5px;
@@ -50,7 +91,96 @@
       color: #fff;
     }
 
-    /* MODAL POP-UP GAMBAR */
+    /* Overlay Sidebar */
+    #overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.4s;
+      z-index: 998;
+    }
+    #overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Sidebar Drawer */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -280px;
+      width: 260px;
+      height: 100%;
+      background: #111;
+      padding: 20px;
+      box-sizing: border-box;
+      transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+      z-index: 999;
+    }
+    .sidebar.active {
+      transform: translateX(280px);
+    }
+
+    /* Item & Animasi Menu */
+    .menu-section {
+      opacity: 0;
+      transform: translateX(-20px);
+      transition: 0.4s;
+      border-bottom: 1px solid #333;
+      padding: 15px 0;
+    }
+    .sidebar.active .menu-section {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .sidebar.active .menu-section:nth-child(1) { transition-delay: .1s; }
+    .sidebar.active .menu-section:nth-child(2) { transition-delay: .2s; }
+    .sidebar.active .menu-section:nth-child(3) { transition-delay: .3s; }
+    .sidebar.active .menu-section:nth-child(4) { transition-delay: .4s; }
+
+    .menu-title {
+      display: flex;
+      justify-content: space-between;
+      cursor: pointer;
+      letter-spacing: 2px;
+      font-weight: bold;
+    }
+.menu-title span{ transition: 0.3s;
+}
+
+.menu-section.active .menu-title span {
+  transform: rotate(180deg);
+}
+    /* Submenu Accordion */
+    .submenu {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 0.4s ease, opacity 0.3s ease;
+    }
+    .menu-section.active .submenu {
+      max-height: 200px;
+      opacity: 1;
+      margin-top: 10px;
+    }
+    .submenu p {
+      margin: 10px 0;
+      color: #aaa;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .submenu p:hover {
+      color: #d4af37;
+      transform: translateX(6px);
+    }
+
+    /* Modal Pop-Up Gambar */
     .image-modal {
       display: none; 
       position: fixed; 
@@ -60,7 +190,7 @@
       top: 0;
       width: 100%; 
       height: 100%; 
-      background-color: rgba(0, 0, 0, 0.85); /* Latar belakang gelap transparan */
+      background-color: rgba(0, 0, 0, 0.85);
       justify-content: center;
       align-items: center;
     }
@@ -98,31 +228,50 @@
     </div>
   </header>
 
-  <!-- Mobile Menu Overlay -->
-  <div id="mobileMenu" class="mobile-menu-overlay" style="display: none; flex-direction: column; padding: 20px; background: #222;">
-    <div class="menu-header">
-      <span class="close-btn" onclick="toggleMenu()" style="cursor: pointer; font-size: 24px;">&times;</span>
+  <!-- Overlay -->
+  <div id="overlay" onclick="toggleMenu()"></div>
+
+  <!-- Sidebar Navigasi -->
+  <div id="mobileMenu" class="sidebar">
+    <div class="menu-section">
+      <div class="menu-title" onclick="toggleSub(this)">
+        SHOP <span>⌄</span>
+      </div>
+      <div class="submenu">
+        <p onclick="filterCategory('Necklace')">Necklace</p>
+        <p onclick="filterCategory('Bracelet')">Bracelet</p>
+        <p onclick="filterCategory('Purse')">Purse</p>
+        <p onclick="filterCategory('Belt')">Belt</p>
+      </div>
     </div>
-    <ul class="menu-list" style="list-style: none; padding: 0;">
-      <li class="menu-item">
-        <a href="#" class="menu-link toggle-submenu" style="color: #fff; text-decoration: none;">SHOP</a>
-        <ul class="submenu" style="display: none;">
-          <li><a href="#" class="category-filter" data-category="Necklace" style="color: #ccc;">Necklace</a></li>
-          <li><a href="#" class="category-filter" data-category="Bracelet" style="color: #ccc;">Bracelet</a></li>
-          <li><a href="#" class="category-filter" data-category="Purse" style="color: #ccc;">Purse</a></li>
-          <li><a href="#" class="category-filter" data-category="Belt" style="color: #ccc;">Belt</a></li>
-        </ul>
-      </li>
-    </ul>
+
+    <div class="menu-section">
+      <div class="menu-title" onclick="toggleSub(this)">
+        STYLE <span>⌄</span>
+      </div>
+      <div class="submenu">
+        <p>Bohemian</p>
+        <p>Resortwear</p>
+        <p>Casual</p>
+      </div>
+    </div>
+
+    <div class="menu-section">
+      <div class="menu-title">NEW</div>
+    </div>
+
+    <div class="menu-section">
+      <div class="menu-title">SALE</div>
+    </div>
   </div>
 
   <!-- Wadah Produk Firestore -->
   <div id="product-container" class="product-grid"></div>
 
-  <!-- POP-UP MODAL UNTUK GAMBAR MESAR -->
+  <!-- Modal Pop-Up Gambar -->
   <div id="imageModal" class="image-modal" onclick="closeImageModal()">
     <span class="close-modal">&times;</span>
-    <img class="modal-content" id="imgFull">
+    <img class="modal-content" id="imgFull" alt="Product Preview">
   </div>
 
   <!-- Firebase SDK -->
@@ -130,11 +279,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
   <script>
-    function toggleMenu() {
-      const menu = document.getElementById("mobileMenu");
-      menu.style.display = (menu.style.display === "none" || menu.style.display === "") ? "flex" : "none";
-    }
-
+    // Konfigurasi Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyBNlsnzbMHKq9gKWe-EvYgrzwohxXLAOs",
       authDomain: "mutumanikam-store.firebaseapp.com",
@@ -148,6 +293,34 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
+    // Fungsi Navigasi UI
+  function toggleMenu() {
+      const menu = document.getElementById("mobileMenu");
+      const overlay = document.getElementById("overlay");
+
+      menu.classList.toggle("active");
+      overlay.classList.toggle("active");
+
+      // Tambahan agar layar belakang tidak bisa di-scroll saat menu buka
+      document.body.style.overflow = menu.classList.contains("active") ? "hidden" : "auto";
+    }
+    function toggleSub(el) {
+      const parent = el.parentElement;
+
+      // Tutup submenu lain yang sedang terbuka
+      document.querySelectorAll(".menu-section").forEach(item => {
+        if (item !== parent) item.classList.remove("active");
+      });
+
+      parent.classList.toggle("active");
+    }
+
+    function filterCategory(category) {
+      loadProducts(category);
+      toggleMenu();
+    }
+
+// Fungsi Fetch Firestore
     function loadProducts(categoryFilter = null) {
       let query = db.collection("Products");
 
@@ -172,13 +345,20 @@
             `;
           });
         }
-        document.getElementById("product-container").innerHTML = productHTML;
+        
+        // Efek transisi fade-in saat render produk
+        document.getElementById("product-container").style.opacity = 0;
+        setTimeout(() => {
+          document.getElementById("product-container").innerHTML = productHTML;
+          document.getElementById("product-container").style.opacity = 1;
+        }, 200);
+
       }).catch((error) => {
         console.error("Gagal memuat produk:", error);
       });
     }
 
-    // Fungsi untuk membuka gambar membesar
+    // Modal Gambar Functions
     function openImageModal(imageSrc) {
       const modal = document.getElementById("imageModal");
       const imgFull = document.getElementById("imgFull");
@@ -186,21 +366,12 @@
       imgFull.src = imageSrc;
     }
 
-    // Fungsi untuk menutup modal
     function closeImageModal() {
       document.getElementById("imageModal").style.display = "none";
     }
 
+    // Inisialisasi awal saat halaman dimuat
     loadProducts();
-
-    document.querySelectorAll('.category-filter').forEach(button => {
-      button.addEventListener('click', function(e) {
-        e.preventDefault();
-        const selectedCategory = this.getAttribute('data-category');
-        loadProducts(selectedCategory);
-        toggleMenu();
-      });
-    });
   </script>
 </body>
 </html>
