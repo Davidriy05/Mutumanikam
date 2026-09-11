@@ -78,6 +78,37 @@
     .product-card img:hover {
       transform: scale(1.05);
     }
+
+    .qty-box {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .qty-box button {
+      width: 30px;
+      height: 30px;
+      border: none;
+      background: #333;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .qty-box span {
+      min-width: 20px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    /* Kode .product-card h3 kamu akan tergeser ke bawah setelahnya */
+    .product-card h3 {
+      margin: 10px 0 5px;
+      color: #d4af37;
+    }
     .product-card h3 {
       margin: 10px 0 5px;
       color: #d4af37;
@@ -321,7 +352,7 @@
     }
 
 // Fungsi Fetch Firestore
-    function loadProducts(categoryFilter = null) {
+function loadProducts(categoryFilter = null) {
       let query = db.collection("Products");
 
       if (categoryFilter) {
@@ -335,16 +366,42 @@
         } else {
           querySnapshot.forEach((doc) => {
             const product = doc.data();
+            
+            // --- GANTI TEMPLATE LAMA DENGAN SKRIP BARU INI ---
             productHTML += `
               <div class="product-card">
                 <img src="${product.image}" alt="${product.name}" onclick="openImageModal('${product.image}')">
+
                 <h3>${product.name}</h3>
                 <p class="category">${product.category}</p>
                 <p class="price">Rp ${Number(product.price).toLocaleString('id-ID')}</p>
+
+                <!-- QTY CONTROL -->
+                <div class="qty-box">
+                  <button onclick="changeQty(this, -1)">-</button>
+                  <span class="qty">1</span>
+                  <button onclick="changeQty(this, 1)">+</button>
+                </div>
+
+                <!-- BUTTON WA -->
+                <button class="buy-btn" onclick="orderWA(this, '${product.name}', ${product.price})">
+                  Beli via WhatsApp
+                </button>
               </div>
             `;
           });
         }
+
+        document.getElementById("product-container").style.opacity = 0;
+        setTimeout(() => {
+          document.getElementById("product-container").innerHTML = productHTML;
+          document.getElementById("product-container").style.opacity = 1;
+        }, 200);
+
+      }).catch((error) => {
+        console.error("Gagal memuat produk:", error);
+      });
+    }
         
         // Efek transisi fade-in saat render produk
         document.getElementById("product-container").style.opacity = 0;
@@ -368,6 +425,44 @@
 
     function closeImageModal() {
       document.getElementById("imageModal").style.display = "none";
+    }
+    // Fungsi untuk mengubah jumlah kuantitas (QTY)
+  function changeQty(btn, change) {
+      const qtyElement = btn.parentElement.querySelector(".qty");
+      let qty = parseInt(qtyElement.innerText);
+
+      qty += change;
+
+      if (qty < 1) qty = 1;
+
+      qtyElement.innerText = qty;
+    }
+
+    // Fungsi untuk mengarahkan ke WhatsApp
+ function orderWA(button, name, price) {
+      let phone = "6281353885122";
+
+      // ambil qty dari card yang sama
+      let card = button.closest(".product-card");
+      let qty = parseInt(card.querySelector(".qty").innerText);
+
+      // --- HITUNG TOTAL HARGA DI SINI ---
+      let totalPrice = Number(price) * qty;
+
+      let message = `Halo Admin Mutumanikam 👋
+
+Saya ingin memesan:
+
+🛍️ Produk : ${name}
+💰 Harga  : Rp ${Number(price).toLocaleString('id-ID')}
+📦 Jumlah : ${qty} pcs
+💵 Total  : Rp ${totalPrice.toLocaleString('id-ID')}
+
+Mohon info stok & total pembayaran ya. Terima kasih 🙏`;
+
+      let url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(message);
+
+      window.open(url, "_blank");
     }
 
     // Inisialisasi awal saat halaman dimuat
