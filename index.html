@@ -12,7 +12,7 @@
       background-color: #111;
       color: #fff;
       font-family: Arial, sans-serif;
-      letter-spacing:0.5px;
+      letter-spacing: 0.5px;
     }
 
     /* Grid Tampilan Produk */
@@ -23,20 +23,19 @@
       padding: 20px;
       transition: 0.3s;
     }
-.product-card {
+
+    .product-card {
       background: #222;
       border: 1px solid #333;
       border-radius: 8px;
       padding: 15px;
       text-align: center;
       transition: 0.3s;
-      /* Animasi fadeUp dimasukkan ke dalam .product-card */
       opacity: 0;
       transform: translateY(20px);
       animation: fadeUp 0.6s ease forwards;
-    } /* Tag penutup .product-card */
+    }
 
-    /* Efek menyala lembut untuk logo atau tombol */
     .brand-name {
       transition: text-shadow 0.3s ease;
     }
@@ -64,9 +63,7 @@
         transform: translateY(0);
       }
     }
-    .product-card:hover {
-      transform: translateY(-5px);
-      border-color: #d4af37;}
+
     .product-card img {
       max-width: 100%;
       height: 200px;
@@ -75,6 +72,7 @@
       cursor: pointer;
       transition: transform 0.2s;
     }
+
     .product-card img:hover {
       transform: scale(1.05);
     }
@@ -104,22 +102,36 @@
       font-weight: bold;
     }
 
-    /* Kode .product-card h3 kamu akan tergeser ke bawah setelahnya */
     .product-card h3 {
       margin: 10px 0 5px;
       color: #d4af37;
     }
-    .product-card h3 {
-      margin: 10px 0 5px;
-      color: #d4af37;
-    }
+
     .product-card .category {
       font-size: 0.85em;
       color: #888;
     }
+
     .product-card .price {
       font-weight: bold;
       color: #fff;
+    }
+
+    .buy-btn {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      background: #d4af37;
+      color: #111;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .buy-btn:hover {
+      background: #f3e5ab;
     }
 
     /* Overlay Sidebar */
@@ -136,6 +148,7 @@
       transition: 0.4s;
       z-index: 998;
     }
+
     #overlay.active {
       opacity: 1;
       pointer-events: auto;
@@ -154,6 +167,7 @@
       transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1);
       z-index: 999;
     }
+
     .sidebar.active {
       transform: translateX(280px);
     }
@@ -166,10 +180,12 @@
       border-bottom: 1px solid #333;
       padding: 15px 0;
     }
+
     .sidebar.active .menu-section {
       opacity: 1;
       transform: translateX(0);
     }
+
     .sidebar.active .menu-section:nth-child(1) { transition-delay: .1s; }
     .sidebar.active .menu-section:nth-child(2) { transition-delay: .2s; }
     .sidebar.active .menu-section:nth-child(3) { transition-delay: .3s; }
@@ -182,12 +198,15 @@
       letter-spacing: 2px;
       font-weight: bold;
     }
-.menu-title span{ transition: 0.3s;
-}
 
-.menu-section.active .menu-title span {
-  transform: rotate(180deg);
-}
+    .menu-title span { 
+      transition: 0.3s; 
+    }
+
+    .menu-section.active .menu-title span {
+      transform: rotate(180deg);
+    }
+
     /* Submenu Accordion */
     .submenu {
       max-height: 0;
@@ -195,17 +214,20 @@
       opacity: 0;
       transition: max-height 0.4s ease, opacity 0.3s ease;
     }
+
     .menu-section.active .submenu {
       max-height: 200px;
       opacity: 1;
       margin-top: 10px;
     }
+
     .submenu p {
       margin: 10px 0;
       color: #aaa;
       cursor: pointer;
       transition: 0.3s;
     }
+
     .submenu p:hover {
       color: #d4af37;
       transform: translateX(6px);
@@ -225,6 +247,7 @@
       justify-content: center;
       align-items: center;
     }
+
     .modal-content {
       margin: auto;
       display: block;
@@ -233,6 +256,7 @@
       border-radius: 8px;
       box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
     }
+
     .close-modal {
       position: absolute;
       top: 20px;
@@ -242,6 +266,7 @@
       font-weight: bold;
       cursor: pointer;
     }
+
     .close-modal:hover {
       color: #d4af37;
     }
@@ -254,9 +279,9 @@
     <button onclick="toggleMenu()" style="background:none; border:none; font-size:24px; color:#d4af37; cursor:pointer;">
       &#9776;
     </button>
-  <div class="logo-container">
-  <span class="brand-name" style="font-size: 20px; font-weight: bold; color: #d4af37;">Mutumanikam</span>
-</div>
+    <div class="logo-container">
+      <span class="brand-name" style="font-size: 20px; font-weight: bold; color: #d4af37;">Mutumanikam</span>
+    </div>
   </header>
 
   <!-- Overlay -->
@@ -324,25 +349,21 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // Fungsi Navigasi UI
-  function toggleMenu() {
+    // Navigasi UI
+    function toggleMenu() {
       const menu = document.getElementById("mobileMenu");
       const overlay = document.getElementById("overlay");
 
       menu.classList.toggle("active");
       overlay.classList.toggle("active");
-
-      // Tambahan agar layar belakang tidak bisa di-scroll saat menu buka
       document.body.style.overflow = menu.classList.contains("active") ? "hidden" : "auto";
     }
+
     function toggleSub(el) {
       const parent = el.parentElement;
-
-      // Tutup submenu lain yang sedang terbuka
       document.querySelectorAll(".menu-section").forEach(item => {
         if (item !== parent) item.classList.remove("active");
       });
-
       parent.classList.toggle("active");
     }
 
@@ -351,8 +372,8 @@
       toggleMenu();
     }
 
-// Fungsi Fetch Firestore
-function loadProducts(categoryFilter = null) {
+    // Load Products Firestore
+    function loadProducts(categoryFilter = null) {
       let query = db.collection("Products");
 
       if (categoryFilter) {
@@ -367,48 +388,27 @@ function loadProducts(categoryFilter = null) {
           querySnapshot.forEach((doc) => {
             const product = doc.data();
             
-            // --- GANTI TEMPLATE LAMA DENGAN SKRIP BARU INI ---
             productHTML += `
-            <div class="product-card">
-              <img src="${product.image}" alt="${product.name}" onclick="openImageModal('${product.image}')">
-              <h3>${product.name}</h3>
-              <p class="category">${product.category}</p>
-              <p class="price">Rp ${Number(product.price).toLocaleString('id-ID')}</p>
+              <div class="product-card">
+                <img src="${product.image}" alt="${product.name}" onclick="openImageModal('${product.image}')">
+                <h3>${product.name}</h3>
+                <p class="category">${product.category}</p>
+                <p class="price">Rp ${Number(product.price).toLocaleString('id-ID')}</p>
 
-              <div class="qty-box">
-                <button onclick="changeQty(this, -1)">-</button>
-                <span class="qty">1</span>
-                <button onclick="changeQty(this, 1)">+</button>
-              </div>
+                <div class="qty-box">
+                  <button onclick="changeQty(this, -1)">-</button>
+                  <span class="qty">1</span>
+                  <button onclick="changeQty(this, 1)">+</button>
+                </div>
 
-              <!-- TEMPATKAN TOMBOL TERSEBUT DI SINI -->
-             <button class="buy-btn" onclick="orderWA(this, '${product.name}', ${product.price})">
-  Beli via WA
-</button>
-            </div>
-          `;
-
-                <!-- BUTTON WA -->
                 <button class="buy-btn" onclick="orderWA(this, '${product.name}', ${product.price})">
-                  Beli via WhatsApp
+                  Beli via WA
                 </button>
               </div>
             `;
           });
         }
 
-        document.getElementById("product-container").style.opacity = 0;
-        setTimeout(() => {
-          document.getElementById("product-container").innerHTML = productHTML;
-          document.getElementById("product-container").style.opacity = 1;
-        }, 200);
-
-      }).catch((error) => {
-        console.error("Gagal memuat produk:", error);
-      });
-    }
-        
-        // Efek transisi fade-in saat render produk
         document.getElementById("product-container").style.opacity = 0;
         setTimeout(() => {
           document.getElementById("product-container").innerHTML = productHTML;
@@ -428,48 +428,40 @@ function loadProducts(categoryFilter = null) {
       imgFull.src = imageSrc;
     }
 
-   <script>
-let selectedProduct = "";
-let selectedPrice = 0;
-
-function openCheckout(product, price) {
-    selectedProduct = product;
-    selectedPrice = price;
-    document.getElementById("checkoutModal").style.display = "block";
-}
-
-function kirimWA() {
-    let nama = document.getElementById("nama").value;
-    let alamat = document.getElementById("alamat").value;
-    let jumlah = parseInt(document.getElementById("jumlah").value);
-
-    if (!nama || !alamat || !jumlah) {
-        alert("Lengkapi data dulu!");
-        return;
+    function closeImageModal() {
+      document.getElementById("imageModal").style.display = "none";
     }
 
-    let total = selectedPrice * jumlah;
+    // Mengubah Jumlah Produk (QTY)
+    function changeQty(btn, change) {
+      const qtyElement = btn.parentElement.querySelector(".qty");
+      let qty = parseInt(qtyElement.innerText);
+      qty += change;
+      if (qty < 1) qty = 1;
+      qtyElement.innerText = qty;
+    }
 
-    let phone = "6281353885102";
+    // Mengirim Order ke WhatsApp
+    function orderWA(btn, productName, price) {
+      let card = btn.closest(".product-card");
+      let qty = parseInt(card.querySelector(".qty").innerText);
 
-    let pesan = 
-`Halo Admin Mutumanikam,
+      let total = price * qty;
+      let phone = "6281353885102";
+
+      let pesan = `Halo Admin Mutumanikam 👋
+
 Saya mau order:
+🛍️ Produk: ${productName}
+💰 Harga: Rp ${Number(price).toLocaleString('id-ID')}
+📦 Jumlah: ${qty} pcs
+💵 Total: Rp ${total.toLocaleString('id-ID')}
 
-Produk: ${selectedProduct}
-Harga: Rp${selectedPrice.toLocaleString()}
-Jumlah: ${jumlah}
-Total: Rp${total.toLocaleString()}
+Mohon konfirmasi stok & totalnya ya. Terima kasih!`;
 
-Nama: ${nama}
-Alamat: ${alamat}
-
-Mohon konfirmasi ya.`;
-
-    let url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(pesan);
-    window.open(url, "_blank");
-}
-</script>
+      let url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(pesan);
+      window.open(url, "_blank");
+    }
 
     // Inisialisasi awal saat halaman dimuat
     loadProducts();
