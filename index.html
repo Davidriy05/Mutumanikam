@@ -369,19 +369,24 @@ function loadProducts(categoryFilter = null) {
             
             // --- GANTI TEMPLATE LAMA DENGAN SKRIP BARU INI ---
             productHTML += `
-              <div class="product-card">
-                <img src="${product.image}" alt="${product.name}" onclick="openImageModal('${product.image}')">
+            <div class="product-card">
+              <img src="${product.image}" alt="${product.name}" onclick="openImageModal('${product.image}')">
+              <h3>${product.name}</h3>
+              <p class="category">${product.category}</p>
+              <p class="price">Rp ${Number(product.price).toLocaleString('id-ID')}</p>
 
-                <h3>${product.name}</h3>
-                <p class="category">${product.category}</p>
-                <p class="price">Rp ${Number(product.price).toLocaleString('id-ID')}</p>
+              <div class="qty-box">
+                <button onclick="changeQty(this, -1)">-</button>
+                <span class="qty">1</span>
+                <button onclick="changeQty(this, 1)">+</button>
+              </div>
 
-                <!-- QTY CONTROL -->
-                <div class="qty-box">
-                  <button onclick="changeQty(this, -1)">-</button>
-                  <span class="qty">1</span>
-                  <button onclick="changeQty(this, 1)">+</button>
-                </div>
+              <!-- TEMPATKAN TOMBOL TERSEBUT DI SINI -->
+             <button class="buy-btn" onclick="orderWA(this, '${product.name}', ${product.price})">
+  Beli via WA
+</button>
+            </div>
+          `;
 
                 <!-- BUTTON WA -->
                 <button class="buy-btn" onclick="orderWA(this, '${product.name}', ${product.price})">
@@ -423,47 +428,48 @@ function loadProducts(categoryFilter = null) {
       imgFull.src = imageSrc;
     }
 
-    function closeImageModal() {
-      document.getElementById("imageModal").style.display = "none";
+   <script>
+let selectedProduct = "";
+let selectedPrice = 0;
+
+function openCheckout(product, price) {
+    selectedProduct = product;
+    selectedPrice = price;
+    document.getElementById("checkoutModal").style.display = "block";
+}
+
+function kirimWA() {
+    let nama = document.getElementById("nama").value;
+    let alamat = document.getElementById("alamat").value;
+    let jumlah = parseInt(document.getElementById("jumlah").value);
+
+    if (!nama || !alamat || !jumlah) {
+        alert("Lengkapi data dulu!");
+        return;
     }
-    // Fungsi untuk mengubah jumlah kuantitas (QTY)
-  function changeQty(btn, change) {
-      const qtyElement = btn.parentElement.querySelector(".qty");
-      let qty = parseInt(qtyElement.innerText);
 
-      qty += change;
+    let total = selectedPrice * jumlah;
 
-      if (qty < 1) qty = 1;
+    let phone = "6281353885102";
 
-      qtyElement.innerText = qty;
-    }
+    let pesan = 
+`Halo Admin Mutumanikam,
+Saya mau order:
 
-    // Fungsi untuk mengarahkan ke WhatsApp
- function orderWA(button, name, price) {
-      let phone = "6281353885122";
+Produk: ${selectedProduct}
+Harga: Rp${selectedPrice.toLocaleString()}
+Jumlah: ${jumlah}
+Total: Rp${total.toLocaleString()}
 
-      // ambil qty dari card yang sama
-      let card = button.closest(".product-card");
-      let qty = parseInt(card.querySelector(".qty").innerText);
+Nama: ${nama}
+Alamat: ${alamat}
 
-      // --- HITUNG TOTAL HARGA DI SINI ---
-      let totalPrice = Number(price) * qty;
+Mohon konfirmasi ya.`;
 
-      let message = `Halo Admin Mutumanikam 👋
-
-Saya ingin memesan:
-
-🛍️ Produk : ${name}
-💰 Harga  : Rp ${Number(price).toLocaleString('id-ID')}
-📦 Jumlah : ${qty} pcs
-💵 Total  : Rp ${totalPrice.toLocaleString('id-ID')}
-
-Mohon info stok & total pembayaran ya. Terima kasih 🙏`;
-
-      let url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(message);
-
-      window.open(url, "_blank");
-    }
+    let url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(pesan);
+    window.open(url, "_blank");
+}
+</script>
 
     // Inisialisasi awal saat halaman dimuat
     loadProducts();
