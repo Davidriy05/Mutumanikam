@@ -549,9 +549,10 @@ Mohon konfirmasi stok & totalnya ya. Terima kasih!`;
       window.open(url, "_blank");
     }
 
-    // Inisialisasi awal saat halaman dimuat
-    loadProducts();
+    // Jalankan fungsi setelah seluruh dokumen HTML selesai dimuat
+    document.addEventListener("DOMContentLoaded", () => {
+      loadProducts();
+    });
   </script>
 </body>
 </html>
-
