@@ -202,6 +202,16 @@
     .menu-title span { 
       transition: 0.3s; 
     }
+    // Modal & Fitur Zoom Gambar
+    let currentZoomScale = 1;
+
+    function openImageModal(imageSrc) {
+      const modal = document.getElementById("imageModal");
+      const imgFull = document.getElementById("imgFull");
+      modal.style.display = "flex";
+      imgFull.src = imageSrc;
+      resetZoom();
+    }
 
     .menu-section.active .menu-title span {
       transform: rotate(180deg);
