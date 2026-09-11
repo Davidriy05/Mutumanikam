@@ -383,7 +383,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
-  <script>
+<script>
     // Konfigurasi Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyBNlsnzbMHKq9gKWe-EvYgrzwohxXLAOs",
@@ -395,7 +395,10 @@
       measurementId: "G-08EDBKUFBU"
     };
 
-    firebase.initializeApp(firebaseConfig);
+    // Inisialisasi Firebase
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
     const db = firebase.firestore();
 
     let currentZoomScale = 1;
@@ -423,8 +426,9 @@
       toggleMenu();
     }
 
-    // Load Products Firestore
+    // Fungsi Utama Load Products dari Firestore
     function loadProducts(categoryFilter = null) {
+      console.log("Mencoba mengambil data dari Firestore...");
       let query = db.collection("Products");
 
       if (categoryFilter) {
@@ -432,19 +436,25 @@
       }
 
       query.get().then((querySnapshot) => {
+        console.log("Dokumen berhasil ditarik. Jumlah:", querySnapshot.size);
         let productHTML = "";
+
         if (querySnapshot.empty) {
-          productHTML = "<p style='padding: 20px;'>Tidak ada produk untuk kategori ini.</p>";
+          productHTML = "<p style='padding: 20px; text-align: center;'>Tidak ada produk yang ditemukan.</p>";
         } else {
           querySnapshot.forEach((doc) => {
             const product = doc.data();
-            
+            console.log("Data item:", product);
+
+            const imgUrl = product.image ? product.image.trim() : 'https://via.placeholder.com/200';
+            const priceVal = Number(product.price) || 0;
+
             productHTML += `
               <div class="product-card">
-                <img src="${product.image}" alt="${product.name}" onclick="openImageModal('${product.image}')">
-                <h3>${product.name}</h3>
-                <p class="category">${product.category}</p>
-                <p class="price">Rp ${Number(product.price).toLocaleString('id-ID')}</p>
+                <img src="${imgUrl}" alt="${product.name || 'Produk'}" onclick="openImageModal('${imgUrl}')" onerror="this.src='https://via.placeholder.com/200'">
+                <h3>${product.name || 'Tanpa Nama'}</h3>
+                <p class="category">${product.category || 'Umum'}</p>
+                <p class="price">Rp ${priceVal.toLocaleString('id-ID')}</p>
 
                 <div class="qty-box">
                   <button onclick="changeQty(this, -1)">-</button>
@@ -452,7 +462,7 @@
                   <button onclick="changeQty(this, 1)">+</button>
                 </div>
 
-                <button class="buy-btn" onclick="orderWA(this, '${product.name}', ${product.price})">
+                <button class="buy-btn" onclick="orderWA(this, '${product.name}', ${priceVal})">
                   Beli via WA
                 </button>
               </div>
@@ -460,14 +470,16 @@
           });
         }
 
-        document.getElementById("product-container").style.opacity = 0;
+        const container = document.getElementById("product-container");
+        container.style.opacity = 0;
+        container.innerHTML = productHTML;
         setTimeout(() => {
-          document.getElementById("product-container").innerHTML = productHTML;
-          document.getElementById("product-container").style.opacity = 1;
-        }, 200);
+          container.style.opacity = 1;
+        }, 100);
 
       }).catch((error) => {
-        console.error("Gagal memuat produk:", error);
+        console.error("Error saat ambil data Firestore:", error);
+        alert("Gagal mengambil data dari Firebase: " + error.message);
       });
     }
 
@@ -535,22 +547,14 @@
       let total = price * qty;
       let phone = "6281353885122";
 
-      let pesan = `Halo Admin Mutumanikam 👋
-
-Saya mau order:
-🛍️ Produk: ${productName}
-💰 Harga: Rp ${Number(price).toLocaleString('id-ID')}
-📦 Jumlah: ${qty} pcs
-💵 Total: Rp ${total.toLocaleString('id-ID')}
-
-Mohon konfirmasi stok & totalnya ya. Terima kasih!`;
+      let pesan = Halo Admin Mutumanikam 👋\n\nSaya mau order:\n🛍️ Produk: ${productName}\n💰 Harga: Rp ${Number(price).toLocaleString('id-ID')}\n📦 Jumlah: ${qty} pcs\n💵 Total: Rp ${total.toLocaleString('id-ID')}\n\nMohon konfirmasi stok & totalnya ya. Terima kasih!;
 
       let url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(pesan);
       window.open(url, "_blank");
     }
 
-    // Jalankan fungsi setelah seluruh dokumen HTML selesai dimuat
-    document.addEventListener("DOMContentLoaded", () => {
+    // Pemanggilan Fungsi Saat Halaman Dimuat
+    window.addEventListener("DOMContentLoaded", () => {
       loadProducts();
     });
   </script>
