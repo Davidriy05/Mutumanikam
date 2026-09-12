@@ -383,9 +383,8 @@
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
-
+  
 <script>
-  // 🔥 KONFIG FIREBASE
   const firebaseConfig = {
     apiKey: "AIzaSyBNlsnzbMHKq9gKWe-EvYgrzwohxXLAOs",
     authDomain: "mutumanikam-store.firebaseapp.com",
@@ -395,10 +394,10 @@
     appId: "1:28963833581:web:1a8001fec139a7ace1abe4"
   };
 
-  // 🔥 INIT FIREBASE
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
   }
+
   const db = firebase.firestore();
 
   // 🔥 LOAD PRODUK
@@ -409,24 +408,28 @@
       query = query.where("category", "==", categoryFilter);
     }
 
-    query.get().then((snapshot) => {
+    query.get().then(snapshot => {
       let html = "";
 
       if (snapshot.empty) {
-        html = "<p style='text-align:center;padding:20px'>Produk kosong</p>";
+        html = "<p style='text-align:center;padding:20px'>Produk belum tersedia</p>";
       } else {
-        snapshot.forEach((doc) => {
+        snapshot.forEach(doc => {
           const p = doc.data();
 
-          let nama = (p.name || "Produk").replace(/'/g, "");
+          let nama = (p.name || "Produk").replace(/[`'"]/g, "");
           let harga = Number(p.price) || 0;
-          let img = p.image || "https://via.placeholder.com/200";
+          let kategori = p.category || "Umum";
+          let img = p.image ? p.image.trim() : "https://via.placeholder.com/200";
 
           html += `
             <div class="product-card">
-              <img src="${img}" onclick="openImageModal('${img}')">
+              <img src="${img}" 
+                   onclick="openImageModal('${img}')"
+                   onerror="this.src='https://via.placeholder.com/200'">
 
               <h3>${nama}</h3>
+              <p class="category">${kategori}</p>
               <p class="price">Rp ${harga.toLocaleString('id-ID')}</p>
 
               <div class="qty-box">
@@ -444,11 +447,12 @@
         });
       }
 
-      document.getElementById("product-container").innerHTML = html;
+      const container = document.getElementById("product-container");
+      container.innerHTML = html;
 
     }).catch(err => {
-      console.error(err);
-      alert("Firebase error: " + err.message);
+      console.error("Firestore error:", err);
+      alert("Gagal ambil produk");
     });
   }
 
@@ -461,7 +465,7 @@
     el.innerText = val;
   }
 
-  // 🔥 ORDER WHATSAPP (SUDAH FIX TOTAL + FORMAT)
+  // 🔥 ORDER WHATSAPP
   function orderWA(btn, productName, price) {
     try {
       let card = btn.closest(".product-card");
@@ -478,32 +482,75 @@ Saya mau order:
 📦 Jumlah: ${qty} pcs
 💵 Total: Rp ${total.toLocaleString('id-ID')}
 
-Mohon konfirmasi stok ya. Terima kasih 🙏`;
+Mohon konfirmasi stok & total ya 🙏`;
 
       let url = `https://wa.me/${phone}?text=${encodeURIComponent(pesan)}`;
-
       window.open(url, "_blank");
 
     } catch (e) {
-      console.error(e);
-      alert("Gagal membuka WhatsApp");
+      console.error("WA error:", e);
+      alert("Gagal buka WhatsApp");
     }
   }
 
-  // 🔥 MODAL GAMBAR
+  // 🔥 MODAL GAMBAR + ZOOM
+  let zoomScale = 1;
+
   function openImageModal(src) {
     const modal = document.getElementById("imageModal");
     const img = document.getElementById("imgFull");
     modal.style.display = "flex";
     img.src = src;
+    resetZoom();
   }
 
   function closeImageModal() {
     document.getElementById("imageModal").style.display = "none";
+    resetZoom();
+  }
+
+  function toggleZoomImg() {
+    zoomScale = zoomScale === 1 ? 2 : 1;
+    document.getElementById("imgFull").style.transform = `scale(${zoomScale})`;
+  }
+
+  function zoomIn() {
+    zoomScale += 0.3;
+    document.getElementById("imgFull").style.transform = `scale(${zoomScale})`;
+  }
+
+  function zoomOut() {
+    zoomScale = Math.max(1, zoomScale - 0.3);
+    document.getElementById("imgFull").style.transform = `scale(${zoomScale})`;
+  }
+
+  function resetZoom() {
+    zoomScale = 1;
+    document.getElementById("imgFull").style.transform = "scale(1)";
+  }
+
+  // 🔥 MENU
+  function toggleMenu() {
+    document.getElementById("mobileMenu").classList.toggle("active");
+    document.getElementById("overlay").classList.toggle("active");
+  }
+
+  function toggleSub(el) {
+    const parent = el.parentElement;
+    document.querySelectorAll(".menu-section").forEach(i => {
+      if (i !== parent) i.classList.remove("active");
+    });
+    parent.classList.toggle("active");
+  }
+
+  function filterCategory(cat) {
+    loadProducts(cat);
+    toggleMenu();
   }
 
   // 🔥 LOAD AWAL
-  window.onload = () => {
+  window.addEventListener("DOMContentLoaded", () => {
     loadProducts();
-  };
+  });
 </script>
+
