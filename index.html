@@ -378,301 +378,222 @@
       <button class="zoom-btn" onclick="resetZoom()">Reset</button>
     </div>
   </div>
-  
-<div id="checkoutModal" style="display:none; position:fixed; z-index:1002; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.8); justify-content:center; align-items:center;">
 
-  <div style="background:#222; padding:20px; border-radius:10px; width:90%; max-width:400px;">
+  <!-- Modal Checkout -->
+  <div id="checkoutModal" style="display:none; position:fixed; z-index:1002; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.8); justify-content:center; align-items:center;">
+    <div style="background:#222; padding:20px; border-radius:10px; width:90%; max-width:400px;">
+      <h3 style="color:#d4af37;">Checkout</h3>
 
-    <h3 style="color:#d4af37;">Checkout</h3>
+      <input id="nama" placeholder="Nama Anda" style="width:100%; padding:10px; margin-top:10px; box-sizing:border-box;">
+      <textarea id="alamat" placeholder="Alamat Lengkap" style="width:100%; padding:10px; margin-top:10px; box-sizing:border-box;"></textarea>
 
-    <input id="nama" placeholder="Nama Anda" style="width:100%; padding:10px; margin-top:10px;">
-    <textarea id="alamat" placeholder="Alamat Lengkap" style="width:100%; padding:10px; margin-top:10px;"></textarea>
+      <p id="produkDipilih" style="margin-top:10px;"></p>
+      <p id="totalHarga"></p>
 
-    <p id="produkDipilih" style="margin-top:10px;"></p>
-    <p id="totalHarga"></p>
+      <button onclick="kirimWA()" style="width:100%; padding:10px; margin-top:10px; background:#d4af37; border:none; cursor:pointer; font-weight:bold;">
+        Kirim ke WhatsApp
+      </button>
 
-    <button onclick="kirimWA()" style="width:100%; padding:10px; margin-top:10px; background:#d4af37; border:none;">
-      Kirim ke WhatsApp
-    </button>
-
-    <button onclick="closeCheckout()" style="width:100%; padding:10px; margin-top:5px; background:#555; border:none; color:white;">
-      Batal
-    </button>
-
+      <button onclick="closeCheckout()" style="width:100%; padding:10px; margin-top:5px; background:#555; border:none; color:white; cursor:pointer;">
+        Batal
+      </button>
+    </div>
   </div>
-</div>
-  
-<!-- Firebase (WAJIB agar Firestore jalan) -->
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
-  
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyBNlsnzbMHKq9gKWe-EvYgrzwohxXLAOs",
-    authDomain: "mutumanikam-store.firebaseapp.com",
-    projectId: "mutumanikam-store",
-    storageBucket: "mutumanikam-store.firebasestorage.app",
-    messagingSenderId: "28963833581",
-    appId: "1:28963833581:web:1a8001fec139a7ace1abe4"
-  };
+  <!-- Firebase (WAJIB agar Firestore jalan) -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
-  if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-  }
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBNlsnzbMHKq9gKWe-EvYgrzwohxXLAOs",
+      authDomain: "mutumanikam-store.firebaseapp.com",
+      projectId: "mutumanikam-store",
+      storageBucket: "mutumanikam-store.firebasestorage.app",
+      messagingSenderId: "28963833581",
+      appId: "1:28963833581:web:1a8001fec139a7ace1abe4"
+    };
 
-  const db = firebase.firestore();
-
-  // 🔥 LOAD PRODUK
-  function loadProducts(categoryFilter = null) {
-    let query = db.collection("Products");
-
-    if (categoryFilter) {
-      query = query.where("category", "==", categoryFilter);
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
     }
 
-    query.get().then(snapshot => {
-      let html = "";
+    const db = firebase.firestore();
 
-      if (snapshot.empty) {
-        html = "<p style='text-align:center;padding:20px'>Produk belum tersedia</p>";
-      } else {
-        snapshot.forEach(doc => {
-          const p = doc.data();
+    // Variable global untuk simpan pilihan checkout
+    let selectedProduct = "";
+    let selectedPrice = 0;
+    let selectedQty = 1;
 
-          let nama = (p.name || "Produk").replace(/[`'"]/g, "");
-          let harga = Number(p.price) || 0;
-          let kategori = p.category || "Umum";
-          let img = p.image ? p.image.trim() : "https://via.placeholder.com/200";
+    // 🔥 LOAD PRODUK
+    function loadProducts(categoryFilter = null) {
+      let query = db.collection("Products");
 
-          html += `
-            <div class="product-card">
-              <img src="${img}" 
-                   onclick="openImageModal('${img}')"
-                   onerror="this.src='https://via.placeholder.com/200'">
-
-              <h3>${nama}</h3>
-              <p class="category">${kategori}</p>
-              <p class="price">Rp ${harga.toLocaleString('id-ID')}</p>
-
-              <div class="qty-box">
-                <button onclick="changeQty(this,-1)">-</button>
-                <span class="qty">1</span>
-                <button onclick="changeQty(this,1)">+</button>
-              </div>
-
-              <button class="buy-btn"
-                onclick="orderWA(this, \`${nama}\`, ${harga})">
-                Beli via WA
-              </button>
-            </div>
-          `;
-        });
+      if (categoryFilter) {
+        query = query.where("category", "==", categoryFilter);
       }
 
-      const container = document.getElementById("product-container");
-      container.innerHTML = html;
+      query.get().then(snapshot => {
+        let html = "";
 
-    }).catch(err => {
-      console.error("Firestore error:", err);
-      alert("Gagal ambil produk");
-    });
-  }
+        if (snapshot.empty) {
+          html = "<p style='text-align:center;padding:20px'>Produk belum tersedia</p>";
+        } else {
+          snapshot.forEach(doc => {
+            const p = doc.data();
 
-  // 🔥 QTY
-  function changeQty(btn, change) {
-    let el = btn.parentElement.querySelector(".qty");
-    let val = parseInt(el.innerText) || 1;
-    val += change;
-    if (val < 1) val = 1;
-    el.innerText = val;
-  }
+            let nama = (p.name || "Produk").replace(/[`'"]/g, "");
+            let harga = Number(p.price) || 0;
+            let kategori = p.category || "Umum";
+            let img = p.image ? p.image.trim() : "https://via.placeholder.com/200";
 
-  // 🔥 ORDER WHATSAPP
-  function orderWA(btn, productName, price) {
-    try {
+            html += `
+              <div class="product-card">
+                <img src="${img}" 
+                     onclick="openImageModal('${img}')"
+                     onerror="this.src='https://via.placeholder.com/200'">
+
+                <h3>${nama}</h3>
+                <p class="category">${kategori}</p>
+                <p class="price">Rp ${harga.toLocaleString('id-ID')}</p>
+
+                <div class="qty-box">
+                  <button onclick="changeQty(this,-1)">-</button>
+                  <span class="qty">1</span>
+                  <button onclick="changeQty(this,1)">+</button>
+                </div>
+
+                <button class="buy-btn"
+                  onclick="openCheckout(this, \${nama}\, ${harga})">
+                  Beli via WA
+                </button>
+              </div>
+            `;
+          });
+        }
+
+        const container = document.getElementById("product-container");
+        container.innerHTML = html;
+
+      }).catch(err => {
+        console.error("Firestore error:", err);
+        alert("Gagal ambil produk");
+      });
+    }
+
+    // 🔥 QTY
+    function changeQty(btn, change) {
+      let el = btn.parentElement.querySelector(".qty");
+      let val = parseInt(el.innerText) || 1;
+      val += change;
+      if (val < 1) val = 1;
+      el.innerText = val;
+    }
+
+    // 🔥 FUNGSI CHECKOUT & WA
+    function openCheckout(btn, productName, price) {
       let card = btn.closest(".product-card");
       let qty = parseInt(card.querySelector(".qty").innerText) || 1;
 
+      selectedProduct = productName;
+      selectedPrice = price;
+      selectedQty = qty;
+
       let total = price * qty;
+
+      document.getElementById("produkDipilih").innerText =
+        "Produk: " + productName + " (" + qty + " pcs)";
+
+      document.getElementById("totalHarga").innerText =
+        "Total: Rp " + total.toLocaleString('id-ID');
+
+      document.getElementById("checkoutModal").style.display = "flex";
+    }
+
+    function closeCheckout() {
+      document.getElementById("checkoutModal").style.display = "none";
+    }
+
+    function kirimWA() {
+      let nama = document.getElementById("nama").value.trim();
+      let alamat = document.getElementById("alamat").value.trim();
+
+      if (!nama || !alamat) {
+        alert("Nama & alamat wajib diisi");
+        return;
+      }
+
+      let total = selectedPrice * selectedQty;
       let phone = "6281353885122";
 
-      let pesan = `Halo Admin Mutumanikam 👋
+      let pesan = Halo Admin Mutumanikam 👋\n\nSaya mau order:\n🛍️ Produk: ${selectedProduct}\n📦 Jumlah: ${selectedQty} pcs\n💰 Total: Rp ${total.toLocaleString('id-ID')}\n\n👤 Nama: ${nama}\n📍 Alamat: ${alamat}\n\nMohon konfirmasi ya 🙏;
 
-Saya mau order:
-🛍️ Produk: ${productName}
-💰 Harga: Rp ${price.toLocaleString('id-ID')}
-📦 Jumlah: ${qty} pcs
-💵 Total: Rp ${total.toLocaleString('id-ID')}
+      let url = https://wa.me/${phone}?text=${encodeURIComponent(pesan)};
 
-Mohon konfirmasi stok & total ya 🙏`;
-
-      let url = `https://wa.me/${phone}?text=${encodeURIComponent(pesan)}`;
       window.open(url, "_blank");
 
-    } catch (e) {
-      console.error("WA error:", e);
-      alert("Gagal buka WhatsApp");
+      closeCheckout();
     }
-  }
 
-  // 🔥 MODAL GAMBAR + ZOOM
-  let zoomScale = 1;
+    // 🔥 MODAL GAMBAR + ZOOM
+    let zoomScale = 1;
 
-  function openImageModal(src) {
-    const modal = document.getElementById("imageModal");
-    const img = document.getElementById("imgFull");
-    modal.style.display = "flex";
-    img.src = src;
-    resetZoom();
-  }
+    function openImageModal(src) {
+      const modal = document.getElementById("imageModal");
+      const img = document.getElementById("imgFull");
+      modal.style.display = "flex";
+      img.src = src;
+      resetZoom();
+    }
 
-  function closeImageModal() {
-    document.getElementById("imageModal").style.display = "none";
-    resetZoom();
-  }
+    function closeImageModal() {
+      document.getElementById("imageModal").style.display = "none";
+      resetZoom();
+    }
 
-  function toggleZoomImg() {
-    zoomScale = zoomScale === 1 ? 2 : 1;
-    document.getElementById("imgFull").style.transform = `scale(${zoomScale})`;
-  }
+    function toggleZoomImg() {
+      zoomScale = zoomScale === 1 ? 2 : 1;
+      document.getElementById("imgFull").style.transform = scale(${zoomScale});
+    }
 
-  function zoomIn() {
-    zoomScale += 0.3;
-    document.getElementById("imgFull").style.transform = `scale(${zoomScale})`;
-  }
+    function zoomIn() {
+      zoomScale += 0.3;
+      document.getElementById("imgFull").style.transform = scale(${zoomScale});
+    }
 
-  function zoomOut() {
-    zoomScale = Math.max(1, zoomScale - 0.3);
-    document.getElementById("imgFull").style.transform = `scale(${zoomScale})`;
-  }
+    function zoomOut() {
+      zoomScale = Math.max(1, zoomScale - 0.3);
+      document.getElementById("imgFull").style.transform = scale(${zoomScale});
+    }
 
-  function resetZoom() {
-    zoomScale = 1;
-    document.getElementById("imgFull").style.transform = "scale(1)";
-  }
+    function resetZoom() {
+      zoomScale = 1;
+      document.getElementById("imgFull").style.transform = "scale(1)";
+    }
 
-  // 🔥 MENU
-  function toggleMenu() {
-    document.getElementById("mobileMenu").classList.toggle("active");
-    document.getElementById("overlay").classList.toggle("active");
-  }
+    // 🔥 MENU
+    function toggleMenu() {
+      document.getElementById("mobileMenu").classList.toggle("active");
+      document.getElementById("overlay").classList.toggle("active");
+    }
 
-  function toggleSub(el) {
-    const parent = el.parentElement;
-    document.querySelectorAll(".menu-section").forEach(i => {
-      if (i !== parent) i.classList.remove("active");
+    function toggleSub(el) {
+      const parent = el.parentElement;
+      document.querySelectorAll(".menu-section").forEach(i => {
+        if (i !== parent) i.classList.remove("active");
+      });
+      parent.classList.toggle("active");
+    }
+
+    function filterCategory(cat) {
+      loadProducts(cat);
+      toggleMenu();
+    }
+
+    // 🔥 LOAD AWAL
+    window.addEventListener("DOMContentLoaded", () => {
+      loadProducts();
     });
-    parent.classList.toggle("active");
-  }
-
-  function filterCategory(cat) {
-    loadProducts(cat);
-    toggleMenu();
-  }
-
-  // 🔥 LOAD AWAL
-  window.addEventListener("DOMContentLoaded", () => {
-    loadProducts();
-  });
-  [21.06, 12/9/2026] Beads Work: <div id="checkoutModal" style="display:none; position:fixed; z-index:1002; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.8); justify-content:center; align-items:center;">
-
-  <div style="background:#222; padding:20px; border-radius:10px; width:90%; max-width:400px;">
-
-    <h3 style="color:#d4af37;">Checkout</h3>
-
-    <input id="nama" placeholder="Nama Anda" style="width:100%; padding:10px; margin-top:10px;">
-    <textarea id="alamat" placeholder="Alamat Lengkap" style="width:100%; padding:10px; margin-top:10px;"></textarea>
-
-    <p id="produkDipilih" style="margin-top:10px;"></p>
-    <p id="totalHarga"></p>
-
-    <button onclick="kirimWA()" style="width:100%; padding:10px; margin-top:10px; background:#d4af37; border:none;">
-      Kirim ke WhatsApp
-    </button>
-
-    <button onclick="closeCheckout()" style="width:100%; padding:10px; margin-top:5px; background:#555; border:none; color:white;">
-      Batal
-    </button>
-
-  </div>
-</div>
-[21.06, 12/9/2026] Beads Work: <div id="checkoutModal" style="display:none; position:fixed; z-index:1002; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.8); justify-content:center; align-items:center;">
-
-  <div style="background:#222; padding:20px; border-radius:10px; width:90%; max-width:400px;">
-
-    <h3 style="color:#d4af37;">Checkout</h3>
-
-    <input id="nama" placeholder="Nama Anda" style="width:100%; padding:10px; margin-top:10px;">
-    <textarea id="alamat" placeholder="Alamat Lengkap" style="width:100%; padding:10px; margin-top:10px;"></textarea>
-
-    <p id="produkDipilih" style="margin-top:10px;"></p>
-    <p id="totalHarga"></p>
-
-    <button onclick="kirimWA()" style="width:100%; padding:10px; margin-top:10px; background:#d4af37; border:none;">
-      Kirim ke WhatsApp
-    </button>
-
-    <button onclick="closeCheckout()" style="width:100%; padding:10px; margin-top:5px; background:#555; border:none; color:white;">
-      Batal
-    </button>
-
-  </div>
-</div>
-[21.15, 12/9/2026] Beads Work: let selectedProduct = "";
-let selectedPrice = 0;
-let selectedQty = 1;
-
-function openCheckout(btn, productName, price) {
-  let card = btn.closest(".product-card");
-  let qty = parseInt(card.querySelector(".qty").innerText) || 1;
-
-  selectedProduct = productName;
-  selectedPrice = price;
-  selectedQty = qty;
-
-  let total = price * qty;
-
-  document.getElementById("produkDipilih").innerText =
-    "Produk: " + productName + " (" + qty + " pcs)";
-
-  document.getElementById("totalHarga").innerText =
-    "Total: Rp " + total.toLocaleString('id-ID');
-
-  document.getElementById("checkoutModal").style.display = "flex";
-}
-
-function closeCheckout() {
-  document.getElementById("checkoutModal").style.display = "none";
-}
-
-function kirimWA() {
-  let nama = document.getElementById("nama").value.trim();
-  let alamat = document.getElementById("alamat").value.trim();
-
-  if (!nama || !alamat) {
-    alert("Nama & alamat wajib diisi");
-    return;
-  }
-
-  let total = selectedPrice * selectedQty;
-  let phone = "6281353885122";
-
-  let pesan = `Halo Admin Mutumanikam 👋
-
-Saya mau order:
-🛍️ Produk: ${selectedProduct}
-📦 Jumlah: ${selectedQty} pcs
-💰 Total: Rp ${total.toLocaleString('id-ID')}
-
-👤 Nama: ${nama}
-📍 Alamat: ${alamat}
-
-Mohon konfirmasi ya 🙏`;
-
-  let url = https://wa.me/${phone}?text=${encodeURIComponent(pesan)};
-
-  window.open(url, "_blank");
-
-  closeCheckout();
-}
+  </script>
+</body>
+</html>
