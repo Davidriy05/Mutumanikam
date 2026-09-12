@@ -383,180 +383,127 @@
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
+
 <script>
-    // Konfigurasi Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyBNlsnzbMHKq9gKWe-EvYgrzwohxXLAOs",
-      authDomain: "mutumanikam-store.firebaseapp.com",
-      projectId: "mutumanikam-store",
-      storageBucket: "mutumanikam-store.firebasestorage.app",
-      messagingSenderId: "28963833581",
-      appId: "1:28963833581:web:1a8001fec139a7ace1abe4",
-      measurementId: "G-08EDBKUFBU"
-    };
+  // 🔥 KONFIG FIREBASE
+  const firebaseConfig = {
+    apiKey: "AIzaSyBNlsnzbMHKq9gKWe-EvYgrzwohxXLAOs",
+    authDomain: "mutumanikam-store.firebaseapp.com",
+    projectId: "mutumanikam-store",
+    storageBucket: "mutumanikam-store.firebasestorage.app",
+    messagingSenderId: "28963833581",
+    appId: "1:28963833581:web:1a8001fec139a7ace1abe4"
+  };
 
-    // Inisialisasi Firebase
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
-    const db = firebase.firestore();
+  // 🔥 INIT FIREBASE
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+  const db = firebase.firestore();
 
-    let currentZoomScale = 1;
+  // 🔥 LOAD PRODUK
+  function loadProducts(categoryFilter = null) {
+    let query = db.collection("Products");
 
-    // Navigasi UI
-    function toggleMenu() {
-      const menu = document.getElementById("mobileMenu");
-      const overlay = document.getElementById("overlay");
-
-      menu.classList.toggle("active");
-      overlay.classList.toggle("active");
-      document.body.style.overflow = menu.classList.contains("active") ? "hidden" : "auto";
+    if (categoryFilter) {
+      query = query.where("category", "==", categoryFilter);
     }
 
-    function toggleSub(el) {
-      const parent = el.parentElement;
-      document.querySelectorAll(".menu-section").forEach(item => {
-        if (item !== parent) item.classList.remove("active");
-      });
-      parent.classList.toggle("active");
-    }
+    query.get().then((snapshot) => {
+      let html = "";
 
-    function filterCategory(category) {
-      loadProducts(category);
-      toggleMenu();
-    }
+      if (snapshot.empty) {
+        html = "<p style='text-align:center;padding:20px'>Produk kosong</p>";
+      } else {
+        snapshot.forEach((doc) => {
+          const p = doc.data();
 
-    // Fungsi Utama Load Products dari Firestore
-    function loadProducts(categoryFilter = null) {
-      console.log("Mencoba mengambil data dari Firestore...");
-      let query = db.collection("Products");
+          let nama = (p.name || "Produk").replace(/'/g, "");
+          let harga = Number(p.price) || 0;
+          let img = p.image || "https://via.placeholder.com/200";
 
-      if (categoryFilter) {
-        query = query.where("category", "==", categoryFilter);
-      }
+          html += `
+            <div class="product-card">
+              <img src="${img}" onclick="openImageModal('${img}')">
 
-      query.get().then((querySnapshot) => {
-        console.log("Dokumen berhasil ditarik. Jumlah:", querySnapshot.size);
-        let productHTML = "";
+              <h3>${nama}</h3>
+              <p class="price">Rp ${harga.toLocaleString('id-ID')}</p>
 
-        if (querySnapshot.empty) {
-          productHTML = "<p style='padding: 20px; text-align: center;'>Tidak ada produk yang ditemukan.</p>";
-        } else {
-          querySnapshot.forEach((doc) => {
-            const product = doc.data();
-            console.log("Data item:", product);
-
-            const imgUrl = product.image ? product.image.trim() : 'https://via.placeholder.com/200';
-            const priceVal = Number(product.price) || 0;
-
-            productHTML += `
-              <div class="product-card">
-                <img src="${imgUrl}" alt="${product.name || 'Produk'}" onclick="openImageModal('${imgUrl}')" onerror="this.src='https://via.placeholder.com/200'">
-                <h3>${product.name || 'Tanpa Nama'}</h3>
-                <p class="category">${product.category || 'Umum'}</p>
-                <p class="price">Rp ${priceVal.toLocaleString('id-ID')}</p>
-
-                <div class="qty-box">
-                  <button onclick="changeQty(this, -1)">-</button>
-                  <span class="qty">1</span>
-                  <button onclick="changeQty(this, 1)">+</button>
-                </div>
-
-                <button class="buy-btn" onclick="orderWA(this, '${product.name}', ${priceVal})">
-                  Beli via WA
-                </button>
+              <div class="qty-box">
+                <button onclick="changeQty(this,-1)">-</button>
+                <span class="qty">1</span>
+                <button onclick="changeQty(this,1)">+</button>
               </div>
-            `;
-          });
-        }
 
-        const container = document.getElementById("product-container");
-        container.style.opacity = 0;
-        container.innerHTML = productHTML;
-        setTimeout(() => {
-          container.style.opacity = 1;
-        }, 100);
-
-      }).catch((error) => {
-        console.error("Error saat ambil data Firestore:", error);
-        alert("Gagal mengambil data dari Firebase: " + error.message);
-      });
-    }
-
-    // Modal & Fitur Zoom Gambar
-    function openImageModal(imageSrc) {
-      const modal = document.getElementById("imageModal");
-      const imgFull = document.getElementById("imgFull");
-      modal.style.display = "flex";
-      imgFull.src = imageSrc;
-      resetZoom();
-    }
-
-    function closeImageModal() {
-      document.getElementById("imageModal").style.display = "none";
-      resetZoom();
-    }
-
-    function toggleZoomImg() {
-      if (currentZoomScale === 1) {
-        zoomIn(2);
-      } else {
-        resetZoom();
+              <button class="buy-btn"
+                onclick="orderWA(this, \`${nama}\`, ${harga})">
+                Beli via WA
+              </button>
+            </div>
+          `;
+        });
       }
-    }
 
-    function zoomIn(scaleFactor = 0.3) {
-      const imgFull = document.getElementById("imgFull");
-      if (scaleFactor === 2) {
-        currentZoomScale = 2;
-      } else {
-        currentZoomScale += scaleFactor;
-      }
-      imgFull.style.transform = scale(${currentZoomScale});
-      imgFull.style.cursor = currentZoomScale > 1 ? "zoom-out" : "zoom-in";
-    }
+      document.getElementById("product-container").innerHTML = html;
 
-    function zoomOut() {
-      const imgFull = document.getElementById("imgFull");
-      currentZoomScale = Math.max(1, currentZoomScale - 0.3);
-      imgFull.style.transform = scale(${currentZoomScale});
-      imgFull.style.cursor = currentZoomScale > 1 ? "zoom-out" : "zoom-in";
-    }
+    }).catch(err => {
+      console.error(err);
+      alert("Firebase error: " + err.message);
+    });
+  }
 
-    function resetZoom() {
-      const imgFull = document.getElementById("imgFull");
-      currentZoomScale = 1;
-      imgFull.style.transform = "scale(1)";
-      imgFull.style.cursor = "zoom-in";
-    }
+  // 🔥 QTY
+  function changeQty(btn, change) {
+    let el = btn.parentElement.querySelector(".qty");
+    let val = parseInt(el.innerText) || 1;
+    val += change;
+    if (val < 1) val = 1;
+    el.innerText = val;
+  }
 
-    // Mengubah Jumlah Produk (QTY)
-    function changeQty(btn, change) {
-      const qtyElement = btn.parentElement.querySelector(".qty");
-      let qty = parseInt(qtyElement.innerText);
-      qty += change;
-      if (qty < 1) qty = 1;
-      qtyElement.innerText = qty;
-    }
-
-    // Mengirim Order ke WhatsApp
-    function orderWA(btn, productName, price) {
+  // 🔥 ORDER WHATSAPP (SUDAH FIX TOTAL + FORMAT)
+  function orderWA(btn, productName, price) {
+    try {
       let card = btn.closest(".product-card");
-      let qty = parseInt(card.querySelector(".qty").innerText);
+      let qty = parseInt(card.querySelector(".qty").innerText) || 1;
 
       let total = price * qty;
       let phone = "6281353885122";
 
-      let pesan = Halo Admin Mutumanikam 👋\n\nSaya mau order:\n🛍️ Produk: ${productName}\n💰 Harga: Rp ${Number(price).toLocaleString('id-ID')}\n📦 Jumlah: ${qty} pcs\n💵 Total: Rp ${total.toLocaleString('id-ID')}\n\nMohon konfirmasi stok & totalnya ya. Terima kasih!;
+      let pesan = `Halo Admin Mutumanikam 👋
 
-      let url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(pesan);
+Saya mau order:
+🛍️ Produk: ${productName}
+💰 Harga: Rp ${price.toLocaleString('id-ID')}
+📦 Jumlah: ${qty} pcs
+💵 Total: Rp ${total.toLocaleString('id-ID')}
+
+Mohon konfirmasi stok ya. Terima kasih 🙏`;
+
+      let url = `https://wa.me/${phone}?text=${encodeURIComponent(pesan)}`;
+
       window.open(url, "_blank");
-    }
 
-    // Pemanggilan Fungsi Saat Halaman Dimuat
-    window.addEventListener("DOMContentLoaded", () => {
-      loadProducts();
-    });
-  </script>
-</body>
-</html>
+    } catch (e) {
+      console.error(e);
+      alert("Gagal membuka WhatsApp");
+    }
+  }
+
+  // 🔥 MODAL GAMBAR
+  function openImageModal(src) {
+    const modal = document.getElementById("imageModal");
+    const img = document.getElementById("imgFull");
+    modal.style.display = "flex";
+    img.src = src;
+  }
+
+  function closeImageModal() {
+    document.getElementById("imageModal").style.display = "none";
+  }
+
+  // 🔥 LOAD AWAL
+  window.onload = () => {
+    loadProducts();
+  };
+</script>
