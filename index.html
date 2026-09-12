@@ -510,9 +510,18 @@
       document.getElementById("checkoutModal").style.display = "flex";
     }
 
-    function closeCheckout() {
-      document.getElementById("checkoutModal").style.display = "none";
-    }
+ function closeCheckout() {
+  document.getElementById("checkoutModal").style.display = "none";
+
+  // RESET FORM
+  document.getElementById("nama").value = "";
+  document.getElementById("alamat").value = "";
+}
+    document.getElementById("checkoutModal").addEventListener("click", function(e) {
+  if (e.target === this) {
+    closeCheckout();
+  }
+});
 
     function kirimWA() {
       let nama = document.getElementById("nama").value.trim();
