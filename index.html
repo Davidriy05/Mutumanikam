@@ -6,7 +6,6 @@
   <title>Mutumanikam - Authentic Store</title>
 
   <style>
-    /* Baseline Styles */
     body {
       margin: 0;
       background-color: #111;
@@ -15,7 +14,6 @@
       letter-spacing: 0.5px;
     }
 
-    /* Header Utama */
     header {
       padding: 15px 20px;
       display: flex;
@@ -28,13 +26,11 @@
       z-index: 900;
     }
 
-    /* Grid Tampilan Produk */
     .product-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 20px;
       padding: 20px;
-      transition: 0.3s;
     }
 
     .product-card {
@@ -49,31 +45,16 @@
       animation: fadeUp 0.6s ease forwards;
     }
 
-    .brand-name {
-      transition: text-shadow 0.3s ease;
-    }
-
-    .brand-name:hover {
-      text-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
-    }
+    .brand-name { transition: text-shadow 0.3s ease; }
+    .brand-name:hover { text-shadow: 0 0 10px rgba(212, 175, 55, 0.6); }
 
     .product-card:hover {
       transform: translateY(-5px);
       border-color: #d4af37;
     }
 
-    /* Staggered delay untuk kartu */
-    .product-card:nth-child(1) { animation-delay: 0.1s; }
-    .product-card:nth-child(2) { animation-delay: 0.2s; }
-    .product-card:nth-child(3) { animation-delay: 0.3s; }
-    .product-card:nth-child(4) { animation-delay: 0.4s; }
-    .product-card:nth-child(5) { animation-delay: 0.5s; }
-
     @keyframes fadeUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .product-card img {
@@ -85,9 +66,7 @@
       transition: transform 0.2s;
     }
 
-    .product-card img:hover {
-      transform: scale(1.03);
-    }
+    .product-card img:hover { transform: scale(1.03); }
 
     .qty-box {
       display: flex;
@@ -106,12 +85,10 @@
       font-size: 16px;
       cursor: pointer;
       border-radius: 5px;
-      transition: 0.2s;
+      user-select: none;
     }
 
-    .qty-box button:hover {
-      background: #444;
-    }
+    .qty-box button:hover { background: #444; }
 
     .qty-box span {
       min-width: 20px;
@@ -150,11 +127,8 @@
       transition: 0.3s;
     }
 
-    .buy-btn:hover {
-      background: #f3e5ab;
-    }
+    .buy-btn:hover { background: #f3e5ab; }
 
-    /* Overlay Sidebar */
     #overlay {
       position: fixed;
       top: 0;
@@ -174,7 +148,6 @@
       pointer-events: auto;
     }
 
-    /* Sidebar Drawer */
     .sidebar {
       position: fixed;
       top: 0;
@@ -188,9 +161,7 @@
       z-index: 999;
     }
 
-    .sidebar.active {
-      transform: translateX(280px);
-    }
+    .sidebar.active { transform: translateX(280px); }
 
     .menu-section {
       opacity: 0;
@@ -205,25 +176,17 @@
       transform: translateX(0);
     }
 
-    .sidebar.active .menu-section:nth-child(1) { transition-delay: .1s; }
-    .sidebar.active .menu-section:nth-child(2) { transition-delay: .2s; }
-    .sidebar.active .menu-section:nth-child(3) { transition-delay: .3s; }
-
     .menu-title {
       display: flex;
       justify-content: space-between;
       cursor: pointer;
       letter-spacing: 2px;
       font-weight: bold;
+      user-select: none;
     }
 
-    .menu-title span { 
-      transition: 0.3s; 
-    }
-
-    .menu-section.active .menu-title span {
-      transform: rotate(180deg);
-    }
+    .menu-title span { transition: 0.3s; }
+    .menu-section.active .menu-title span { transform: rotate(180deg); }
 
     .submenu {
       max-height: 0;
@@ -250,7 +213,6 @@
       transform: translateX(6px);
     }
 
-    /* Modal Pop-Up Gambar dengan Zoom */
     .image-modal {
       display: none; 
       position: fixed; 
@@ -270,7 +232,6 @@
       position: relative;
       max-width: 90%;
       max-height: 75vh;
-      overflow: auto;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -294,11 +255,11 @@
       font-weight: bold;
       cursor: pointer;
       z-index: 1001;
+      line-height: 1;
+      user-select: none;
     }
 
-    .close-modal:hover {
-      color: #d4af37;
-    }
+    .close-modal:hover { color: #d4af37; }
 
     .zoom-controls {
       margin-top: 15px;
@@ -316,7 +277,7 @@
       cursor: pointer;
       font-size: 14px;
       font-weight: bold;
-      transition: 0.2s;
+      user-select: none;
     }
 
     .zoom-btn:hover {
@@ -327,9 +288,8 @@
 </head>
 <body>
 
-  <!-- Header Utama -->
   <header>
-    <button onclick="toggleMenu()" style="background:none; border:none; font-size:24px; color:#d4af37; cursor:pointer;">
+    <button onclick="toggleMenu()" style="background:none; border:none; font-size:24px; color:#d4af37; cursor:pointer;" aria-label="Toggle Menu">
       &#9776;
     </button>
     <div class="logo-container">
@@ -337,15 +297,11 @@
     </div>
   </header>
 
-  <!-- Overlay -->
   <div id="overlay" onclick="toggleMenu()"></div>
 
-  <!-- Sidebar Navigasi -->
   <div id="mobileMenu" class="sidebar">
     <div class="menu-section">
-      <div class="menu-title" onclick="toggleSub(this)">
-        SHOP <span>⌄</span>
-      </div>
+      <div class="menu-title" onclick="toggleSub(this)">SHOP <span>⌄</span></div>
       <div class="submenu">
         <p onclick="filterData('category', 'Necklace')">Necklace</p>
         <p onclick="filterData('category', 'Bracelet')">Bracelet</p>
@@ -355,9 +311,7 @@
     </div>
 
     <div class="menu-section">
-      <div class="menu-title" onclick="toggleSub(this)">
-        STYLE <span>⌄</span>
-      </div>
+      <div class="menu-title" onclick="toggleSub(this)">STYLE <span>⌄</span></div>
       <div class="submenu">
         <p onclick="filterData('style', 'Bohemian')">Bohemian</p>
         <p onclick="filterData('style', 'Resortwear')">Resortwear</p>
@@ -370,12 +324,10 @@
     </div>
   </div>
 
-  <!-- Wadah Produk Firestore -->
   <div id="product-container" class="product-grid">
-    <p style="text-align:center; padding:20px;">Loading produk...</p>
+    <p style="text-align:center; padding:20px;">Memuat katalog produk...</p>
   </div>
 
-  <!-- Modal Pop-Up Gambar dengan Zoom -->
   <div id="imageModal" class="image-modal">
     <span class="close-modal" onclick="closeImageModal()">&times;</span>
     <div class="modal-content-wrapper">
@@ -388,7 +340,6 @@
     </div>
   </div>
 
-  <!-- Modal Checkout (Dengan Proteksi Data Atribut) -->
   <div id="checkoutModal" style="display:none; position:fixed; z-index:1002; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.8); justify-content:center; align-items:center;">
     <div style="background:#222; padding:20px; border-radius:10px; width:90%; max-width:400px; color:#fff;">
       <h3 style="color:#d4af37; margin-top:0;">Checkout Order</h3>
@@ -399,7 +350,7 @@
       <p id="produkDipilih" style="margin-top:15px; font-weight:bold;"></p>
       <p id="totalHarga" style="color:#d4af37; font-weight:bold; font-size:1.1em;"></p>
 
-      <button onclick="kirimWA()" style="width:100%; padding:12px; margin-top:10px; background:#d4af37; border:none; cursor:pointer; font-weight:bold; border-radius:5px; color:#111;">
+      <button id="btnKirimWA" onclick="kirimWA()" style="width:100%; padding:12px; margin-top:10px; background:#d4af37; border:none; cursor:pointer; font-weight:bold; border-radius:5px; color:#111;">
         Kirim ke WhatsApp
       </button>
 
@@ -409,7 +360,6 @@
     </div>
   </div>
 
-  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
@@ -426,11 +376,10 @@
     if (!firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);
     }
-
     const db = firebase.firestore();
 
-    // Helper untuk escape karakter HTML aman
     function escapeHtml(str) {
+      if (!str) return "";
       return String(str)
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
@@ -439,26 +388,22 @@
         .replace(/'/g, "&#039;");
     }
 
-    // 🔥 LOAD PRODUK DARI FIRESTORE
     function loadProducts(field = null, value = null) {
       const container = document.getElementById("product-container");
-      container.innerHTML = "<p style='text-align:center;padding:20px'>Loading produk...</p>";
+      container.innerHTML = "<p style='text-align:center;padding:20px'>Memuat katalog produk...</p>";
 
       let query = db.collection("Products");
-
       if (field && value) {
         query = query.where(field, "==", value);
       }
 
       query.get().then(snapshot => {
         let html = "";
-
         if (snapshot.empty) {
           html = "<p style='text-align:center;padding:20px'>Produk belum tersedia</p>";
         } else {
           snapshot.forEach(doc => {
             const p = doc.data();
-
             let rawNama = p.name || "Produk";
             let namaClean = escapeHtml(rawNama);
             let harga = Number(p.price) || 0;
@@ -476,42 +421,38 @@
                 <p class="price">Rp ${harga.toLocaleString('id-ID')}</p>
 
                 <div class="qty-box">
-                  <button onclick="changeQty(this, -1)">-</button>
+                  <button type="button" onclick="changeQty(this, -1)">-</button>
                   <span class="qty">1</span>
-                  <button onclick="changeQty(this, 1)">+</button>
+                  <button type="button" onclick="changeQty(this, 1)">+</button>
                 </div>
 
-                <button class="buy-btn" onclick="openCheckout(this)">
+                <button type="button" class="buy-btn" onclick="openCheckout(this)">
                   Beli via WA
                 </button>
               </div>
             `;
           });
         }
-
         container.innerHTML = html;
-
       }).catch(err => {
-        console.error("Firestore error:", err);
-        container.innerHTML = "<p style='text-align:center;color:red;'>Gagal memuat produk. Periksa Firestore rules atau koneksi internet.</p>";
+        console.error("Firestore Error:", err);
+        container.innerHTML = "<p style='text-align:center;color:red;'>Gagal memuat produk. Silakan periksa koneksi Anda.</p>";
       });
     }
 
-    // 🔥 KONTROL QTY
     function changeQty(btn, change) {
       let el = btn.parentElement.querySelector(".qty");
-      let val = parseInt(el.innerText) || 1;
+      let val = parseInt(el.innerText, 10) || 1;
       val += change;
       if (val < 1) val = 1;
       el.innerText = val;
     }
 
-    // 🔥 OPEN CHECKOUT (Aman & Terkunci di Atribut Modal)
     function openCheckout(btn) {
       let card = btn.closest(".product-card");
       let name = card.getAttribute("data-name");
       let price = Number(card.getAttribute("data-price")) || 0;
-      let qty = parseInt(card.querySelector(".qty").innerText) || 1;
+      let qty = parseInt(card.querySelector(".qty").innerText, 10) || 1;
       let total = price * qty;
 
       const modal = document.getElementById("checkoutModal");
@@ -530,6 +471,10 @@
       modal.style.display = "none";
       document.getElementById("nama").value = "";
       document.getElementById("alamat").value = "";
+      
+      const btnKirim = document.getElementById("btnKirimWA");
+      btnKirim.innerText = "Kirim ke WhatsApp";
+      btnKirim.disabled = false;
     }
 
     document.getElementById("checkoutModal").addEventListener("click", function(e) {
@@ -538,32 +483,65 @@
       }
     });
 
-    // 🔥 KIRIM WA (Validasi Ketat & Aman URL)
-    function kirimWA() {
-      let nama = document.getElementById("nama").value.trim();
-      let alamat = document.getElementById("alamat").value.trim();
+    function generateInvoice() {
+      return "INV-" + Date.now();
+    }
 
-      if (!nama || !alamat) {
+    function kirimWA() {
+      let namaInput = document.getElementById("nama").value.trim();
+      let alamatInput = document.getElementById("alamat").value.trim();
+      const btnKirim = document.getElementById("btnKirimWA");
+
+      if (!namaInput || !alamatInput) {
         alert("Nama & Alamat wajib diisi!");
         return;
       }
+
+      btnKirim.innerText = "Memproses...";
+      btnKirim.disabled = true;
 
       const modal = document.getElementById("checkoutModal");
       let productName = modal.getAttribute("data-active-name");
       let price = Number(modal.getAttribute("data-active-price"));
       let qty = Number(modal.getAttribute("data-active-qty"));
       let total = price * qty;
+      let invNum = generateInvoice();
+
+      let orderData = {
+        invoice: invNum,
+        nama: namaInput,
+        alamat: alamatInput,
+        produk: productName,
+        qty: qty,
+        total: total,
+        status: "pending",
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
 
       let phone = "6281353885122";
-      let pesan = `Halo Admin Mutumanikam 👋\n\nSaya mau order:\n🛍️ Produk: ${productName}\n📦 Jumlah: ${qty} pcs\n💰 Total: Rp ${total.toLocaleString('id-ID')}\n\n👤 Nama: ${nama}\n📍 Alamat: ${alamat}\n\nMohon konfirmasi ya 🙏`;
-
+      let pesan = `Halo Admin Mutumanikam 👋\n\nSaya mau order:\n🧾 Invoice: ${invNum}\n🛍️ Produk: ${productName}\n📦 Jumlah: ${qty} pcs\n💰 Total: Rp ${total.toLocaleString('id-ID')}\n\n👤 Nama: ${namaInput}\n📍 Alamat: ${alamatInput}\n\nMohon konfirmasi ya 🙏`;
       let url = `https://wa.me/${phone}?text=${encodeURIComponent(pesan)}`;
 
-      window.open(url, "_blank");
-      closeCheckout();
+      let hasRedirected = false;
+      const executeRedirect = () => {
+        if (!hasRedirected) {
+          hasRedirected = true;
+          window.open(url, "_blank");
+          closeCheckout();
+        }
+      };
+
+      db.collection("Orders").add(orderData)
+        .then(() => executeRedirect())
+        .catch(err => {
+          console.error("Firestore write error:", err);
+          executeRedirect();
+        });
+
+      // Timeout penangan jaringan lambat
+      setTimeout(() => executeRedirect(), 2500);
     }
 
-    // 🔥 MODAL GAMBAR & ZOOM
     let zoomScale = 1;
 
     function openImageModal(src) {
@@ -599,7 +577,6 @@
       document.getElementById("imgFull").style.transform = "scale(1)";
     }
 
-    // 🔥 SIDEBAR & KATEGORI
     function toggleMenu() {
       document.getElementById("mobileMenu").classList.toggle("active");
       document.getElementById("overlay").classList.toggle("active");
@@ -623,7 +600,7 @@
       toggleMenu();
     }
 
-    // 🔥 LOAD AWAL
+    // Inisialisasi awal saat halaman dibuka
     loadProducts();
   </script>
 </body>
