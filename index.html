@@ -310,11 +310,11 @@
       </div>
     </div>
 
- <div class="menu-section">
-    <div class="menu-title" onclick="filterData('category', 'Home Deco')">
+    <div class="menu-section">
+      <div class="menu-title" onclick="filterData('category', 'Home Deco')">
         HOME DECO
+      </div>
     </div>
-</div>
 
     <div class="menu-section">
       <div class="menu-title" onclick="resetFilter()">ALL PRODUCTS</div>
@@ -323,6 +323,23 @@
 
   <div id="product-container" class="product-grid">
     <p style="text-align:center; padding:20px;">Memuat katalog produk...</p>
+  </div>
+
+  <!-- ADMIN UPLOAD PRODUK -->
+  <div style="padding:20px; border-top:1px solid #333;">
+    <h3 style="color:#d4af37;">Upload Produk (Admin)</h3>
+
+    <input type="text" id="pNama" placeholder="Nama Produk" style="width:100%; padding:10px; margin-top:10px; box-sizing:border-box;">
+    
+    <input type="number" id="pHarga" placeholder="Harga" style="width:100%; padding:10px; margin-top:10px; box-sizing:border-box;">
+    
+    <input type="text" id="pKategori" placeholder="Kategori (contoh: Home Deco)" style="width:100%; padding:10px; margin-top:10px; box-sizing:border-box;">
+    
+    <input type="file" id="pGambar" accept="image/*" style="margin-top:10px; color:#fff;">
+    
+    <button id="btnUpload" onclick="uploadProduk()" style="width:100%; padding:12px; margin-top:10px; background:#d4af37; border:none; font-weight:bold; cursor:pointer; color:#111; border-radius:5px;">
+      Upload Produk
+    </button>
   </div>
 
   <div id="imageModal" class="image-modal">
@@ -359,8 +376,9 @@
 
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
   <script>
+    // 1. INSIALISASI FIREBASE DI PALING ATAS
     const firebaseConfig = {
       apiKey: "AIzaSyBNlsnzbMHKq9gKWe-EvYgrzwohxXLAOs",
       authDomain: "mutumanikam-store.firebaseapp.com",
@@ -375,6 +393,60 @@
     }
     const db = firebase.firestore();
 
+    // 2. FUNGSI UPLOAD PRODUK
+    async function uploadProduk() {
+      let nama = document.getElementById("pNama").value.trim();
+      let harga = document.getElementById("pHarga").value;
+      let kategori = document.getElementById("pKategori").value.trim();
+      let fileInput = document.getElementById("pGambar");
+      let file = fileInput.files[0];
+
+      if (!nama || !harga || !kategori || !file) {
+        alert("Semua field wajib diisi!");
+        return;
+      }
+
+      if (!file.type.startsWith("image/")) {
+        alert("File harus berupa gambar!");
+        return;
+      }
+
+      const btn = document.getElementById("btnUpload");
+      btn.innerText = "Uploading...";
+      btn.disabled = true;
+
+      try {
+        let storageRef = firebase.storage().ref("products/" + Date.now() + "_" + file.name);
+        let snapshot = await storageRef.put(file);
+        let imageUrl = await snapshot.ref.getDownloadURL();
+
+        await db.collection("Products").add({
+          name: nama,
+          price: Number(harga),
+          category: kategori,
+          image: imageUrl,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        alert("Produk berhasil diupload!");
+
+        document.getElementById("pNama").value = "";
+        document.getElementById("pHarga").value = "";
+        document.getElementById("pKategori").value = "";
+        fileInput.value = "";
+
+        loadProducts();
+
+      } catch (err) {
+        console.error("Upload Error:", err);
+        alert("Gagal upload produk. Silakan periksa koneksi internet Anda.");
+      } finally {
+        btn.innerText = "Upload Produk";
+        btn.disabled = false;
+      }
+    }
+
+    // 3. FUNGSI ESCAPE HTML
     function escapeHtml(str) {
       if (!str) return "";
       return String(str)
@@ -385,6 +457,7 @@
         .replace(/'/g, "&#039;");
     }
 
+    // 4. LOAD KATALOG PRODUK
     function loadProducts(field = null, value = null) {
       const container = document.getElementById("product-container");
       container.innerHTML = "<p style='text-align:center;padding:20px'>Memuat katalog produk...</p>";
@@ -437,6 +510,7 @@
       });
     }
 
+    // 5. MANAJEMEN QUANTITY & CHECKOUT
     function changeQty(btn, change) {
       let el = btn.parentElement.querySelector(".qty");
       let val = parseInt(el.innerText, 10) || 1;
@@ -481,7 +555,13 @@
     });
 
     function generateInvoice() {
-      return "INV-" + Date.now();
+      let date = new Date();
+      let y = date.getFullYear();
+      let m = String(date.getMonth() + 1).padStart(2, '0');
+      let d = String(date.getDate()).padStart(2, '0');
+      let rand = Math.floor(Math.random() * 900 + 100);
+
+      return `INV-${y}${m}${d}-${rand}`;
     }
 
     function kirimWA() {
@@ -535,10 +615,10 @@
           executeRedirect();
         });
 
-      // Timeout penangan jaringan lambat
       setTimeout(() => executeRedirect(), 2500);
     }
 
+    // 6. FITUR ZOOM MODAL
     let zoomScale = 1;
 
     function openImageModal(src) {
@@ -555,7 +635,7 @@
     }
 
     function toggleZoomImg() {
-      zoomScale = zoomScale === 1 ? 2 : 1;
+      zoomScale = zoomScale > 1 ? 1 : 2;
       document.getElementById("imgFull").style.transform = `scale(${zoomScale})`;
     }
 
@@ -574,6 +654,7 @@
       document.getElementById("imgFull").style.transform = "scale(1)";
     }
 
+    // 7. NAVIGASI SIDEBAR & FILTER
     function toggleMenu() {
       document.getElementById("mobileMenu").classList.toggle("active");
       document.getElementById("overlay").classList.toggle("active");
@@ -597,7 +678,7 @@
       toggleMenu();
     }
 
-    // Inisialisasi awal saat halaman dibuka
+    // EXECUTE LOAD PRODUK PERTAMA KALI
     loadProducts();
   </script>
 </body>
