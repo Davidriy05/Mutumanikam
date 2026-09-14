@@ -1,359 +1,701 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mutumanikam</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mutumanikam - Authentic Store</title>
 
-<style>
-body {
-  margin:0;
-  background:#111;
-  color:#fff;
-  font-family:Arial;
-}
-
-/* HEADER */
-header {
-  display:flex;
-  align-items:center;
-  gap:15px;
-  padding:15px;
-  background:#161616;
-  border-bottom:1px solid #222;
-}
-
-.brand {
-  color:#d4af37;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-/* HERO */
-#home img, #home video {
-  width:100%;
-  object-fit:cover;
-}
-#home img { height:60vh; }
-#home video { height:40vh; }
-
-.cta {
-  text-align:center;
-  margin:20px;
-}
-
-.cta button {
-  background:#d4af37;
-  color:#111;
-  border:none;
-  padding:12px 20px;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-/* PRODUCT */
-.product-grid {
-  display:none;
-  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
-  gap:20px;
-  padding:20px;
-}
-
-.product-card {
-  background:#222;
-  padding:15px;
-  border:1px solid #333;
-  text-align:center;
-}
-
-.product-card img {
-  width:100%;
-  height:200px;
-  object-fit:cover;
-}
-
-.buy-btn {
-  width:100%;
-  margin-top:10px;
-  padding:10px;
-  background:#d4af37;
-  border:none;
-  cursor:pointer;
-  font-weight:bold;
-}
-
-.qty {
-  display:flex;
-  justify-content:center;
-  gap:10px;
-  margin-top:10px;
-}
-
-.qty button {
-  width:30px;
-}
-
-/* MODAL */
-#checkoutModal {
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.8);
-  justify-content:center;
-  align-items:center;
-}
-
-.modal-box {
-  background:#222;
-  padding:20px;
-  width:90%;
-  max-width:400px;
-}
-
-/* SIDEBAR */
-#overlay {
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.6);
-  display:none;
-}
-
-#mobileMenu {
-  position:fixed;
-  top:0;
-  left:-260px;
-  width:260px;
-  height:100%;
-  background:#161616;
-  padding:20px;
-  transition:0.3s;
-  z-index:1000;
-}
-
-#mobileMenu.active {
-  left:0;
-}
-
-#overlay.active {
-  display:block;
-}
-
-.menu-item {
-  padding:10px;
-  border-bottom:1px solid #333;
-  cursor:pointer;
-}
-
-.submenu {
-  display:none;
-  padding-left:15px;
-}
-
-.menu-item.active .submenu {
-  display:block;
-}
-
-</style>
-</head>
-
-<body>
-
-<header>
-  <span onclick="toggleMenu()" style="cursor:pointer;font-size:22px;">☰</span>
-  <span class="brand" onclick="goHome()">Mutumanikam</span>
-</header>
-
-<!-- SIDEBAR -->
-<div id="overlay" onclick="toggleMenu()"></div>
-
-<div id="mobileMenu">
-  <div class="menu-item" onclick="toggleSub(this)">
-    SHOP
-    <ul class="submenu">
-      <li onclick="filterCategory('Necklace')">Necklace</li>
-      <li onclick="filterCategory('Bracelet')">Bracelet</li>
-      <li onclick="filterCategory('Purse')">Purse</li>
-      <li onclick="filterCategory('Belt')">Belt</li>
-    </ul>
-  </div>
-
-  <div class="menu-item" onclick="filterCategory(null)">ALL PRODUCTS</div>
-</div>
-
-<!-- HOME -->
-<section id="home">
-  <img src="https://via.placeholder.com/1200x600?text=Mutumanikam">
-  <video autoplay muted loop>
-    <source src="https://www.w3schools.com/html/mov_bbb.mp4">
-  </video>
-
-  <div class="cta">
-    <button onclick="openShop()">Shop Now</button>
-  </div>
-</section>
-
-<!-- PRODUCT -->
-<div id="products" class="product-grid"></div>
-
-<!-- CHECKOUT -->
-<div id="checkoutModal">
-  <div class="modal-box">
-    <h3>Checkout</h3>
-
-    <input id="nama" placeholder="Nama" style="width:100%;margin-top:10px;">
-    <textarea id="alamat" placeholder="Alamat" style="width:100%;margin-top:10px;"></textarea>
-
-    <p id="produk"></p>
-    <p id="total"></p>
-
-    <button onclick="kirimWA()">Kirim WA</button>
-    <button onclick="closeModal()">Batal</button>
-  </div>
-</div>
-
-<!-- FIREBASE -->
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-
-<script>
-const firebaseConfig = {
-  apiKey: "APIKEY",
-  authDomain: "mutumanikam-store.firebaseapp.com",
-  projectId: "mutumanikam-store"
-};
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-
-/* NAV */
-function openShop(){
-  document.getElementById("home").style.display="none";
-  document.getElementById("products").style.display="grid";
-  loadProducts();
-}
-
-function goHome(){
-  document.getElementById("home").style.display="block";
-  document.getElementById("products").style.display="none";
-}
-
-/* SIDEBAR */
-function toggleMenu(){
-  document.getElementById("mobileMenu").classList.toggle("active");
-  document.getElementById("overlay").classList.toggle("active");
-}
-
-function toggleSub(el){
-  el.classList.toggle("active");
-}
-
-function filterCategory(cat){
-  document.getElementById("home").style.display="none";
-  document.getElementById("products").style.display="grid";
-  toggleMenu();
-  loadProducts(cat);
-}
-
-/* LOAD PRODUCTS */
-function loadProducts(category=null){
-  let el = document.getElementById("products");
-  el.innerHTML="Loading...";
-
-  let query = db.collection("Products");
-
-  if(category){
-    query = query.where("category","==",category);
-  }
-
-  query.get().then(snap=>{
-    if(snap.empty){
-      el.innerHTML="Produk belum tersedia";
-      return;
+  <style>
+    body {
+      margin: 0;
+      background-color: #111;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      letter-spacing: 0.5px;
     }
 
-    let html="";
+    header {
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      background: #161616;
+      border-bottom: 1px solid #222;
+      position: sticky;
+      top: 0;
+      z-index: 900;
+    }
 
-    snap.forEach(doc=>{
-      let p = doc.data();
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
 
-      html += `
-      <div class="product-card" data-name="${p.name}" data-price="${p.price}">
-        <img src="${p.image || 'https://via.placeholder.com/200'}">
-        <h3>${p.name}</h3>
-        <p>Rp ${p.price}</p>
+    .product-card {
+      background: #222;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 15px;
+      text-align: center;
+      transition: 0.3s;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.6s ease forwards;
+    }
 
-        <div class="qty">
-          <button onclick="qty(this,-1)">-</button>
-          <span>1</span>
-          <button onclick="qty(this,1)">+</button>
-        </div>
+    .brand-name { transition: text-shadow 0.3s ease; }
+    .brand-name:hover { text-shadow: 0 0 10px rgba(212, 175, 55, 0.6); }
 
-        <button class="buy-btn" onclick="checkout(this)">Beli WA</button>
-      </div>`;
+    .product-card:hover {
+      transform: translateY(-5px);
+      border-color: #d4af37;
+    }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .product-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .product-card img:hover { transform: scale(1.03); }
+
+    .qty-box {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .qty-box button {
+      width: 30px;
+      height: 30px;
+      border: none;
+      background: #333;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      user-select: none;
+    }
+
+    .qty-box button:hover { background: #444; }
+
+    .qty-box span {
+      min-width: 20px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .product-card h3 {
+      margin: 10px 0 5px;
+      color: #d4af37;
+      font-size: 1.1em;
+    }
+
+    .product-card .category {
+      font-size: 0.85em;
+      color: #888;
+      margin-bottom: 5px;
+    }
+
+    .product-card .price {
+      font-weight: bold;
+      color: #fff;
+      font-size: 1em;
+    }
+
+    .buy-btn {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      background: #d4af37;
+      color: #111;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .buy-btn:hover { background: #f3e5ab; }
+
+    #overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.4s;
+      z-index: 998;
+    }
+
+    #overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -280px;
+      width: 260px;
+      height: 100%;
+      background: #111;
+      padding: 20px;
+      box-sizing: border-box;
+      transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+      z-index: 999;
+    }
+
+    .sidebar.active { transform: translateX(280px); }
+
+    .menu-section {
+      opacity: 0;
+      transform: translateX(-20px);
+      transition: 0.4s;
+      border-bottom: 1px solid #333;
+      padding: 15px 0;
+    }
+
+    .sidebar.active .menu-section {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .menu-title {
+      display: flex;
+      justify-content: space-between;
+      cursor: pointer;
+      letter-spacing: 2px;
+      font-weight: bold;
+      user-select: none;
+    }
+
+    .menu-title span { transition: 0.3s; }
+    .menu-section.active .menu-title span { transform: rotate(180deg); }
+
+    .submenu {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 0.4s ease, opacity 0.3s ease;
+    }
+
+    .menu-section.active .submenu {
+      max-height: 200px;
+      opacity: 1;
+      margin-top: 10px;
+    }
+
+    .submenu p {
+      margin: 10px 0;
+      color: #aaa;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .submenu p:hover {
+      color: #d4af37;
+      transform: translateX(6px);
+    }
+
+    .image-modal {
+      display: none; 
+      position: fixed; 
+      z-index: 1000; 
+      left: 0;
+      top: 0;
+      width: 100%; 
+      height: 100%; 
+      background-color: rgba(0, 0, 0, 0.9);
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      flex-direction: column;
+    }
+
+    .modal-content-wrapper {
+      position: relative;
+      max-width: 90%;
+      max-height: 75vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      max-width: 100%;
+      max-height: 75vh;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+      transition: transform 0.3s ease;
+      cursor: zoom-in;
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 20px;
+      right: 35px;
+      color: #fff;
+      font-size: 40px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 1001;
+      line-height: 1;
+      user-select: none;
+    }
+
+    .close-modal:hover { color: #d4af37; }
+
+    .zoom-controls {
+      margin-top: 15px;
+      display: flex;
+      gap: 15px;
+      z-index: 1001;
+    }
+
+    .zoom-btn {
+      background: #222;
+      color: #d4af37;
+      border: 1px solid #d4af37;
+      padding: 8px 15px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      user-select: none;
+    }
+
+    .zoom-btn:hover {
+      background: #d4af37;
+      color: #111;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <button onclick="toggleMenu()" style="background:none; border:none; font-size:24px; color:#d4af37; cursor:pointer;" aria-label="Toggle Menu">
+      &#9776;
+    </button>
+    <div class="logo-container">
+      <span class="brand-name" style="font-size: 20px; font-weight: bold; color: #d4af37; cursor:pointer;" onclick="resetFilter()">Mutumanikam</span>
+    </div>
+  </header>
+
+  <div id="overlay" onclick="toggleMenu()"></div>
+
+  <div id="mobileMenu" class="sidebar">
+    <div class="menu-section">
+      <div class="menu-title" onclick="toggleSub(this)">SHOP <span>⌄</span></div>
+      <div class="submenu">
+        <p onclick="filterData('category', 'Necklace')">Necklace</p>
+        <p onclick="filterData('category', 'Bracelet')">Bracelet</p>
+        <p onclick="filterData('category', 'Purse')">Purse</p>
+        <p onclick="filterData('category', 'Belt')">Belt</p>
+      </div>
+    </div>
+
+    <div class="menu-section">
+      <div class="menu-title" onclick="filterData('category', 'Home Deco')">
+        HOME DECO
+      </div>
+    </div>
+
+    <div class="menu-section">
+      <div class="menu-title" onclick="resetFilter()">ALL PRODUCTS</div>
+    </div>
+  </div>
+
+  <div id="product-container" class="product-grid">
+    <p style="text-align:center; padding:20px;">Memuat katalog produk...</p>
+  </div>
+
+  <!-- ADMIN UPLOAD PRODUK -->
+  <div style="padding:20px; border-top:1px solid #333;">
+    <h3 style="color:#d4af37;">Upload Produk (Admin)</h3>
+
+    <input type="text" id="pNama" placeholder="Nama Produk" style="width:100%; padding:10px; margin-top:10px; box-sizing:border-box;">
+    
+    <input type="number" id="pHarga" placeholder="Harga" style="width:100%; padding:10px; margin-top:10px; box-sizing:border-box;">
+    
+    <input type="text" id="pKategori" placeholder="Kategori (contoh: Home Deco)" style="width:100%; padding:10px; margin-top:10px; box-sizing:border-box;">
+    
+    <input type="file" id="pGambar" accept="image/*" style="margin-top:10px; color:#fff;">
+    
+    <button id="btnUpload" onclick="uploadProduk()" style="width:100%; padding:12px; margin-top:10px; background:#d4af37; border:none; font-weight:bold; cursor:pointer; color:#111; border-radius:5px;">
+      Upload Produk
+    </button>
+  </div>
+
+  <div id="imageModal" class="image-modal">
+    <span class="close-modal" onclick="closeImageModal()">&times;</span>
+    <div class="modal-content-wrapper">
+      <img class="modal-content" id="imgFull" alt="Product Preview" onclick="toggleZoomImg()">
+    </div>
+    <div class="zoom-controls">
+      <button class="zoom-btn" onclick="zoomIn()">Zoom +</button>
+      <button class="zoom-btn" onclick="zoomOut()">Zoom -</button>
+      <button class="zoom-btn" onclick="resetZoom()">Reset</button>
+    </div>
+  </div>
+
+  <div id="checkoutModal" style="display:none; position:fixed; z-index:1002; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.8); justify-content:center; align-items:center;">
+    <div style="background:#222; padding:20px; border-radius:10px; width:90%; max-width:400px; color:#fff;">
+      <h3 style="color:#d4af37; margin-top:0;">Checkout Order</h3>
+
+      <input id="nama" placeholder="Nama Anda" style="width:100%; padding:10px; margin-top:10px; box-sizing:border-box; background:#333; color:#fff; border:1px solid #444; border-radius:5px;">
+      <textarea id="alamat" placeholder="Alamat Lengkap" style="width:100%; padding:10px; margin-top:10px; box-sizing:border-box; background:#333; color:#fff; border:1px solid #444; border-radius:5px; height:80px;"></textarea>
+
+      <p id="produkDipilih" style="margin-top:15px; font-weight:bold;"></p>
+      <p id="totalHarga" style="color:#d4af37; font-weight:bold; font-size:1.1em;"></p>
+
+      <button id="btnKirimWA" onclick="kirimWA()" style="width:100%; padding:12px; margin-top:10px; background:#d4af37; border:none; cursor:pointer; font-weight:bold; border-radius:5px; color:#111;">
+        Kirim ke WhatsApp
+      </button>
+
+      <button onclick="closeCheckout()" style="width:100%; padding:10px; margin-top:8px; background:#555; border:none; color:white; cursor:pointer; border-radius:5px;">
+        Batal
+      </button>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
+  <script>
+    // 1. INSIALISASI FIREBASE DI PALING ATAS
+    const firebaseConfig = {
+      apiKey: "AIzaSyBNlsnzbMHKq9gKWe-EvYgrzwohxXLAOs",
+      authDomain: "mutumanikam-store.firebaseapp.com",
+      projectId: "mutumanikam-store",
+      storageBucket: "mutumanikam-store.firebasestorage.app",
+      messagingSenderId: "28963833581",
+      appId: "1:28963833581:web:1a8001fec139a7ace1abe4"
+    };
+
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.firestore();
+
+// FUNGSI UPLOAD PRODUK MENGGUNAKAN IMGBB (GRATIS & TANPA STORAGE FIREBASE)
+    async function uploadProduk() {
+      const IMGBB_API_KEY = "MASUKKAN_API_KEY_IMGBB_KAMU_DI_SINI"; // <-- Ganti dengan API Key dari api.imgbb.com
+
+      let nama = document.getElementById("pNama").value.trim();
+      let harga = document.getElementById("pHarga").value;
+      let kategori = document.getElementById("pKategori").value.trim();
+      let fileInput = document.getElementById("pGambar");
+      let file = fileInput.files[0];
+
+      if (!nama || !harga || !kategori || !file) {
+        alert("Semua field wajib diisi!");
+        return;
+      }
+
+      if (!file.type.startsWith("image/")) {
+        alert("File harus berupa gambar!");
+        return;
+      }
+
+      const btn = document.getElementById("btnUpload");
+      btn.innerText = "Uploading Gambar...";
+      btn.disabled = true;
+
+      try {
+        // Upload gambar langsung ke ImgBB
+        let formData = new FormData();
+        formData.append("image", file);
+
+        let response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+          method: "POST",
+          body: formData
+        });
+
+        let result = await response.json();
+
+        if (!result.success) {
+          throw new Error("Gagal mengunggah gambar ke ImgBB.");
+        }
+
+        let imageUrl = result.data.url;
+
+        // Simpan data produk + link gambar ke Firestore Database
+        await db.collection("Products").add({
+          name: nama,
+          price: Number(harga),
+          category: kategori,
+          image: imageUrl,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        alert("Produk berhasil diupload!");
+
+        document.getElementById("pNama").value = "";
+        document.getElementById("pHarga").value = "";
+        document.getElementById("pKategori").value = "";
+        fileInput.value = "";
+
+        loadProducts();
+
+      } catch (err) {
+        console.error("Upload Error:", err);
+        alert("Gagal upload produk. Pastikan API Key ImgBB sudah benar dan koneksi lancar.");
+      } finally {
+        btn.innerText = "Upload Produk";
+        btn.disabled = false;
+      }
+    }
+
+    // 3. FUNGSI ESCAPE HTML
+    function escapeHtml(str) {
+      if (!str) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    // 4. LOAD KATALOG PRODUK
+    function loadProducts(field = null, value = null) {
+      const container = document.getElementById("product-container");
+      container.innerHTML = "<p style='text-align:center;padding:20px'>Memuat katalog produk...</p>";
+
+      let query = db.collection("Products");
+      if (field && value) {
+        query = query.where(field, "==", value);
+      }
+
+      query.get().then(snapshot => {
+        let html = "";
+        if (snapshot.empty) {
+          html = "<p style='text-align:center;padding:20px'>Produk belum tersedia</p>";
+        } else {
+          snapshot.forEach(doc => {
+            const p = doc.data();
+            let rawNama = p.name || "Produk";
+            let namaClean = escapeHtml(rawNama);
+            let harga = Number(p.price) || 0;
+            let kategori = escapeHtml(p.category || "Umum");
+            let img = p.image ? p.image.trim() : "https://via.placeholder.com/200";
+
+            html += `
+              <div class="product-card" data-name="${namaClean}" data-price="${harga}">
+                <img src="${img}" 
+                     onclick="openImageModal('${img}')"
+                     onerror="this.src='https://via.placeholder.com/200'">
+
+                <h3>${namaClean}</h3>
+                <p class="category">${kategori}</p>
+                <p class="price">Rp ${harga.toLocaleString('id-ID')}</p>
+
+                <div class="qty-box">
+                  <button type="button" onclick="changeQty(this, -1)">-</button>
+                  <span class="qty">1</span>
+                  <button type="button" onclick="changeQty(this, 1)">+</button>
+                </div>
+
+                <button type="button" class="buy-btn" onclick="openCheckout(this)">
+                  Beli via WA
+                </button>
+              </div>
+            `;
+          });
+        }
+        container.innerHTML = html;
+      }).catch(err => {
+        console.error("Firestore Error:", err);
+        container.innerHTML = "<p style='text-align:center;color:red;'>Gagal memuat produk. Silakan periksa koneksi Anda.</p>";
+      });
+    }
+
+    // 5. MANAJEMEN QUANTITY & CHECKOUT
+    function changeQty(btn, change) {
+      let el = btn.parentElement.querySelector(".qty");
+      let val = parseInt(el.innerText, 10) || 1;
+      val += change;
+      if (val < 1) val = 1;
+      el.innerText = val;
+    }
+
+    function openCheckout(btn) {
+      let card = btn.closest(".product-card");
+      let name = card.getAttribute("data-name");
+      let price = Number(card.getAttribute("data-price")) || 0;
+      let qty = parseInt(card.querySelector(".qty").innerText, 10) || 1;
+      let total = price * qty;
+
+      const modal = document.getElementById("checkoutModal");
+      modal.setAttribute("data-active-name", name);
+      modal.setAttribute("data-active-price", price);
+      modal.setAttribute("data-active-qty", qty);
+
+      document.getElementById("produkDipilih").innerText = `Produk: ${name} (${qty} pcs)`;
+      document.getElementById("totalHarga").innerText = `Total: Rp ${total.toLocaleString('id-ID')}`;
+
+      modal.style.display = "flex";
+    }
+
+    function closeCheckout() {
+      const modal = document.getElementById("checkoutModal");
+      modal.style.display = "none";
+      document.getElementById("nama").value = "";
+      document.getElementById("alamat").value = "";
+      
+      const btnKirim = document.getElementById("btnKirimWA");
+      btnKirim.innerText = "Kirim ke WhatsApp";
+      btnKirim.disabled = false;
+    }
+
+    document.getElementById("checkoutModal").addEventListener("click", function(e) {
+      if (e.target === this) {
+        closeCheckout();
+      }
     });
 
-    el.innerHTML = html;
-  });
-}
+    function generateInvoice() {
+      let date = new Date();
+      let y = date.getFullYear();
+      let m = String(date.getMonth() + 1).padStart(2, '0');
+      let d = String(date.getDate()).padStart(2, '0');
+      let rand = Math.floor(Math.random() * 900 + 100);
 
-/* QTY */
-function qty(btn,change){
-  let s = btn.parentElement.querySelector("span");
-  let v = parseInt(s.innerText);
-  v += change;
-  if(v<1) v=1;
-  s.innerText = v;
-}
+      return `INV-${y}${m}${d}-${rand}`;
+    }
 
-/* CHECKOUT */
-function checkout(btn){
-  let card = btn.closest(".product-card");
+    function kirimWA() {
+      let namaInput = document.getElementById("nama").value.trim();
+      let alamatInput = document.getElementById("alamat").value.trim();
+      const btnKirim = document.getElementById("btnKirimWA");
 
-  let name = card.dataset.name;
-  let price = Number(card.dataset.price);
-  let qty = parseInt(card.querySelector("span").innerText);
+      if (!namaInput || !alamatInput) {
+        alert("Nama & Alamat wajib diisi!");
+        return;
+      }
 
-  let total = price * qty;
+      btnKirim.innerText = "Memproses...";
+      btnKirim.disabled = true;
 
-  let modal = document.getElementById("checkoutModal");
-  modal.style.display="flex";
+      const modal = document.getElementById("checkoutModal");
+      let productName = modal.getAttribute("data-active-name");
+      let price = Number(modal.getAttribute("data-active-price"));
+      let qty = Number(modal.getAttribute("data-active-qty"));
+      let total = price * qty;
+      let invNum = generateInvoice();
 
-  modal.dataset.name = name;
-  modal.dataset.price = price;
-  modal.dataset.qty = qty;
+      let orderData = {
+        invoice: invNum,
+        nama: namaInput,
+        alamat: alamatInput,
+        produk: productName,
+        qty: qty,
+        total: total,
+        status: "pending",
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
 
-  document.getElementById("produk").innerText = name + " ("+qty+")";
-  document.getElementById("total").innerText = "Rp " + total;
-}
+      let phone = "6281353885122";
+      let pesan = `Halo Admin Mutumanikam 👋\n\nSaya mau order:\n🧾 Invoice: ${invNum}\n🛍️ Produk: ${productName}\n📦 Jumlah: ${qty} pcs\n💰 Total: Rp ${total.toLocaleString('id-ID')}\n\n👤 Nama: ${namaInput}\n📍 Alamat: ${alamatInput}\n\nMohon konfirmasi ya 🙏`;
+      let url = `https://wa.me/${phone}?text=${encodeURIComponent(pesan)}`;
 
-function closeModal(){
-  document.getElementById("checkoutModal").style.display="none";
-}
+      let hasRedirected = false;
+      const executeRedirect = () => {
+        if (!hasRedirected) {
+          hasRedirected = true;
+          window.open(url, "_blank");
+          closeCheckout();
+        }
+      };
 
-/* WA */
-function kirimWA(){
-  let nama = document.getElementById("nama").value;
-  let alamat = document.getElementById("alamat").value;
+      db.collection("Orders").add(orderData)
+        .then(() => executeRedirect())
+        .catch(err => {
+          console.error("Firestore write error:", err);
+          executeRedirect();
+        });
 
-  let modal = document.getElementById("checkoutModal");
+      setTimeout(() => executeRedirect(), 2500);
+    }
 
-  let name = modal.dataset.name;
-  let price = Number(modal.dataset.price);
-  let qty = Number(modal.dataset.qty);
-  let total = price * qty;
+    // 6. FITUR ZOOM MODAL
+    let zoomScale = 1;
 
-  let pesan = `Halo Admin Mutumanikam 👋
-Produk: ${name}
-Jumlah: ${qty}
-Total: Rp ${total}
+    function openImageModal(src) {
+      const modal = document.getElementById("imageModal");
+      const img = document.getElementById("imgFull");
+      modal.style.display = "flex";
+      img.src = src;
+      resetZoom();
+    }
 
-Nama: ${nama}
-Alamat: ${alamat}`;
+    function closeImageModal() {
+      document.getElementById("imageModal").style.display = "none";
+      resetZoom();
+    }
 
-  let url = "https://wa.me/6281353885122?text=" + encodeURIComponent(pesan);
-  window.open(url,"_blank");
-}
-</script>
+    function toggleZoomImg() {
+      zoomScale = zoomScale > 1 ? 1 : 2;
+      document.getElementById("imgFull").style.transform = `scale(${zoomScale})`;
+    }
 
+    function zoomIn() {
+      zoomScale += 0.3;
+      document.getElementById("imgFull").style.transform = `scale(${zoomScale})`;
+    }
+
+    function zoomOut() {
+      zoomScale = Math.max(1, zoomScale - 0.3);
+      document.getElementById("imgFull").style.transform = `scale(${zoomScale})`;
+    }
+
+    function resetZoom() {
+      zoomScale = 1;
+      document.getElementById("imgFull").style.transform = "scale(1)";
+    }
+
+    // 7. NAVIGASI SIDEBAR & FILTER
+    function toggleMenu() {
+      document.getElementById("mobileMenu").classList.toggle("active");
+      document.getElementById("overlay").classList.toggle("active");
+    }
+
+    function toggleSub(el) {
+      const parent = el.parentElement;
+      document.querySelectorAll(".menu-section").forEach(i => {
+        if (i !== parent) i.classList.remove("active");
+      });
+      parent.classList.toggle("active");
+    }
+
+    function filterData(field, val) {
+      loadProducts(field, val);
+      toggleMenu();
+    }
+
+    function resetFilter() {
+      loadProducts();
+      toggleMenu();
+    }
+
+    // EXECUTE LOAD PRODUK PERTAMA KALI
+    loadProducts();
+  </script>
 </body>
 </html>
