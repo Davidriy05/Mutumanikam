@@ -26,22 +26,22 @@
       z-index: 900;
     }
 
-    /* KONTEN HALAMAN (PAGE VIEWS) */
+    /* SISTEM NAVIGATION PAGE VIEWS */
     .page-section {
-      display: none; /* Sembunyikan semua halaman secara bawaan */
+      display: none;
     }
 
     .page-section.active-page {
-      display: block; /* Tampilkan halaman yang aktif */
+      display: block;
     }
 
-    /* SECTION GALLERY (FOTO & VIDEO) */
-    .gallery-container {
+    /* MEDIA CONTAINER (HALAMAN UTAMA) */
+    .media-container {
       padding: 20px;
       display: flex;
       flex-direction: column;
       gap: 20px;
-      max-width: 1000px;
+      max-width: 900px;
       margin: 0 auto;
     }
 
@@ -55,14 +55,14 @@
     .media-card img {
       width: 100%;
       height: auto;
-      max-height: 450px;
+      max-height: 480px;
       object-fit: cover;
       display: block;
     }
 
     .media-card video {
       width: 100%;
-      max-height: 450px;
+      max-height: 480px;
       display: block;
       background: #000;
     }
@@ -75,7 +75,7 @@
       background: #161616;
     }
 
-    /* GRID PRODUK */
+    /* GRID PRODUK (HALAMAN KATALOG) */
     .product-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -343,50 +343,72 @@
       &#9776;
     </button>
     <div class="logo-container">
-      <span class="brand-name" style="font-size: 20px; font-weight: bold; color: #d4af37; cursor:pointer;" onclick="showPage('homePage'); resetFilter();">Mutumanikam</span>
+      <span class="brand-name" style="font-size: 20px; font-weight: bold; color: #d4af37; cursor:pointer;" onclick="showHome()">Mutumanikam</span>
     </div>
   </header>
 
   <div id="overlay" onclick="toggleMenu()"></div>
 
-  <!-- SIDEBAR BARU DENGAN MENU GALLERY -->
+  <!-- SIDEBAR (MENU KATALOG PRODUK DI SINI) -->
   <div id="mobileMenu" class="sidebar">
     <div class="menu-section">
-      <div class="menu-title" onclick="toggleSub(this)">SHOP <span>⌄</span></div>
+      <div class="menu-title" onclick="showHome(); toggleMenu();">
+        HOME (GALLERY)
+      </div>
+    </div>
+
+    <!-- SEMUA PRODUK -->
+    <div class="menu-section">
+      <div class="menu-title" onclick="openProducts()" style="color:#d4af37;">
+        SEMUA PRODUK
+      </div>
+    </div>
+
+    <!-- KATEGORI PRODUK -->
+    <div class="menu-section">
+      <div class="menu-title" onclick="toggleSub(this)">SHOP BY CATEGORY <span>⌄</span></div>
       <div class="submenu">
-        <p onclick="showPage('homePage'); filterData('category', 'Necklace');">Necklace</p>
-        <p onclick="showPage('homePage'); filterData('category', 'Bracelet');">Bracelet</p>
-        <p onclick="showPage('homePage'); filterData('category', 'Purse');">Purse</p>
-        <p onclick="showPage('homePage'); filterData('category', 'Belt');">Belt</p>
-      </div>
-    </div>
-
-    <div class="menu-section">
-      <div class="menu-title" onclick="showPage('homePage'); filterData('category', 'Home Deco');">
-        HOME DECO
-      </div>
-    </div>
-
-    <div class="menu-section">
-      <div class="menu-title" onclick="showPage('homePage'); resetFilter();">ALL PRODUCTS</div>
-    </div>
-
-    <!-- MENU HALAMAN GALLERY BARU -->
-    <div class="menu-section">
-      <div class="menu-title" onclick="showPage('galleryPage'); toggleMenu();" style="color:#d4af37;">
-        GALLERY
+        <p onclick="filterCategory('Necklace')">Necklace</p>
+        <p onclick="filterCategory('Bracelet')">Bracelet</p>
+        <p onclick="filterCategory('Purse')">Purse</p>
+        <p onclick="filterCategory('Belt')">Belt</p>
+        <p onclick="filterCategory('Home Deco')">Home Deco</p>
       </div>
     </div>
   </div>
 
-  <!-- HALAMAN 1: HOME / KATALOG PRODUK -->
+  <!-- HALAMAN UTAMA (HOME): FOTO & VIDEO -->
   <main id="homePage" class="page-section active-page">
+    <section class="media-container">
+      <h2 style="color:#d4af37; text-align:center; margin-bottom:10px;">Mutumanikam Showcase</h2>
+      
+      <!-- CARD FOTO UTAMA -->
+      <div class="media-card">
+        <div class="media-title">Featured Showcase</div>
+        <img src="https://via.placeholder.com/1200x600" alt="Mutumanikam Collection" id="heroBanner">
+      </div>
+
+      <!-- CARD VIDEO PROMO -->
+      <div class="media-card">
+        <div class="media-title">Brand Video</div>
+        <video controls poster="https://via.placeholder.com/1200x600">
+          <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+          Browser kamu tidak mendukung pemutaran video HTML5.
+        </video>
+      </div>
+    </section>
+  </main>
+
+  <!-- HALAMAN PRODUK (TAMPIL HANYA SAAT DIKLIK DARI SIDEBAR) -->
+  <main id="productPage" class="page-section">
+    <h2 id="catalogTitle" style="color:#d4af37; text-align:center; margin-top:20px;">Katalog Produk</h2>
+    
     <div id="product-container" class="product-grid">
       <p style="text-align:center; padding:20px;">Memuat katalog produk...</p>
     </div>
 
-    <!-- ADMIN UPLOAD PRODUK -->
-    <div style="padding:20px; border-top:1px solid #333;">
+    <!-- UPLOAD PRODUK (ADMIN) -->
+    <div style="padding:20px; border-top:1px solid #333; max-width:600px; margin: 30px auto 0;">
       <h3 style="color:#d4af37;">Upload Produk (Admin)</h3>
 
       <input type="text" id="pNama" placeholder="Nama Produk" style="width:100%; padding:10px; margin-top:10px; box-sizing:border-box;">
@@ -401,28 +423,6 @@
         Upload Produk
       </button>
     </div>
-  </main>
-
-  <!-- HALAMAN 2: GALLERY (FOTO & VIDEO KHUSUS) -->
-  <main id="galleryPage" class="page-section">
-    <section class="gallery-container">
-      <h2 style="color:#d4af37; text-align:center; margin-bottom:10px;">Mutumanikam Gallery</h2>
-      
-      <!-- Card Foto -->
-      <div class="media-card">
-        <div class="media-title">Featured Showcase</div>
-        <img src="https://via.placeholder.com/1200x500" alt="Banner Mutumanikam" id="heroBanner">
-      </div>
-
-      <!-- Card Video -->
-      <div class="media-card">
-        <div class="media-title">Brand Video</div>
-        <video controls poster="https://via.placeholder.com/1200x500">
-          <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-          Browser kamu tidak mendukung pemutaran video HTML5.
-        </video>
-      </div>
-    </section>
   </main>
 
   <div id="imageModal" class="image-modal">
@@ -475,15 +475,31 @@
     }
     const db = firebase.firestore();
 
-    // NAVIGASI HALAMAN
+    // SINKRONISASI SWAP HALAMAN
     function showPage(pageId) {
       document.querySelectorAll('.page-section').forEach(section => {
         section.classList.remove('active-page');
       });
-      const targetPage = document.getElementById(pageId);
-      if (targetPage) {
-        targetPage.classList.add('active-page');
-      }
+      document.getElementById(pageId).classList.add('active-page');
+      window.scrollTo(0, 0);
+    }
+
+    function showHome() {
+      showPage('homePage');
+    }
+
+    function openProducts() {
+      document.getElementById("catalogTitle").innerText = "Semua Produk";
+      showPage('productPage');
+      loadProducts();
+      toggleMenu();
+    }
+
+    function filterCategory(catName) {
+      document.getElementById("catalogTitle").innerText = "Kategori: " + catName;
+      showPage('productPage');
+      loadProducts('category', catName);
+      toggleMenu();
     }
 
     async function uploadProduk() {
@@ -545,7 +561,7 @@
 
       } catch (err) {
         console.error("Upload Error:", err);
-        alert("Gagal upload produk. Pastikan API Key ImgBB sudah benar dan koneksi lancar.");
+        alert("Gagal upload produk. Pastikan API Key ImgBB sudah benar.");
       } finally {
         btn.innerText = "Upload Produk";
         btn.disabled = false;
@@ -610,7 +626,7 @@
         container.innerHTML = html;
       }).catch(err => {
         console.error("Firestore Error:", err);
-        container.innerHTML = "<p style='text-align:center;color:red;'>Gagal memuat produk. Silakan periksa koneksi Anda.</p>";
+        container.innerHTML = "<p style='text-align:center;color:red;'>Gagal memuat produk.</p>";
       });
     }
 
@@ -652,9 +668,7 @@
     }
 
     document.getElementById("checkoutModal").addEventListener("click", function(e) {
-      if (e.target === this) {
-        closeCheckout();
-      }
+      if (e.target === this) closeCheckout();
     });
 
     function generateInvoice() {
@@ -663,7 +677,6 @@
       let m = String(date.getMonth() + 1).padStart(2, '0');
       let d = String(date.getDate()).padStart(2, '0');
       let rand = Math.floor(Math.random() * 900 + 100);
-
       return `INV-${y}${m}${d}-${rand}`;
     }
 
@@ -768,18 +781,6 @@
       });
       parent.classList.toggle("active");
     }
-
-    function filterData(field, val) {
-      loadProducts(field, val);
-      toggleMenu();
-    }
-
-    function resetFilter() {
-      loadProducts();
-      toggleMenu();
-    }
-
-    loadProducts();
   </script>
 </body>
 </html>
