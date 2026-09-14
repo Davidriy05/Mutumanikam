@@ -6,7 +6,7 @@
   <title>Mutumanikam - Authentic Store</title>
 
   <!-- FAVICON / IKON TAB BROWSER -->
-  <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/k4Gk0J71/IMG-20260908-002648-jpg.jpg">
+  <link rel="icon" type="image/jpeg" href="https://i.ibb.co/6y4GfF1/mutumanikam-logo.jpg">
 
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -63,15 +63,16 @@
     .brand-logo-container {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       cursor: pointer;
     }
 
     .brand-logo-img {
-      height: 40px;
-      width: 40px;
-      object-fit: contain;
+      height: 42px;
+      width: 42px;
+      object-fit: cover;
       border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
     .brand-name {
@@ -130,7 +131,7 @@
     .hero-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(0, 0, 0, 0.4);
+      background: rgba(0, 0, 0, 0.45);
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -141,10 +142,12 @@
     }
 
     .hero-badge-img {
-      width: 90px;
-      height: 90px;
-      margin-bottom: 12px;
-      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
+      width: 100px;
+      height: 100px;
+      margin-bottom: 15px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
     }
 
     .hero-title {
@@ -471,7 +474,7 @@
       margin-top: 2px;
     }
 
-    /* FOOTER ELEGAN */
+    /* FOOTER */
     footer {
       background-color: #111111;
       color: #ffffff;
@@ -571,7 +574,8 @@
       <button class="icon-btn" onclick="toggleMenu()" aria-label="Toggle Menu">&#9776;</button>
     </div>
     <div class="brand-logo-container" onclick="showHome()">
-      <img src="https://i.postimg.cc/k4Gk0J71/IMG-20260908-002648-jpg.jpg" alt="Mutumanikam Symbol" class="brand-logo-img">
+      <!-- PENTING: Jika mengupload logo ke GitHub dengan nama 'logo.jpg', ubah src di bawah ini menjadi "logo.jpg" -->
+      <img src="https://i.ibb.co/6y4GfF1/mutumanikam-logo.jpg" alt="Mutumanikam Symbol" class="brand-logo-img">
       <span class="brand-name">MUTUMANIKAM</span>
     </div>
     <div class="header-right">
@@ -585,7 +589,7 @@
   <div id="mobileMenu" class="sidebar">
     <div class="sidebar-menu-content">
       <div style="text-align: center; padding-bottom: 20px;">
-        <img src="https://i.postimg.cc/k4Gk0J71/IMG-20260908-002648-jpg.jpg" alt="Mutumanikam Symbol" style="width:70px; height:70px; border-radius:50%;">
+        <img src="https://i.ibb.co/6y4GfF1/mutumanikam-logo.jpg" alt="Mutumanikam Symbol" style="width:75px; height:75px; border-radius:50%; object-fit:cover;">
       </div>
 
       <div class="menu-section">
@@ -628,7 +632,7 @@
     <div class="hero-container">
       <div class="hero-slide active" style="background-image: url('https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=1200');">
         <div class="hero-overlay">
-          <img src="https://i.postimg.cc/k4Gk0J71/IMG-20260908-002648-jpg.jpg" alt="Mutumanikam Badge" class="hero-badge-img">
+          <img src="https://i.ibb.co/6y4GfF1/mutumanikam-logo.jpg" alt="Mutumanikam Badge" class="hero-badge-img">
           <h1 class="hero-title">MUTUMANIKAM</h1>
           <div class="hero-buttons">
             <button class="btn-outline" onclick="filterCategory('Necklace')">JEWELRY</button>
@@ -707,7 +711,7 @@
     </section>
   </main>
 
-  <!-- FOOTER ELEGAN -->
+  <!-- FOOTER -->
   <footer>
     <div class="footer-container">
       <div class="footer-col">
@@ -786,7 +790,7 @@
     const db = firebase.firestore();
     const auth = firebase.auth();
 
-    // AUTH OBSERVER (KONTROL TAMPILAN ADMIN)
+    // AUTH OBSERVER
     auth.onAuthStateChanged((user) => {
       const loggedInView = document.getElementById("adminLoggedIn");
       const loggedOutView = document.getElementById("adminLoggedOut");
