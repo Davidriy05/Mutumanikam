@@ -26,6 +26,46 @@
       z-index: 900;
     }
 
+    /* SECTION FOTO & VIDEO BARU */
+    .hero-media-container {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .media-card {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .media-card img {
+      width: 100%;
+      height: 350px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .media-card video {
+      width: 100%;
+      max-height: 400px;
+      display: block;
+      background: #000;
+    }
+
+    .media-title {
+      padding: 12px 15px;
+      font-size: 1.1em;
+      color: #d4af37;
+      font-weight: bold;
+      background: #161616;
+    }
+
+    /* GRID PRODUK */
     .product-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -299,6 +339,7 @@
 
   <div id="overlay" onclick="toggleMenu()"></div>
 
+  <!-- SIDEBAR TETAP ADA -->
   <div id="mobileMenu" class="sidebar">
     <div class="menu-section">
       <div class="menu-title" onclick="toggleSub(this)">SHOP <span>⌄</span></div>
@@ -321,6 +362,25 @@
     </div>
   </div>
 
+  <!-- SECTION FOTO & VIDEO BARU (Ganti URL 'src' sesuai kebutuhan) -->
+  <section class="hero-media-container">
+    <!-- Foto Utama/Banner -->
+    <div class="media-card">
+      <div class="media-title">Featured Showcase</div>
+      <img src="https://via.placeholder.com/1200x400" alt="Banner Mutumanikam" id="heroBanner">
+    </div>
+
+    <!-- Video Promosi/Profil -->
+    <div class="media-card">
+      <div class="media-title">Brand Video</div>
+      <video controls poster="https://via.placeholder.com/1200x400">
+        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+        Browser kamu tidak mendukung pemutaran video HTML5.
+      </video>
+    </div>
+  </section>
+
+  <!-- KATALOG PRODUK -->
   <div id="product-container" class="product-grid">
     <p style="text-align:center; padding:20px;">Memuat katalog produk...</p>
   </div>
@@ -378,7 +438,6 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
   <script>
-    // 1. INSIALISASI FIREBASE DI PALING ATAS
     const firebaseConfig = {
       apiKey: "AIzaSyBNlsnzbMHKq9gKWe-EvYgrzwohxXLAOs",
       authDomain: "mutumanikam-store.firebaseapp.com",
@@ -393,9 +452,8 @@
     }
     const db = firebase.firestore();
 
-// FUNGSI UPLOAD PRODUK MENGGUNAKAN IMGBB (GRATIS & TANPA STORAGE FIREBASE)
     async function uploadProduk() {
-      const IMGBB_API_KEY = "MASUKKAN_API_KEY_IMGBB_KAMU_DI_SINI"; // <-- Ganti dengan API Key dari api.imgbb.com
+      const IMGBB_API_KEY = "MASUKKAN_API_KEY_IMGBB_KAMU_DI_SINI";
 
       let nama = document.getElementById("pNama").value.trim();
       let harga = document.getElementById("pHarga").value;
@@ -418,7 +476,6 @@
       btn.disabled = true;
 
       try {
-        // Upload gambar langsung ke ImgBB
         let formData = new FormData();
         formData.append("image", file);
 
@@ -435,7 +492,6 @@
 
         let imageUrl = result.data.url;
 
-        // Simpan data produk + link gambar ke Firestore Database
         await db.collection("Products").add({
           name: nama,
           price: Number(harga),
@@ -462,7 +518,6 @@
       }
     }
 
-    // 3. FUNGSI ESCAPE HTML
     function escapeHtml(str) {
       if (!str) return "";
       return String(str)
@@ -473,7 +528,6 @@
         .replace(/'/g, "&#039;");
     }
 
-    // 4. LOAD KATALOG PRODUK
     function loadProducts(field = null, value = null) {
       const container = document.getElementById("product-container");
       container.innerHTML = "<p style='text-align:center;padding:20px'>Memuat katalog produk...</p>";
@@ -526,7 +580,6 @@
       });
     }
 
-    // 5. MANAJEMEN QUANTITY & CHECKOUT
     function changeQty(btn, change) {
       let el = btn.parentElement.querySelector(".qty");
       let val = parseInt(el.innerText, 10) || 1;
@@ -634,7 +687,6 @@
       setTimeout(() => executeRedirect(), 2500);
     }
 
-    // 6. FITUR ZOOM MODAL
     let zoomScale = 1;
 
     function openImageModal(src) {
@@ -670,7 +722,6 @@
       document.getElementById("imgFull").style.transform = "scale(1)";
     }
 
-    // 7. NAVIGASI SIDEBAR & FILTER
     function toggleMenu() {
       document.getElementById("mobileMenu").classList.toggle("active");
       document.getElementById("overlay").classList.toggle("active");
@@ -694,7 +745,6 @@
       toggleMenu();
     }
 
-    // EXECUTE LOAD PRODUK PERTAMA KALI
     loadProducts();
   </script>
 </body>
