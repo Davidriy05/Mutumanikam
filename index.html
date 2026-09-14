@@ -26,13 +26,22 @@
       z-index: 900;
     }
 
-    /* SECTION FOTO & VIDEO BARU */
-    .hero-media-container {
+    /* KONTEN HALAMAN (PAGE VIEWS) */
+    .page-section {
+      display: none; /* Sembunyikan semua halaman secara bawaan */
+    }
+
+    .page-section.active-page {
+      display: block; /* Tampilkan halaman yang aktif */
+    }
+
+    /* SECTION GALLERY (FOTO & VIDEO) */
+    .gallery-container {
       padding: 20px;
       display: flex;
       flex-direction: column;
       gap: 20px;
-      max-width: 1200px;
+      max-width: 1000px;
       margin: 0 auto;
     }
 
@@ -45,14 +54,15 @@
 
     .media-card img {
       width: 100%;
-      height: 350px;
+      height: auto;
+      max-height: 450px;
       object-fit: cover;
       display: block;
     }
 
     .media-card video {
       width: 100%;
-      max-height: 400px;
+      max-height: 450px;
       display: block;
       background: #000;
     }
@@ -333,74 +343,87 @@
       &#9776;
     </button>
     <div class="logo-container">
-      <span class="brand-name" style="font-size: 20px; font-weight: bold; color: #d4af37; cursor:pointer;" onclick="resetFilter()">Mutumanikam</span>
+      <span class="brand-name" style="font-size: 20px; font-weight: bold; color: #d4af37; cursor:pointer;" onclick="showPage('homePage'); resetFilter();">Mutumanikam</span>
     </div>
   </header>
 
   <div id="overlay" onclick="toggleMenu()"></div>
 
-  <!-- SIDEBAR TETAP ADA -->
+  <!-- SIDEBAR BARU DENGAN MENU GALLERY -->
   <div id="mobileMenu" class="sidebar">
     <div class="menu-section">
       <div class="menu-title" onclick="toggleSub(this)">SHOP <span>⌄</span></div>
       <div class="submenu">
-        <p onclick="filterData('category', 'Necklace')">Necklace</p>
-        <p onclick="filterData('category', 'Bracelet')">Bracelet</p>
-        <p onclick="filterData('category', 'Purse')">Purse</p>
-        <p onclick="filterData('category', 'Belt')">Belt</p>
+        <p onclick="showPage('homePage'); filterData('category', 'Necklace');">Necklace</p>
+        <p onclick="showPage('homePage'); filterData('category', 'Bracelet');">Bracelet</p>
+        <p onclick="showPage('homePage'); filterData('category', 'Purse');">Purse</p>
+        <p onclick="showPage('homePage'); filterData('category', 'Belt');">Belt</p>
       </div>
     </div>
 
     <div class="menu-section">
-      <div class="menu-title" onclick="filterData('category', 'Home Deco')">
+      <div class="menu-title" onclick="showPage('homePage'); filterData('category', 'Home Deco');">
         HOME DECO
       </div>
     </div>
 
     <div class="menu-section">
-      <div class="menu-title" onclick="resetFilter()">ALL PRODUCTS</div>
+      <div class="menu-title" onclick="showPage('homePage'); resetFilter();">ALL PRODUCTS</div>
+    </div>
+
+    <!-- MENU HALAMAN GALLERY BARU -->
+    <div class="menu-section">
+      <div class="menu-title" onclick="showPage('galleryPage'); toggleMenu();" style="color:#d4af37;">
+        GALLERY
+      </div>
     </div>
   </div>
 
-  <!-- SECTION FOTO & VIDEO BARU (Ganti URL 'src' sesuai kebutuhan) -->
-  <section class="hero-media-container">
-    <!-- Foto Utama/Banner -->
-    <div class="media-card">
-      <div class="media-title">Featured Showcase</div>
-      <img src="https://via.placeholder.com/1200x400" alt="Banner Mutumanikam" id="heroBanner">
+  <!-- HALAMAN 1: HOME / KATALOG PRODUK -->
+  <main id="homePage" class="page-section active-page">
+    <div id="product-container" class="product-grid">
+      <p style="text-align:center; padding:20px;">Memuat katalog produk...</p>
     </div>
 
-    <!-- Video Promosi/Profil -->
-    <div class="media-card">
-      <div class="media-title">Brand Video</div>
-      <video controls poster="https://via.placeholder.com/1200x400">
-        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-        Browser kamu tidak mendukung pemutaran video HTML5.
-      </video>
+    <!-- ADMIN UPLOAD PRODUK -->
+    <div style="padding:20px; border-top:1px solid #333;">
+      <h3 style="color:#d4af37;">Upload Produk (Admin)</h3>
+
+      <input type="text" id="pNama" placeholder="Nama Produk" style="width:100%; padding:10px; margin-top:10px; box-sizing:border-box;">
+      
+      <input type="number" id="pHarga" placeholder="Harga" style="width:100%; padding:10px; margin-top:10px; box-sizing:border-box;">
+      
+      <input type="text" id="pKategori" placeholder="Kategori (contoh: Home Deco)" style="width:100%; padding:10px; margin-top:10px; box-sizing:border-box;">
+      
+      <input type="file" id="pGambar" accept="image/*" style="margin-top:10px; color:#fff;">
+      
+      <button id="btnUpload" onclick="uploadProduk()" style="width:100%; padding:12px; margin-top:10px; background:#d4af37; border:none; font-weight:bold; cursor:pointer; color:#111; border-radius:5px;">
+        Upload Produk
+      </button>
     </div>
-  </section>
+  </main>
 
-  <!-- KATALOG PRODUK -->
-  <div id="product-container" class="product-grid">
-    <p style="text-align:center; padding:20px;">Memuat katalog produk...</p>
-  </div>
+  <!-- HALAMAN 2: GALLERY (FOTO & VIDEO KHUSUS) -->
+  <main id="galleryPage" class="page-section">
+    <section class="gallery-container">
+      <h2 style="color:#d4af37; text-align:center; margin-bottom:10px;">Mutumanikam Gallery</h2>
+      
+      <!-- Card Foto -->
+      <div class="media-card">
+        <div class="media-title">Featured Showcase</div>
+        <img src="https://via.placeholder.com/1200x500" alt="Banner Mutumanikam" id="heroBanner">
+      </div>
 
-  <!-- ADMIN UPLOAD PRODUK -->
-  <div style="padding:20px; border-top:1px solid #333;">
-    <h3 style="color:#d4af37;">Upload Produk (Admin)</h3>
-
-    <input type="text" id="pNama" placeholder="Nama Produk" style="width:100%; padding:10px; margin-top:10px; box-sizing:border-box;">
-    
-    <input type="number" id="pHarga" placeholder="Harga" style="width:100%; padding:10px; margin-top:10px; box-sizing:border-box;">
-    
-    <input type="text" id="pKategori" placeholder="Kategori (contoh: Home Deco)" style="width:100%; padding:10px; margin-top:10px; box-sizing:border-box;">
-    
-    <input type="file" id="pGambar" accept="image/*" style="margin-top:10px; color:#fff;">
-    
-    <button id="btnUpload" onclick="uploadProduk()" style="width:100%; padding:12px; margin-top:10px; background:#d4af37; border:none; font-weight:bold; cursor:pointer; color:#111; border-radius:5px;">
-      Upload Produk
-    </button>
-  </div>
+      <!-- Card Video -->
+      <div class="media-card">
+        <div class="media-title">Brand Video</div>
+        <video controls poster="https://via.placeholder.com/1200x500">
+          <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+          Browser kamu tidak mendukung pemutaran video HTML5.
+        </video>
+      </div>
+    </section>
+  </main>
 
   <div id="imageModal" class="image-modal">
     <span class="close-modal" onclick="closeImageModal()">&times;</span>
@@ -451,6 +474,17 @@
       firebase.initializeApp(firebaseConfig);
     }
     const db = firebase.firestore();
+
+    // NAVIGASI HALAMAN
+    function showPage(pageId) {
+      document.querySelectorAll('.page-section').forEach(section => {
+        section.classList.remove('active-page');
+      });
+      const targetPage = document.getElementById(pageId);
+      if (targetPage) {
+        targetPage.classList.add('active-page');
+      }
+    }
 
     async function uploadProduk() {
       const IMGBB_API_KEY = "MASUKKAN_API_KEY_IMGBB_KAMU_DI_SINI";
