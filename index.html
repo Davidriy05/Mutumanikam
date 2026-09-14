@@ -8,7 +8,6 @@
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 
   <style>
@@ -34,7 +33,7 @@
       line-height: 1.5;
     }
 
-    /* HEADER STICKY & ELEGAN */
+    /* HEADER */
     header {
       padding: 15px 24px;
       display: flex;
@@ -92,9 +91,9 @@
     .hero-container {
       position: relative;
       width: 100%;
-      height: 70vh;
-      min-height: 420px;
-      max-height: 650px;
+      height: 65vh;
+      min-height: 380px;
+      max-height: 550px;
       overflow: hidden;
       background: #f4f4f4;
     }
@@ -126,17 +125,16 @@
     }
 
     .hero-title {
-      font-size: 26px;
+      font-size: 24px;
       font-weight: 500;
       letter-spacing: 4px;
       text-transform: uppercase;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
       text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
 
     .hero-buttons {
       display: flex;
-      flex-direction: row;
       gap: 12px;
       width: 100%;
       max-width: 320px;
@@ -149,7 +147,7 @@
       background: rgba(0, 0, 0, 0.2);
       color: #ffffff;
       padding: 12px 16px;
-      font-size: 12px;
+      font-size: 11px;
       letter-spacing: 2px;
       text-transform: uppercase;
       font-weight: 500;
@@ -189,27 +187,27 @@
 
     /* SECTION LAYOUTS */
     .section-container {
-      padding: 40px 20px;
-      max-width: 1200px;
+      padding: 30px 16px;
+      max-width: 1100px;
       margin: 0 auto;
     }
 
     .section-title {
-      font-size: 16px;
+      font-size: 15px;
       letter-spacing: 3px;
       text-transform: uppercase;
       color: var(--accent-color);
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 25px;
       font-weight: 500;
     }
 
-    /* CATEGORY PILLS NAV (KATALOG) */
+    /* CATEGORY PILLS */
     .category-pills {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       overflow-x: auto;
-      padding: 10px 0 20px;
+      padding-bottom: 15px;
       margin-bottom: 20px;
       scrollbar-width: none;
     }
@@ -219,11 +217,11 @@
     }
 
     .pill-btn {
-      padding: 8px 16px;
+      padding: 7px 14px;
       border: 1px solid var(--border-color);
       background: #fff;
       border-radius: 20px;
-      font-size: 12px;
+      font-size: 11px;
       letter-spacing: 1px;
       white-space: nowrap;
       cursor: pointer;
@@ -236,33 +234,35 @@
       border-color: var(--primary-color);
     }
 
-    /* PRODUCT GRID & CARD IMPROVEMENTS */
+    /* PRODUCT GRID */
     .product-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
     }
 
-    @media (min-width: 600px) {
+    @media (min-width: 768px) {
       .product-grid {
         grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-        gap: 25px;
+        gap: 20px;
       }
     }
 
+    /* PRODUCT CARD */
     .product-card {
       background: #fff;
       border: 1px solid var(--border-color);
-      padding: 12px;
+      padding: 10px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      border-radius: 4px;
       transition: transform 0.2s, box-shadow 0.2s;
     }
 
     .product-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
 
     .img-wrapper {
@@ -270,7 +270,8 @@
       aspect-ratio: 1 / 1;
       overflow: hidden;
       background: #f8f8f8;
-      margin-bottom: 12px;
+      border-radius: 2px;
+      margin-bottom: 10px;
     }
 
     .product-card img {
@@ -282,72 +283,78 @@
     }
 
     .product-card img:hover {
-      transform: scale(1.05);
+      transform: scale(1.04);
     }
 
     .product-card h3 {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 500;
       color: var(--primary-color);
-      letter-spacing: 0.5px;
-      margin-bottom: 4px;
+      letter-spacing: 0.3px;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .product-card .category {
-      font-size: 11px;
+      font-size: 10px;
       color: var(--accent-color);
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 0.8px;
     }
 
     .product-card .price {
       font-weight: 600;
       color: var(--primary-color);
-      font-size: 14px;
-      margin-bottom: 12px;
+      font-size: 13px;
+      margin-bottom: 8px;
     }
 
     .qty-box {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
+      gap: 10px;
+      margin-bottom: 8px;
       background: var(--bg-light);
-      padding: 4px;
+      padding: 2px;
+      border-radius: 2px;
     }
 
     .qty-box button {
-      width: 28px;
-      height: 28px;
+      width: 24px;
+      height: 24px;
       border: 1px solid #ddd;
       background: #fff;
       color: var(--primary-color);
-      font-size: 14px;
+      font-size: 12px;
       cursor: pointer;
       font-weight: bold;
+      border-radius: 2px;
     }
 
     .buy-btn {
       width: 100%;
-      padding: 12px;
+      padding: 10px;
       background: var(--primary-color);
       color: #fff;
       border: none;
-      font-size: 11px;
-      letter-spacing: 1.5px;
+      font-size: 10px;
+      letter-spacing: 1.2px;
       text-transform: uppercase;
       cursor: pointer;
       transition: var(--transition-speed);
       font-weight: 500;
+      border-radius: 2px;
     }
 
     .buy-btn:hover {
       background: #333;
     }
 
-    /* SIDEBAR & OVERLAY */
+    /* SIDEBAR */
     #overlay {
       position: fixed;
       inset: 0;
@@ -367,7 +374,7 @@
       position: fixed;
       top: 0;
       left: -300px;
-      width: 280px;
+      width: 270px;
       height: 100%;
       background: #ffffff;
       padding: 30px 20px;
@@ -382,15 +389,15 @@
 
     .menu-section {
       border-bottom: 1px solid var(--border-color);
-      padding: 15px 0;
+      padding: 12px 0;
     }
 
     .menu-title {
       display: flex;
       justify-content: space-between;
       cursor: pointer;
-      letter-spacing: 2px;
-      font-size: 13px;
+      letter-spacing: 1.5px;
+      font-size: 12px;
       font-weight: 600;
       text-transform: uppercase;
     }
@@ -403,15 +410,15 @@
 
     .menu-section.active .submenu {
       max-height: 250px;
-      margin-top: 10px;
+      margin-top: 8px;
     }
 
     .submenu p, .submenu a {
       display: block;
-      padding: 8px 0;
+      padding: 6px 0;
       color: var(--accent-color);
-      font-size: 12px;
-      letter-spacing: 1px;
+      font-size: 11px;
+      letter-spacing: 0.8px;
       cursor: pointer;
       text-decoration: none;
     }
@@ -423,22 +430,84 @@
 
     .sidebar-footer {
       border-top: 1px solid var(--border-color);
-      padding-top: 20px;
+      padding-top: 15px;
       text-align: center;
     }
 
     .sidebar-footer p {
-      font-size: 10px;
-      letter-spacing: 2px;
+      font-size: 9px;
+      letter-spacing: 1.5px;
       text-transform: uppercase;
       color: var(--accent-color);
     }
 
     .sidebar-footer strong {
-      font-size: 11px;
-      letter-spacing: 2.5px;
+      font-size: 10px;
+      letter-spacing: 2px;
       display: block;
-      margin-top: 4px;
+      margin-top: 2px;
+    }
+
+    /* FOOTER ELEGAN */
+    footer {
+      background-color: #111111;
+      color: #ffffff;
+      padding: 40px 20px 20px;
+      margin-top: 60px;
+      font-size: 12px;
+    }
+
+    .footer-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+      border-bottom: 1px solid #222222;
+      padding-bottom: 30px;
+    }
+
+    .footer-col h4 {
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 15px;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .footer-col p, .footer-col a {
+      color: #999999;
+      text-decoration: none;
+      display: block;
+      margin-bottom: 8px;
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    .footer-col a:hover {
+      color: #ffffff;
+    }
+
+    .footer-bottom {
+      max-width: 1100px;
+      margin: 20px auto 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      text-align: center;
+      color: #666666;
+      font-size: 10px;
+      letter-spacing: 1px;
+    }
+
+    .tag-pembayaran {
+      display: flex;
+      gap: 12px;
+      color: #888888;
+      font-size: 10px;
+      letter-spacing: 1px;
     }
 
     /* MODALS */
@@ -457,8 +526,8 @@
       background: #fff;
       padding: 25px;
       width: 100%;
-      max-width: 400px;
-      border-radius: 2px;
+      max-width: 380px;
+      border-radius: 4px;
     }
 
     .form-input {
@@ -466,7 +535,8 @@
       padding: 10px;
       margin-top: 10px;
       border: 1px solid #ccc;
-      font-size: 13px;
+      font-size: 12px;
+      border-radius: 2px;
     }
   </style>
 </head>
@@ -554,9 +624,9 @@
     </div>
 
     <section class="section-container">
-      <h2 class="section-title">DISCOVER</h2>
+      <h2 class="section-title">REKOMENDASI PRODUK</h2>
       <div id="discover-container" class="product-grid">
-        <p style="text-align:center; width:100%; color:#888;">Memuat rekomendasi...</p>
+        <p style="text-align:center; width:100%; grid-column: 1/-1; color:#888;">Memuat rekomendasi...</p>
       </div>
     </section>
   </main>
@@ -577,34 +647,66 @@
       </div>
 
       <div id="product-container" class="product-grid">
-        <p style="text-align:center; width:100%;">Memuat produk...</p>
+        <p style="text-align:center; width:100%; grid-column: 1/-1;">Memuat produk...</p>
       </div>
     </div>
 
-    <!-- ADMIN SECTION -->
-    <section class="section-container" style="background:#fafafa; border-top:1px solid #eee; margin-top:40px;">
-      <div style="max-width:500px; margin:0 auto;">
+    <!-- AREA ADMIN TERSEMBUNYI -->
+    <section class="section-container" style="margin-top:20px; border-top:1px dashed #eee;">
+      <div style="max-width:450px; margin:0 auto;">
+        
+        <!-- PENGUNJUNG BIASA: HANYA TAMPIL TOMBOL KECIL DI BAWAH -->
         <div id="adminLoggedOut" style="text-align: center;">
-          <p style="font-size:11px; letter-spacing:1px; color:#888; margin-bottom:12px;">KHUSUS PENGELOLA TOKO</p>
-          <button onclick="openLoginModal()" class="btn-outline" style="border-color:#111; color:#111;">Login Admin</button>
+          <button onclick="openLoginModal()" style="background:none; border:none; color:#bbb; cursor:pointer; font-size:10px; letter-spacing:1px;">🔒 Login Admin Store</button>
         </div>
 
-        <div id="adminLoggedIn" style="display: none;">
+        <!-- JIKA SUDAH LOGIN: BARU FORM INPUT INI MUNCUL -->
+        <div id="adminLoggedIn" style="display: none; background:#fafafa; padding:20px; border:1px solid #ddd; border-radius:4px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-            <h3 style="font-size:13px; letter-spacing:1.5px; text-transform:uppercase;">Upload Produk (Admin)</h3>
-            <button onclick="logoutAdmin()" style="background:none; border:none; color:red; cursor:pointer; font-size:12px;">Logout</button>
+            <h3 style="font-size:12px; letter-spacing:1.5px; text-transform:uppercase;">Tambah Produk Baru</h3>
+            <button onclick="logoutAdmin()" style="background:none; border:none; color:red; cursor:pointer; font-size:11px;">Logout</button>
           </div>
 
           <input type="text" id="pNama" placeholder="Nama Produk" class="form-input">
           <input type="number" id="pHarga" placeholder="Harga (Contoh: 150000)" class="form-input">
-          <input type="text" id="pKategori" placeholder="Kategori (misal: Necklace)" class="form-input">
-          <input type="file" id="pGambar" accept="image/*" class="form-input">
-          
-          <button id="btnUpload" onclick="uploadProduk()" class="buy-btn" style="margin-top:15px;">Upload Produk</button>
+          <input type="text" id="pKategori" placeholder="Kategori (Contoh: Necklace)" class="form-input">
+          <input type="url" id="pGambarUrl" placeholder="Link/URL Gambar Produk" class="form-input">
+          <p style="font-size:10px; color:#888; margin-top:4px;">*Upload foto gratis di <a href="https://postimages.org/" target="_blank">postimages.org</a> lalu salin Direct Link-nya di sini.</p>
+
+          <button id="btnUpload" onclick="simpanProduk()" class="buy-btn" style="margin-top:15px; padding:12px;">Simpan Produk</button>
         </div>
+
       </div>
     </section>
   </main>
+
+  <!-- FOOTER ELEGAN -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-col">
+        <h4>MUTUMANIKAM</h4>
+        <p>Toko aksesoris dan perhiasan autentik dengan bahan berkualitas serta desain eksklusif.</p>
+      </div>
+      <div class="footer-col">
+        <h4>BANTUAN & KONTAK</h4>
+        <p>WhatsApp: +62 813-5388-5122</p>
+        <p>Email: info@mutumanikam.com</p>
+        <p>Lokasi: Indonesia</p>
+      </div>
+      <div class="footer-col">
+        <h4>LAYANAN PENGIRIMAN</h4>
+        <p>• JNE Express</p>
+        <p>• J&T Express</p>
+        <p>• Pos Indonesia</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="tag-pembayaran">
+        <span>BCA</span> | <span>MANDIRI</span> | <span>QRIS</span> | <span>WHATSAPP ORDER</span>
+      </div>
+      <p>&copy; 2026 MUTUMANIKAM STORE. Supported by AZZA COLLECTION.</p>
+    </div>
+  </footer>
 
   <!-- MODAL IMAGE FULL -->
   <div id="imageModal" class="image-modal" onclick="closeImageModal()">
@@ -614,7 +716,7 @@
   <!-- MODAL CHECKOUT WA -->
   <div id="checkoutModal" class="custom-modal">
     <div class="modal-content-box">
-      <h3 style="margin-top:0; font-size:15px; letter-spacing:1px; text-transform:uppercase;">Checkout Order</h3>
+      <h3 style="margin-top:0; font-size:14px; letter-spacing:1px; text-transform:uppercase;">Checkout Order</h3>
       
       <p id="produkDipilih" style="margin-top:12px; font-weight:500; font-size:13px;"></p>
       <p id="totalHarga" style="color:var(--primary-color); font-weight:bold; font-size:1.1em; margin-bottom:10px;"></p>
@@ -622,27 +724,27 @@
       <input id="nama" placeholder="Nama Anda" class="form-input">
       <textarea id="alamat" placeholder="Alamat Lengkap Pengiriman" class="form-input" style="height:70px; resize:none;"></textarea>
 
-      <button id="btnKirimWA" onclick="kirimWA()" class="buy-btn" style="margin-top:15px;">Kirim ke WhatsApp</button>
-      <button onclick="closeCheckout()" style="width:100%; padding:10px; margin-top:8px; background:#fff; border:1px solid #ccc; cursor:pointer; font-size:12px;">Batal</button>
+      <button id="btnKirimWA" onclick="kirimWA()" class="buy-btn" style="margin-top:15px; padding:12px;">Kirim ke WhatsApp</button>
+      <button onclick="closeCheckout()" style="width:100%; padding:10px; margin-top:8px; background:#fff; border:1px solid #ccc; cursor:pointer; font-size:11px;">Batal</button>
     </div>
   </div>
 
   <!-- MODAL LOGIN ADMIN -->
   <div id="loginModal" class="custom-modal">
     <div class="modal-content-box">
-      <h3 style="margin-top:0; font-size:14px; letter-spacing:1px; text-transform:uppercase; text-align:center; margin-bottom:15px;">Login Admin</h3>
+      <h3 style="margin-top:0; font-size:13px; letter-spacing:1px; text-transform:uppercase; text-align:center; margin-bottom:15px;">Login Pengelola Toko</h3>
 
       <input id="adminEmail" type="email" placeholder="Email Admin" class="form-input">
       <input id="adminPassword" type="password" placeholder="Password" class="form-input">
 
-      <button id="btnLoginSubmit" onclick="loginAdmin()" class="buy-btn" style="margin-top:15px;">Masuk</button>
-      <button onclick="closeLoginModal()" style="width:100%; padding:10px; margin-top:8px; background:#fff; border:1px solid #ccc; cursor:pointer; font-size:12px;">Batal</button>
+      <button id="btnLoginSubmit" onclick="loginAdmin()" class="buy-btn" style="margin-top:15px; padding:12px;">Masuk</button>
+      <button onclick="closeLoginModal()" style="width:100%; padding:10px; margin-top:8px; background:#fff; border:1px solid #ccc; cursor:pointer; font-size:11px;">Batal</button>
     </div>
   </div>
 
   <!-- FIREBASE LOGIC & APP SCRIPT -->
   <script>
-    // Konfigurasi Firebase Terbaru
+    // Konfigurasi Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyBNlsnzbWMHKq9gKWe-EvYgrzwohxXLAOs",
       authDomain: "mutumanikam-store.firebaseapp.com",
@@ -657,7 +759,7 @@
     const db = firebase.firestore();
     const auth = firebase.auth();
 
-    // AUTH OBSERVER
+    // AUTH OBSERVER (KONTROL TAMPILAN ADMIN)
     auth.onAuthStateChanged((user) => {
       const loggedInView = document.getElementById("adminLoggedIn");
       const loggedOutView = document.getElementById("adminLoggedOut");
@@ -730,7 +832,7 @@
 
     function loadProducts(targetId, field = null, value = null) {
       const container = document.getElementById(targetId);
-      container.innerHTML = "<p style='text-align:center;width:100%;grid-column:1/-1;padding:40px 0;'>Memuat produk...</p>";
+      container.innerHTML = "<p style='text-align:center;width:100%;grid-column:1/-1;padding:40px 0;color:#888;'>Memuat produk...</p>";
 
       let query = db.collection("Products");
       if (field && value) query = query.where(field, "==", value);
@@ -738,7 +840,7 @@
       query.get().then(snapshot => {
         let html = "";
         if (snapshot.empty) {
-          html = "<p style='text-align:center;width:100%;grid-column:1/-1;padding:40px 0;'>Produk tidak ditemukan.</p>";
+          html = "<p style='text-align:center;width:100%;grid-column:1/-1;padding:40px 0;color:#888;'>Produk tidak ditemukan.</p>";
         } else {
           snapshot.forEach(doc => {
             const p = doc.data();
@@ -821,27 +923,22 @@
       closeCheckout();
     }
 
-    // UPLOAD PRODUK & ADMIN
-    async function uploadProduk() {
+    // SIMPAN PRODUK
+    async function simpanProduk() {
       const nama = document.getElementById("pNama").value.trim();
       const harga = Number(document.getElementById("pHarga").value);
       const kategori = document.getElementById("pKategori").value.trim();
-      const fileInput = document.getElementById("pGambar");
-      const file = fileInput.files[0];
+      const imageUrl = document.getElementById("pGambarUrl").value.trim();
 
-      if (!nama || !harga || !kategori || !file) {
-        return alert("Harap isi seluruh field data produk dan upload gambar!");
+      if (!nama || !harga || !kategori || !imageUrl) {
+        return alert("Harap isi seluruh field data produk dan masukkan Link Gambar!");
       }
 
       const btn = document.getElementById("btnUpload");
-      btn.innerText = "Mengunggah...";
+      btn.innerText = "Menyimpan...";
       btn.disabled = true;
 
       try {
-        const storageRef = firebase.storage().ref(`products/${Date.now()}_${file.name}`);
-        const snapshot = await storageRef.put(file);
-        const imageUrl = await snapshot.ref.getDownloadURL();
-
         await db.collection("Products").add({
           name: nama,
           price: harga,
@@ -850,16 +947,16 @@
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
 
-        alert("Produk berhasil diunggah!");
+        alert("Produk berhasil ditambahkan!");
         document.getElementById("pNama").value = "";
         document.getElementById("pHarga").value = "";
         document.getElementById("pKategori").value = "";
-        fileInput.value = "";
+        document.getElementById("pGambarUrl").value = "";
         loadProducts('product-container');
       } catch (error) {
-        alert("Gagal mengunggah: " + error.message);
+        alert("Gagal menyimpan: " + error.message);
       } finally {
-        btn.innerText = "Upload Produk";
+        btn.innerText = "Simpan Produk";
         btn.disabled = false;
       }
     }
