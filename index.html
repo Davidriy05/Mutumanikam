@@ -48,8 +48,8 @@
     }
 
     .brand-name {
-      font-size: 22px;
-      font-weight: 400;
+      font-size: 20px;
+      font-weight: 500;
       color: #111;
       letter-spacing: 3px;
       text-transform: uppercase;
@@ -73,7 +73,7 @@
       display: block;
     }
 
-    /* HERO BANNER SLIDER (SESUAI GAMBAR DEPAN) */
+    /* HERO BANNER SLIDER */
     .hero-container {
       position: relative;
       width: 100%;
@@ -171,7 +171,7 @@
       transform: scale(1.2);
     }
 
-    /* SECTION DISCOVER / REKOMENDASI */
+    /* SECTION DISCOVER */
     .discover-section {
       padding: 40px 20px;
       max-width: 1200px;
@@ -187,7 +187,7 @@
       margin-bottom: 30px;
     }
 
-    /* GRID PRODUK KATALOG */
+    /* GRID PRODUK */
     .product-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -270,7 +270,7 @@
       background: #333;
     }
 
-    /* SIDEBAR NAVIGASI MINIMALIS */
+    /* SIDEBAR NAVIGASI MINIMALIS DENGAN FOOTER SUPPORTED BY */
     #overlay {
       position: fixed;
       top: 0;
@@ -299,9 +299,16 @@
       padding: 30px 20px;
       transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1);
       z-index: 999;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
     .sidebar.active { transform: translateX(300px); }
+
+    .sidebar-menu-content {
+      overflow-y: auto;
+    }
 
     .menu-section {
       border-bottom: 1px solid #eee;
@@ -326,21 +333,45 @@
     }
 
     .menu-section.active .submenu {
-      max-height: 200px;
+      max-height: 250px;
       margin-top: 10px;
     }
 
-    .submenu p {
+    .submenu p, .submenu a {
+      display: block;
       margin: 10px 0;
       color: #666;
       font-size: 12px;
       letter-spacing: 1px;
       cursor: pointer;
+      text-decoration: none;
     }
 
-    .submenu p:hover {
+    .submenu p:hover, .submenu a:hover {
       color: #111;
       font-weight: bold;
+    }
+
+    /* FOOTER SIDEBAR SUPPORTED BY */
+    .sidebar-footer {
+      border-top: 1px solid #eee;
+      padding-top: 20px;
+      text-align: center;
+    }
+
+    .sidebar-footer p {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #888;
+    }
+
+    .sidebar-footer strong {
+      font-size: 11px;
+      color: #111;
+      letter-spacing: 2.5px;
+      display: block;
+      margin-top: 4px;
     }
 
     /* MODAL STYLES */
@@ -352,7 +383,6 @@
       background-color: rgba(0, 0, 0, 0.9);
       justify-content: center;
       align-items: center;
-      flex-direction: column;
     }
 
     .modal-content {
@@ -364,7 +394,7 @@
 </head>
 <body>
 
-  <!-- HEADER ELEGAN SESUAI ACUAN GAMBAR -->
+  <!-- HEADER ELEGAN -->
   <header>
     <div class="header-left">
       <button class="icon-btn" onclick="toggleMenu()" aria-label="Toggle Menu">&#9776;</button>
@@ -373,7 +403,7 @@
       <span class="brand-name" onclick="showHome()">MUTUMANIKAM</span>
     </div>
     <div class="header-right">
-      <button class="icon-btn" aria-label="Search">&#128092;</button>
+      <button class="icon-btn" aria-label="Search">&#128093;</button>
       <button class="icon-btn" aria-label="Cart" onclick="openProducts()">&#128092;</button>
     </div>
   </header>
@@ -382,32 +412,49 @@
 
   <!-- SIDEBAR MENU -->
   <div id="mobileMenu" class="sidebar">
-    <div class="menu-section">
-      <div class="menu-title" onclick="showHome(); toggleMenu();">BERANDA</div>
-    </div>
-
-    <div class="menu-section">
-      <div class="menu-title" onclick="openProducts();">SEMUA PRODUK</div>
-    </div>
-
-    <div class="menu-section">
-      <div class="menu-title" onclick="toggleSub(this)">KATEGORI <span>⌄</span></div>
-      <div class="submenu">
-        <p onclick="filterCategory('Necklace')">Necklace</p>
-        <p onclick="filterCategory('Bracelet')">Bracelet</p>
-        <p onclick="filterCategory('Purse')">Purse</p>
-        <p onclick="filterCategory('Belt')">Belt</p>
-        <p onclick="filterCategory('Home Deco')">Home Deco</p>
+    <div class="sidebar-menu-content">
+      <div class="menu-section">
+        <div class="menu-title" onclick="showHome(); toggleMenu();">BERANDA</div>
       </div>
+
+      <div class="menu-section">
+        <div class="menu-title" onclick="openProducts();">SEMUA PRODUK</div>
+      </div>
+
+      <div class="menu-section">
+        <div class="menu-title" onclick="toggleSub(this)">KATEGORI <span>⌄</span></div>
+        <div class="submenu">
+          <p onclick="filterCategory('Necklace')">Necklace</p>
+          <p onclick="filterCategory('Bracelet')">Bracelet</p>
+          <p onclick="filterCategory('Purse')">Purse</p>
+          <p onclick="filterCategory('Belt')">Belt</p>
+          <p onclick="filterCategory('Home Deco')">Home Deco</p>
+        </div>
+      </div>
+
+      <!-- ADDED: MOBILE CONTACT SECTION -->
+      <div class="menu-section">
+        <div class="menu-title" onclick="toggleSub(this)">CONTACT US <span>⌄</span></div>
+        <div class="submenu">
+          <a href="https://wa.me/6281353885122" target="_blank">💬 WhatsApp / Call</a>
+          <a href="tel:+6281353885122">📞 +62 813-5388-5122</a>
+          <a href="mailto:info@mutumanikam.com">✉️ info@mutumanikam.com</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADDED: SUPPORTED BY AZZA COLLECTION -->
+    <div class="sidebar-footer">
+      <p>Supported by</p>
+      <strong>AZZA COLLECTION</strong>
     </div>
   </div>
 
-  <!-- HALAMAN UTAMA (HOME) SESUAI TAMPILAN GOXUA BALI -->
+  <!-- HALAMAN UTAMA (HOME) -->
   <main id="homePage" class="page-section active-page">
     
     <!-- SLIDER / BANNER MEDIA -->
     <div class="hero-container">
-      <!-- SLIDE 1 FOTO UTAMA -->
       <div class="hero-slide active" style="background-image: url('https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=1200');">
         <div class="hero-overlay">
           <h1 class="hero-title">MUTUMANIKAM STORE</h1>
@@ -418,7 +465,6 @@
         </div>
       </div>
 
-      <!-- SLIDE 2 FOTO KEDUA -->
       <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=1200');">
         <div class="hero-overlay">
           <h1 class="hero-title">NEW COLLECTION</h1>
@@ -428,14 +474,13 @@
         </div>
       </div>
 
-      <!-- INDIKATOR DOTS SLIDER -->
       <div class="slider-dots">
         <div class="dot active" onclick="setSlide(0)"></div>
         <div class="dot" onclick="setSlide(1)"></div>
       </div>
     </div>
 
-    <!-- DISCOVER / REKOMENDASI DI HALAMAN DEPAN -->
+    <!-- DISCOVER / REKOMENDASI -->
     <section class="discover-section">
       <h2 class="section-title">DISCOVER</h2>
       <div id="discover-container" class="product-grid">
@@ -445,7 +490,7 @@
 
   </main>
 
-  <!-- HALAMAN KATALOG PRODUK LENGKAP -->
+  <!-- HALAMAN KATALOG PRODUK -->
   <main id="productPage" class="page-section">
     <h2 id="catalogTitle" style="text-align:center; margin-top:30px; letter-spacing: 2px; text-transform: uppercase; font-size:18px;">Katalog Produk</h2>
     
