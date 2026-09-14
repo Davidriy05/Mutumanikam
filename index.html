@@ -19,7 +19,7 @@
       letter-spacing: 1px;
     }
 
-    /* HEADER BERSIH GAYA LUXURY */
+    /* HEADER */
     header {
       padding: 18px 20px;
       display: flex;
@@ -147,7 +147,6 @@
       color: #111111;
     }
 
-    /* SLIDER DOTS INDIKATOR */
     .slider-dots {
       position: absolute;
       bottom: 20px;
@@ -270,7 +269,7 @@
       background: #333;
     }
 
-    /* SIDEBAR NAVIGASI MINIMALIS */
+    /* SIDEBAR NAVIGASI */
     #overlay {
       position: fixed;
       top: 0;
@@ -371,7 +370,7 @@
       margin-top: 4px;
     }
 
-    /* MODAL DETAIL PRODUK (SESUAI GAMBAR REFERENSI BARU) */
+    /* MODAL DETAIL PRODUK + PILIHAN WARNA */
     .product-detail-modal {
       display: none;
       position: fixed;
@@ -451,6 +450,43 @@
       font-size: 18px;
       font-weight: 600;
       margin-bottom: 15px;
+    }
+
+    /* STYLE DESAIN TAMPILAN PILIHAN WARNA */
+    .color-section {
+      margin: 20px 0;
+    }
+
+    .color-label {
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .color-options {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .color-chip {
+      padding: 8px 14px;
+      border: 1px solid #ccc;
+      background: #fff;
+      font-size: 12px;
+      letter-spacing: 1px;
+      cursor: pointer;
+      text-transform: capitalize;
+      transition: 0.2s ease;
+    }
+
+    .color-chip.active {
+      border: 2px solid #111;
+      font-weight: bold;
+      background: #f4f4f4;
     }
 
     /* TOMBOL TO TOP MELINGKAR */
@@ -601,36 +637,47 @@
       <p style="text-align:center; width:100%;">Memuat produk...</p>
     </div>
 
-    <!-- FORM UPLOAD PRODUK (ADMIN) -->
+    <!-- FORM UPLOAD PRODUK (ADMIN DENGAN KOLOM WARNA) -->
     <div style="padding:20px; border-top:1px solid #eee; max-width:500px; margin: 40px auto; background:#fafafa;">
       <h3 style="font-size:14px; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:15px;">Upload Produk (Admin)</h3>
 
-      <input type="text" id="pNama" placeholder="Nama Produk" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc;">
+      <input type="text" id="pNama" placeholder="Nama Produk (misal: Sabuk BL 107)" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc;">
       <input type="number" id="pHarga" placeholder="Harga" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc;">
-      <input type="text" id="pKategori" placeholder="Kategori (contoh: Home Deco)" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc;">
+      <input type="text" id="pKategori" placeholder="Kategori (contoh: Belt)" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc;">
+      
+      <!-- KOLOM BARU INPUT WARNA (PISAHKAN DENGAN KOMA) -->
+      <input type="text" id="pWarna" placeholder="Pilihan Warna (Contoh: Cokelat, Biru, Hijau)" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc;">
+      
       <input type="file" id="pGambar" accept="image/*" style="margin-bottom:15px;">
       
       <button id="btnUpload" onclick="uploadProduk()" class="buy-btn">Upload Produk</button>
     </div>
   </main>
 
-  <!-- MODAL DETAIL PRODUK + GALERI THUMBNAILS (SESUAI FOTO) -->
+  <!-- MODAL DETAIL PRODUK + PILIHAN WARNA -->
   <div id="productDetailModal" class="product-detail-modal">
     <button class="close-detail-btn" onclick="closeProductDetail()">&times;</button>
     
     <div class="detail-container">
       <img id="detailMainImg" class="detail-main-img" src="" alt="Detail Gambar">
       
-      <!-- THUMBNAILS / FOTO PENDUKUNG -->
       <div id="detailThumbnails" class="detail-thumbnails">
         <!-- Generasi via JS -->
       </div>
 
       <div class="detail-info">
         <p class="detail-brand">MUTUMANIKAM.COM</p>
-        <h2 id="detailTitle" class="detail-title">Grape</h2>
+        <h2 id="detailTitle" class="detail-title">Nama Produk</h2>
         <p id="detailPrice" class="detail-price">Rp 0</p>
         
+        <!-- ELEMENT PILIHAN WARNA PRODUK -->
+        <div class="color-section">
+          <span class="color-label">Pilih Warna: <strong id="selectedColorName">-</strong></span>
+          <div id="colorOptionsBox" class="color-options">
+            <!-- Pilihan Warna Ditampilkan Di Sini oleh JS -->
+          </div>
+        </div>
+
         <div class="qty-box" style="justify-content:flex-start; margin: 20px 0;">
           <button type="button" onclick="changeQtyDetail(-1)">-</button>
           <span id="detailQty" class="qty">1</span>
@@ -658,6 +705,7 @@
       <textarea id="alamat" placeholder="Alamat Lengkap" style="width:100%; padding:10px; margin-top:10px; border:1px solid #ccc; height:80px;"></textarea>
 
       <p id="produkDipilih" style="margin-top:15px; font-weight:600; font-size:13px;"></p>
+      <p id="warnaDipilih" style="margin-top:5px; font-size:12px; color:#555;"></p>
       <p id="totalHarga" style="color:#111; font-weight:bold; font-size:1.1em; margin-top:5px;"></p>
 
       <button id="btnKirimWA" onclick="kirimWA()" class="buy-btn" style="margin-top:15px;">Kirim ke WhatsApp</button>
@@ -680,6 +728,7 @@
 
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+    const storage = firebase.storage();
 
     function showPage(pageId) {
       document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active-page'));
@@ -725,6 +774,7 @@
       return String(str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
     }
 
+    // MEMUAT PRODUK DARI DATABASE
     function loadProducts(targetId, field = null, value = null) {
       const container = document.getElementById(targetId);
       container.innerHTML = "<p style='text-align:center;width:100%;padding:20px;'>Memuat produk...</p>";
@@ -744,17 +794,16 @@
             let harga = Number(p.price) || 0;
             let kategori = escapeHtml(p.category || "Umum");
             let img = p.image ? p.image.trim() : "https://via.placeholder.com/200";
-            
-            // Array foto tambahan/gallery jika ada
+            let colors = p.colors || ["Standar"];
             let imagesArr = p.images || [img];
 
             html += `
-              <div class="product-card" data-name="${namaClean}" data-price="${harga}">
-                <img src="${img}" onclick="openProductDetail('${namaClean}', ${harga}, '${img}', ${JSON.stringify(imagesArr).replace(/"/g, '&quot;')})" onerror="this.src='https://via.placeholder.com/200'">
+              <div class="product-card">
+                <img src="${img}" onclick="openProductDetail('${namaClean}', ${harga}, '${img}', ${JSON.stringify(imagesArr).replace(/"/g, '&quot;')}, ${JSON.stringify(colors).replace(/"/g, '&quot;')})" onerror="this.src='https://via.placeholder.com/200'">
                 <h3>${namaClean}</h3>
                 <p class="category">${kategori}</p>
                 <p class="price">Rp ${harga.toLocaleString('id-ID')}</p>
-                <button type="button" class="buy-btn" onclick="openProductDetail('${namaClean}', ${harga}, '${img}', ${JSON.stringify(imagesArr).replace(/"/g, '&quot;')})">Lihat Detail</button>
+                <button type="button" class="buy-btn" onclick="openProductDetail('${namaClean}', ${harga}, '${img}', ${JSON.stringify(imagesArr).replace(/"/g, '&quot;')}, ${JSON.stringify(colors).replace(/"/g, '&quot;')})">Lihat Detail</button>
               </div>
             `;
           });
@@ -766,21 +815,38 @@
       });
     }
 
-    // FUINSI DETAIL PRODUK SESUAI FOTO HALTER DRESS
+    // DETAIL PRODUK + FITUR WARNA
     let activeDetailProduct = {};
 
-    function openProductDetail(name, price, mainImg, allImages) {
-      activeDetailProduct = { name, price, mainImg, qty: 1 };
+    function openProductDetail(name, price, mainImg, allImages, colors) {
+      let colorList = (colors && colors.length > 0) ? colors : ["Standar"];
+      activeDetailProduct = { name, price, mainImg, qty: 1, selectedColor: colorList[0] };
 
       document.getElementById("detailTitle").innerText = name;
       document.getElementById("detailPrice").innerText = "Rp " + price.toLocaleString('id-ID');
       document.getElementById("detailMainImg").src = mainImg;
       document.getElementById("detailQty").innerText = "1";
+      document.getElementById("selectedColorName").innerText = activeDetailProduct.selectedColor;
 
+      // GENESIS OPTIONS WARNA
+      const colorBox = document.getElementById("colorOptionsBox");
+      colorBox.innerHTML = "";
+      colorList.forEach((warna, idx) => {
+        let chip = document.createElement("div");
+        chip.className = "color-chip" + (idx === 0 ? " active" : "");
+        chip.innerText = warna;
+        chip.onclick = function() {
+          document.querySelectorAll(".color-chip").forEach(el => el.classList.remove("active"));
+          this.classList.add("active");
+          activeDetailProduct.selectedColor = warna;
+          document.getElementById("selectedColorName").innerText = warna;
+        };
+        colorBox.appendChild(chip);
+      });
+
+      // GENESIS THUMBNAILS
       const thumbBox = document.getElementById("detailThumbnails");
       thumbBox.innerHTML = "";
-
-      // Jika gambar hanya 1, buat 3 variasi foto contoh agar galeri thumbnail terlihat penuh seperti di referensi
       let thumbs = (allImages && allImages.length > 1) ? allImages : [mainImg, mainImg, mainImg];
 
       thumbs.forEach((srcUrl, idx) => {
@@ -796,7 +862,7 @@
       });
 
       document.getElementById("btnBeliDetail").onclick = function() {
-        openCheckoutDirect(name, price, activeDetailProduct.qty);
+        openCheckoutDirect(name, price, activeDetailProduct.qty, activeDetailProduct.selectedColor);
       };
 
       document.getElementById("productDetailModal").style.display = "block";
@@ -812,14 +878,17 @@
       document.getElementById("detailQty").innerText = activeDetailProduct.qty;
     }
 
-    function openCheckoutDirect(name, price, qty) {
+    // CHECKOUT DENGAN INFORMASI WARNA
+    function openCheckoutDirect(name, price, qty, color) {
       let total = price * qty;
       const modal = document.getElementById("checkoutModal");
       modal.setAttribute("data-active-name", name);
       modal.setAttribute("data-active-price", price);
       modal.setAttribute("data-active-qty", qty);
+      modal.setAttribute("data-active-color", color);
 
       document.getElementById("produkDipilih").innerText = `Produk: ${name} (${qty} pcs)`;
+      document.getElementById("warnaDipilih").innerText = `Warna Dipilih: ${color}`;
       document.getElementById("totalHarga").innerText = `Total: Rp ${total.toLocaleString('id-ID')}`;
       modal.style.display = "flex";
     }
@@ -837,14 +906,65 @@
       let productName = modal.getAttribute("data-active-name");
       let price = Number(modal.getAttribute("data-active-price"));
       let qty = Number(modal.getAttribute("data-active-qty"));
+      let color = modal.getAttribute("data-active-color");
       let total = price * qty;
       let invNum = "INV-" + Date.now();
 
       let phone = "6281353885122";
-      let pesan = `Halo Admin Mutumanikam 👋\n\nSaya mau order:\n🧾 Invoice: ${invNum}\n🛍️ Produk: ${productName}\n📦 Jumlah: ${qty} pcs\n💰 Total: Rp ${total.toLocaleString('id-ID')}\n\n👤 Nama: ${namaInput}\n📍 Alamat: ${alamatInput}`;
+      let pesan = `Halo Admin Mutumanikam 👋\n\nSaya mau order:\n🧾 Invoice: ${invNum}\n🛍️ Produk: ${productName}\n🎨 Warna: ${color}\n📦 Jumlah: ${qty} pcs\n💰 Total: Rp ${total.toLocaleString('id-ID')}\n\n👤 Nama: ${namaInput}\n📍 Alamat: ${alamatInput}`;
       
       window.open(`https://wa.me/${phone}?text=${encodeURIComponent(pesan)}`, "_blank");
       closeCheckout();
+    }
+
+    // UPLOAD PRODUK OLEH ADMIN DENGAN WARNA
+    function uploadProduk() {
+      const nama = document.getElementById("pNama").value.trim();
+      const harga = Number(document.getElementById("pHarga").value);
+      const kategori = document.getElementById("pKategori").value.trim();
+      const warnaStr = document.getElementById("pWarna").value.trim();
+      const fileInput = document.getElementById("pGambar");
+      const btn = document.getElementById("btnUpload");
+
+      if (!nama || !harga || !kategori || fileInput.files.length === 0) {
+        return alert("Mohon lengkapi semua kolom input!");
+      }
+
+      // Memecah teks warna yang dipisahkan koma menjadi Array
+      let arrayWarna = warnaStr ? warnaStr.split(',').map(w => w.trim()) : ["Standar"];
+
+      const file = fileInput.files[0];
+      const storageRef = storage.ref('products/' + Date.now() + '_' + file.name);
+
+      btn.innerText = "Mengupload...";
+      btn.disabled = true;
+
+      storageRef.put(file).then(snapshot => snapshot.ref.getDownloadURL()).then(downloadURL => {
+        return db.collection("Products").add({
+          name: nama,
+          price: harga,
+          category: kategori,
+          image: downloadURL,
+          images: [downloadURL],
+          colors: arrayWarna,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      }).then(() => {
+        alert("Produk berhasil diupload!");
+        document.getElementById("pNama").value = "";
+        document.getElementById("pHarga").value = "";
+        document.getElementById("pKategori").value = "";
+        document.getElementById("pWarna").value = "";
+        fileInput.value = "";
+        btn.innerText = "Upload Produk";
+        btn.disabled = false;
+        loadProducts('product-container');
+      }).catch(err => {
+        console.error(err);
+        alert("Gagal mengupload produk!");
+        btn.innerText = "Upload Produk";
+        btn.disabled = false;
+      });
     }
 
     function scrollToTop() {
