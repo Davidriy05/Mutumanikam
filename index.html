@@ -6,27 +6,65 @@
   <title>Mutumanikam - Authentic Store</title>
 
   <style>
-    body {
+    * {
+      box-sizing: border-box;
       margin: 0;
-      background-color: #111;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      letter-spacing: 0.5px;
+      padding: 0;
     }
 
+    body {
+      background-color: #ffffff;
+      color: #111111;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      letter-spacing: 1px;
+    }
+
+    /* HEADER BERSIH GAYA LUXURY (PUTIH) */
     header {
-      padding: 15px 20px;
+      padding: 18px 20px;
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 15px;
-      background: #161616;
-      border-bottom: 1px solid #222;
+      background: #ffffff;
+      border-bottom: 1px solid #eeeeee;
       position: sticky;
       top: 0;
       z-index: 900;
     }
 
-    /* SISTEM NAVIGATION PAGE VIEWS */
+    .header-left, .header-right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex: 1;
+    }
+
+    .header-right {
+      justify-content: flex-end;
+    }
+
+    .logo-container {
+      text-align: center;
+    }
+
+    .brand-name {
+      font-size: 22px;
+      font-weight: 400;
+      color: #111;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: #111;
+      cursor: pointer;
+    }
+
+    /* NAVIGATION PAGE VIEWS */
     .page-section {
       display: none;
     }
@@ -35,158 +73,211 @@
       display: block;
     }
 
-    /* MEDIA CONTAINER (HALAMAN UTAMA) */
-    .media-container {
-      padding: 20px;
+    /* HERO BANNER SLIDER (SESUAI GAMBAR DEPAN) */
+    .hero-container {
+      position: relative;
+      width: 100%;
+      height: 75vh;
+      min-height: 480px;
+      overflow: hidden;
+      background: #f4f4f4;
+    }
+
+    .hero-slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 0.8s ease-in-out;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .hero-slide.active {
+      opacity: 1;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.25);
       display: flex;
       flex-direction: column;
-      gap: 20px;
-      max-width: 900px;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      text-align: center;
+      color: #fff;
+    }
+
+    .hero-title {
+      font-size: 24px;
+      font-weight: 500;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 25px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      max-width: 280px;
+    }
+
+    .btn-outline {
+      border: 1.5px solid #ffffff;
+      background: rgba(0, 0, 0, 0.2);
+      color: #ffffff;
+      padding: 12px 20px;
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 500;
+      cursor: pointer;
+      backdrop-filter: blur(2px);
+      transition: 0.3s ease;
+    }
+
+    .btn-outline:hover {
+      background: #ffffff;
+      color: #111111;
+    }
+
+    /* SLIDER DOTS INDIKATOR */
+    .slider-dots {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      gap: 8px;
+      z-index: 10;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .dot.active {
+      background: #ffffff;
+      transform: scale(1.2);
+    }
+
+    /* SECTION DISCOVER / REKOMENDASI */
+    .discover-section {
+      padding: 40px 20px;
+      max-width: 1200px;
       margin: 0 auto;
     }
 
-    .media-card {
-      background: #1a1a1a;
-      border: 1px solid #333;
-      border-radius: 8px;
-      overflow: hidden;
+    .section-title {
+      font-size: 16px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #666;
+      text-align: center;
+      margin-bottom: 30px;
     }
 
-    .media-card img {
-      width: 100%;
-      height: auto;
-      max-height: 480px;
-      object-fit: cover;
-      display: block;
-    }
-
-    .media-card video {
-      width: 100%;
-      max-height: 480px;
-      display: block;
-      background: #000;
-    }
-
-    .media-title {
-      padding: 12px 15px;
-      font-size: 1.1em;
-      color: #d4af37;
-      font-weight: bold;
-      background: #161616;
-    }
-
-    /* GRID PRODUK (HALAMAN KATALOG) */
+    /* GRID PRODUK KATALOG */
     .product-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
       gap: 20px;
       padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
     .product-card {
-      background: #222;
-      border: 1px solid #333;
-      border-radius: 8px;
-      padding: 15px;
+      background: #fff;
+      border: 1px solid #eee;
+      padding: 10px;
       text-align: center;
       transition: 0.3s;
-      opacity: 0;
-      transform: translateY(20px);
-      animation: fadeUp 0.6s ease forwards;
     }
-
-    .brand-name { transition: text-shadow 0.3s ease; }
-    .brand-name:hover { text-shadow: 0 0 10px rgba(212, 175, 55, 0.6); }
 
     .product-card:hover {
-      transform: translateY(-5px);
-      border-color: #d4af37;
-    }
-
-    @keyframes fadeUp {
-      to { opacity: 1; transform: translateY(0); }
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
     }
 
     .product-card img {
       width: 100%;
-      height: 200px;
+      height: 220px;
       object-fit: cover;
-      border-radius: 4px;
       cursor: pointer;
-      transition: transform 0.2s;
     }
 
-    .product-card img:hover { transform: scale(1.03); }
+    .product-card h3 {
+      margin: 12px 0 4px;
+      color: #111;
+      font-size: 0.95em;
+      letter-spacing: 1px;
+    }
+
+    .product-card .category {
+      font-size: 0.75em;
+      color: #888;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    .product-card .price {
+      font-weight: 600;
+      color: #111;
+      font-size: 0.9em;
+    }
 
     .qty-box {
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 10px;
-      margin-top: 10px;
+      margin: 10px 0;
     }
 
     .qty-box button {
-      width: 30px;
-      height: 30px;
-      border: none;
-      background: #333;
-      color: white;
-      font-size: 16px;
+      width: 25px;
+      height: 25px;
+      border: 1px solid #ccc;
+      background: #fff;
+      color: #111;
       cursor: pointer;
-      border-radius: 5px;
-      user-select: none;
-    }
-
-    .qty-box button:hover { background: #444; }
-
-    .qty-box span {
-      min-width: 20px;
-      text-align: center;
-      font-weight: bold;
-    }
-
-    .product-card h3 {
-      margin: 10px 0 5px;
-      color: #d4af37;
-      font-size: 1.1em;
-    }
-
-    .product-card .category {
-      font-size: 0.85em;
-      color: #888;
-      margin-bottom: 5px;
-    }
-
-    .product-card .price {
-      font-weight: bold;
-      color: #fff;
-      font-size: 1em;
     }
 
     .buy-btn {
       width: 100%;
       padding: 10px;
-      margin-top: 10px;
-      background: #d4af37;
-      color: #111;
+      background: #111;
+      color: #fff;
       border: none;
-      border-radius: 5px;
-      font-weight: bold;
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
       cursor: pointer;
       transition: 0.3s;
     }
 
-    .buy-btn:hover { background: #f3e5ab; }
+    .buy-btn:hover {
+      background: #333;
+    }
 
+    /* SIDEBAR NAVIGASI MINIMALIS */
     #overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(4px);
+      background: rgba(0, 0, 0, 0.4);
       opacity: 0;
       pointer-events: none;
       transition: 0.4s;
@@ -201,29 +292,20 @@
     .sidebar {
       position: fixed;
       top: 0;
-      left: -280px;
-      width: 260px;
+      left: -300px;
+      width: 280px;
       height: 100%;
-      background: #111;
-      padding: 20px;
-      box-sizing: border-box;
+      background: #ffffff;
+      padding: 30px 20px;
       transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1);
       z-index: 999;
     }
 
-    .sidebar.active { transform: translateX(280px); }
+    .sidebar.active { transform: translateX(300px); }
 
     .menu-section {
-      opacity: 0;
-      transform: translateX(-20px);
-      transition: 0.4s;
-      border-bottom: 1px solid #333;
+      border-bottom: 1px solid #eee;
       padding: 15px 0;
-    }
-
-    .sidebar.active .menu-section {
-      opacity: 1;
-      transform: translateX(0);
     }
 
     .menu-title {
@@ -231,142 +313,85 @@
       justify-content: space-between;
       cursor: pointer;
       letter-spacing: 2px;
-      font-weight: bold;
-      user-select: none;
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #111;
     }
-
-    .menu-title span { transition: 0.3s; }
-    .menu-section.active .menu-title span { transform: rotate(180deg); }
 
     .submenu {
       max-height: 0;
       overflow: hidden;
-      opacity: 0;
-      transition: max-height 0.4s ease, opacity 0.3s ease;
+      transition: max-height 0.4s ease;
     }
 
     .menu-section.active .submenu {
       max-height: 200px;
-      opacity: 1;
       margin-top: 10px;
     }
 
     .submenu p {
       margin: 10px 0;
-      color: #aaa;
+      color: #666;
+      font-size: 12px;
+      letter-spacing: 1px;
       cursor: pointer;
-      transition: 0.3s;
     }
 
     .submenu p:hover {
-      color: #d4af37;
-      transform: translateX(6px);
+      color: #111;
+      font-weight: bold;
     }
 
+    /* MODAL STYLES */
     .image-modal {
       display: none; 
       position: fixed; 
       z-index: 1000; 
-      left: 0;
-      top: 0;
-      width: 100%; 
-      height: 100%; 
+      inset: 0;
       background-color: rgba(0, 0, 0, 0.9);
       justify-content: center;
       align-items: center;
-      overflow: hidden;
       flex-direction: column;
     }
 
-    .modal-content-wrapper {
-      position: relative;
-      max-width: 90%;
-      max-height: 75vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
     .modal-content {
-      max-width: 100%;
-      max-height: 75vh;
-      border-radius: 8px;
-      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
-      transition: transform 0.3s ease;
-      cursor: zoom-in;
-    }
-
-    .close-modal {
-      position: absolute;
-      top: 20px;
-      right: 35px;
-      color: #fff;
-      font-size: 40px;
-      font-weight: bold;
-      cursor: pointer;
-      z-index: 1001;
-      line-height: 1;
-      user-select: none;
-    }
-
-    .close-modal:hover { color: #d4af37; }
-
-    .zoom-controls {
-      margin-top: 15px;
-      display: flex;
-      gap: 15px;
-      z-index: 1001;
-    }
-
-    .zoom-btn {
-      background: #222;
-      color: #d4af37;
-      border: 1px solid #d4af37;
-      padding: 8px 15px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: bold;
-      user-select: none;
-    }
-
-    .zoom-btn:hover {
-      background: #d4af37;
-      color: #111;
+      max-width: 90%;
+      max-height: 80vh;
+      border-radius: 4px;
     }
   </style>
 </head>
 <body>
 
+  <!-- HEADER ELEGAN SESUAI ACUAN GAMBAR -->
   <header>
-    <button onclick="toggleMenu()" style="background:none; border:none; font-size:24px; color:#d4af37; cursor:pointer;" aria-label="Toggle Menu">
-      &#9776;
-    </button>
+    <div class="header-left">
+      <button class="icon-btn" onclick="toggleMenu()" aria-label="Toggle Menu">&#9776;</button>
+    </div>
     <div class="logo-container">
-      <span class="brand-name" style="font-size: 20px; font-weight: bold; color: #d4af37; cursor:pointer;" onclick="showHome()">Mutumanikam</span>
+      <span class="brand-name" onclick="showHome()">MUTUMANIKAM</span>
+    </div>
+    <div class="header-right">
+      <button class="icon-btn" aria-label="Search">&#128092;</button>
+      <button class="icon-btn" aria-label="Cart" onclick="openProducts()">&#128092;</button>
     </div>
   </header>
 
   <div id="overlay" onclick="toggleMenu()"></div>
 
-  <!-- SIDEBAR (MENU KATALOG PRODUK DI SINI) -->
+  <!-- SIDEBAR MENU -->
   <div id="mobileMenu" class="sidebar">
     <div class="menu-section">
-      <div class="menu-title" onclick="showHome(); toggleMenu();">
-        HOME (GALLERY)
-      </div>
+      <div class="menu-title" onclick="showHome(); toggleMenu();">BERANDA</div>
     </div>
 
-    <!-- SEMUA PRODUK -->
     <div class="menu-section">
-      <div class="menu-title" onclick="openProducts()" style="color:#d4af37;">
-        SEMUA PRODUK
-      </div>
+      <div class="menu-title" onclick="openProducts();">SEMUA PRODUK</div>
     </div>
 
-    <!-- KATEGORI PRODUK -->
     <div class="menu-section">
-      <div class="menu-title" onclick="toggleSub(this)">SHOP BY CATEGORY <span>⌄</span></div>
+      <div class="menu-title" onclick="toggleSub(this)">KATEGORI <span>⌄</span></div>
       <div class="submenu">
         <p onclick="filterCategory('Necklace')">Necklace</p>
         <p onclick="filterCategory('Bracelet')">Bracelet</p>
@@ -377,83 +402,88 @@
     </div>
   </div>
 
-  <!-- HALAMAN UTAMA (HOME): FOTO & VIDEO -->
+  <!-- HALAMAN UTAMA (HOME) SESUAI TAMPILAN GOXUA BALI -->
   <main id="homePage" class="page-section active-page">
-    <section class="media-container">
-      <h2 style="color:#d4af37; text-align:center; margin-bottom:10px;">Mutumanikam Showcase</h2>
-      
-      <!-- CARD FOTO UTAMA -->
-      <div class="media-card">
-        <div class="media-title">Featured Showcase</div>
-        <img src="https://via.placeholder.com/1200x600" alt="Mutumanikam Collection" id="heroBanner">
+    
+    <!-- SLIDER / BANNER MEDIA -->
+    <div class="hero-container">
+      <!-- SLIDE 1 FOTO UTAMA -->
+      <div class="hero-slide active" style="background-image: url('https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=1200');">
+        <div class="hero-overlay">
+          <h1 class="hero-title">MUTUMANIKAM STORE</h1>
+          <div class="hero-buttons">
+            <button class="btn-outline" onclick="filterCategory('Woman')">WOMAN</button>
+            <button class="btn-outline" onclick="filterCategory('Home Deco')">GX HOME</button>
+          </div>
+        </div>
       </div>
 
-      <!-- CARD VIDEO PROMO -->
-      <div class="media-card">
-        <div class="media-title">Brand Video</div>
-        <video controls poster="https://via.placeholder.com/1200x600">
-          <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-          Browser kamu tidak mendukung pemutaran video HTML5.
-        </video>
+      <!-- SLIDE 2 FOTO KEDUA -->
+      <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=1200');">
+        <div class="hero-overlay">
+          <h1 class="hero-title">NEW COLLECTION</h1>
+          <div class="hero-buttons">
+            <button class="btn-outline" onclick="openProducts()">DISCOVER ALL</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- INDIKATOR DOTS SLIDER -->
+      <div class="slider-dots">
+        <div class="dot active" onclick="setSlide(0)"></div>
+        <div class="dot" onclick="setSlide(1)"></div>
+      </div>
+    </div>
+
+    <!-- DISCOVER / REKOMENDASI DI HALAMAN DEPAN -->
+    <section class="discover-section">
+      <h2 class="section-title">DISCOVER</h2>
+      <div id="discover-container" class="product-grid">
+        <p style="text-align:center; width:100%; color:#888;">Memuat rekomendasi...</p>
       </div>
     </section>
+
   </main>
 
-  <!-- HALAMAN PRODUK (TAMPIL HANYA SAAT DIKLIK DARI SIDEBAR) -->
+  <!-- HALAMAN KATALOG PRODUK LENGKAP -->
   <main id="productPage" class="page-section">
-    <h2 id="catalogTitle" style="color:#d4af37; text-align:center; margin-top:20px;">Katalog Produk</h2>
+    <h2 id="catalogTitle" style="text-align:center; margin-top:30px; letter-spacing: 2px; text-transform: uppercase; font-size:18px;">Katalog Produk</h2>
     
     <div id="product-container" class="product-grid">
-      <p style="text-align:center; padding:20px;">Memuat katalog produk...</p>
+      <p style="text-align:center; width:100%;">Memuat produk...</p>
     </div>
 
-    <!-- UPLOAD PRODUK (ADMIN) -->
-    <div style="padding:20px; border-top:1px solid #333; max-width:600px; margin: 30px auto 0;">
-      <h3 style="color:#d4af37;">Upload Produk (Admin)</h3>
+    <!-- FORM UPLOAD PRODUK (ADMIN) -->
+    <div style="padding:20px; border-top:1px solid #eee; max-width:500px; margin: 40px auto; background:#fafafa;">
+      <h3 style="font-size:14px; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:15px;">Upload Produk (Admin)</h3>
 
-      <input type="text" id="pNama" placeholder="Nama Produk" style="width:100%; padding:10px; margin-top:10px; box-sizing:border-box;">
+      <input type="text" id="pNama" placeholder="Nama Produk" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc;">
+      <input type="number" id="pHarga" placeholder="Harga" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc;">
+      <input type="text" id="pKategori" placeholder="Kategori (contoh: Home Deco)" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc;">
+      <input type="file" id="pGambar" accept="image/*" style="margin-bottom:15px;">
       
-      <input type="number" id="pHarga" placeholder="Harga" style="width:100%; padding:10px; margin-top:10px; box-sizing:border-box;">
-      
-      <input type="text" id="pKategori" placeholder="Kategori (contoh: Home Deco)" style="width:100%; padding:10px; margin-top:10px; box-sizing:border-box;">
-      
-      <input type="file" id="pGambar" accept="image/*" style="margin-top:10px; color:#fff;">
-      
-      <button id="btnUpload" onclick="uploadProduk()" style="width:100%; padding:12px; margin-top:10px; background:#d4af37; border:none; font-weight:bold; cursor:pointer; color:#111; border-radius:5px;">
-        Upload Produk
-      </button>
+      <button id="btnUpload" onclick="uploadProduk()" class="buy-btn">Upload Produk</button>
     </div>
   </main>
 
-  <div id="imageModal" class="image-modal">
-    <span class="close-modal" onclick="closeImageModal()">&times;</span>
-    <div class="modal-content-wrapper">
-      <img class="modal-content" id="imgFull" alt="Product Preview" onclick="toggleZoomImg()">
-    </div>
-    <div class="zoom-controls">
-      <button class="zoom-btn" onclick="zoomIn()">Zoom +</button>
-      <button class="zoom-btn" onclick="zoomOut()">Zoom -</button>
-      <button class="zoom-btn" onclick="resetZoom()">Reset</button>
-    </div>
+  <!-- MODAL DISPLAY GAMBAR BESAR -->
+  <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+    <img class="modal-content" id="imgFull" alt="Product Preview">
   </div>
 
-  <div id="checkoutModal" style="display:none; position:fixed; z-index:1002; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.8); justify-content:center; align-items:center;">
-    <div style="background:#222; padding:20px; border-radius:10px; width:90%; max-width:400px; color:#fff;">
-      <h3 style="color:#d4af37; margin-top:0;">Checkout Order</h3>
+  <!-- MODAL CHECKOUT ORDER WA -->
+  <div id="checkoutModal" style="display:none; position:fixed; z-index:1002; inset:0; background:rgba(0,0,0,0.6); justify-content:center; align-items:center;">
+    <div style="background:#fff; padding:25px; width:90%; max-width:380px; color:#111;">
+      <h3 style="margin-top:0; font-size:16px; letter-spacing:1px;">CHECKOUT ORDER</h3>
 
-      <input id="nama" placeholder="Nama Anda" style="width:100%; padding:10px; margin-top:10px; box-sizing:border-box; background:#333; color:#fff; border:1px solid #444; border-radius:5px;">
-      <textarea id="alamat" placeholder="Alamat Lengkap" style="width:100%; padding:10px; margin-top:10px; box-sizing:border-box; background:#333; color:#fff; border:1px solid #444; border-radius:5px; height:80px;"></textarea>
+      <input id="nama" placeholder="Nama Anda" style="width:100%; padding:10px; margin-top:10px; border:1px solid #ccc;">
+      <textarea id="alamat" placeholder="Alamat Lengkap" style="width:100%; padding:10px; margin-top:10px; border:1px solid #ccc; height:80px;"></textarea>
 
-      <p id="produkDipilih" style="margin-top:15px; font-weight:bold;"></p>
-      <p id="totalHarga" style="color:#d4af37; font-weight:bold; font-size:1.1em;"></p>
+      <p id="produkDipilih" style="margin-top:15px; font-weight:600; font-size:13px;"></p>
+      <p id="totalHarga" style="color:#111; font-weight:bold; font-size:1.1em; margin-top:5px;"></p>
 
-      <button id="btnKirimWA" onclick="kirimWA()" style="width:100%; padding:12px; margin-top:10px; background:#d4af37; border:none; cursor:pointer; font-weight:bold; border-radius:5px; color:#111;">
-        Kirim ke WhatsApp
-      </button>
-
-      <button onclick="closeCheckout()" style="width:100%; padding:10px; margin-top:8px; background:#555; border:none; color:white; cursor:pointer; border-radius:5px;">
-        Batal
-      </button>
+      <button id="btnKirimWA" onclick="kirimWA()" class="buy-btn" style="margin-top:15px;">Kirim ke WhatsApp</button>
+      <button onclick="closeCheckout()" style="width:100%; padding:10px; margin-top:8px; background:#fff; border:1px solid #ccc; color:#111; cursor:pointer;">Batal</button>
     </div>
   </div>
 
@@ -470,127 +500,66 @@
       appId: "1:28963833581:web:1a8001fec139a7ace1abe4"
     };
 
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
     // SINKRONISASI SWAP HALAMAN
     function showPage(pageId) {
-      document.querySelectorAll('.page-section').forEach(section => {
-        section.classList.remove('active-page');
-      });
+      document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active-page'));
       document.getElementById(pageId).classList.add('active-page');
       window.scrollTo(0, 0);
     }
 
-    function showHome() {
-      showPage('homePage');
-    }
+    function showHome() { showPage('homePage'); }
 
     function openProducts() {
       document.getElementById("catalogTitle").innerText = "Semua Produk";
       showPage('productPage');
-      loadProducts();
+      loadProducts('product-container');
       toggleMenu();
     }
 
     function filterCategory(catName) {
       document.getElementById("catalogTitle").innerText = "Kategori: " + catName;
       showPage('productPage');
-      loadProducts('category', catName);
+      loadProducts('product-container', 'category', catName);
       toggleMenu();
     }
 
-    async function uploadProduk() {
-      const IMGBB_API_KEY = "MASUKKAN_API_KEY_IMGBB_KAMU_DI_SINI";
+    // BANNER SLIDER LOGIC
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.hero-slide');
+    const dots = document.querySelectorAll('.dot');
 
-      let nama = document.getElementById("pNama").value.trim();
-      let harga = document.getElementById("pHarga").value;
-      let kategori = document.getElementById("pKategori").value.trim();
-      let fileInput = document.getElementById("pGambar");
-      let file = fileInput.files[0];
-
-      if (!nama || !harga || !kategori || !file) {
-        alert("Semua field wajib diisi!");
-        return;
-      }
-
-      if (!file.type.startsWith("image/")) {
-        alert("File harus berupa gambar!");
-        return;
-      }
-
-      const btn = document.getElementById("btnUpload");
-      btn.innerText = "Uploading Gambar...";
-      btn.disabled = true;
-
-      try {
-        let formData = new FormData();
-        formData.append("image", file);
-
-        let response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-          method: "POST",
-          body: formData
-        });
-
-        let result = await response.json();
-
-        if (!result.success) {
-          throw new Error("Gagal mengunggah gambar ke ImgBB.");
-        }
-
-        let imageUrl = result.data.url;
-
-        await db.collection("Products").add({
-          name: nama,
-          price: Number(harga),
-          category: kategori,
-          image: imageUrl,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-
-        alert("Produk berhasil diupload!");
-
-        document.getElementById("pNama").value = "";
-        document.getElementById("pHarga").value = "";
-        document.getElementById("pKategori").value = "";
-        fileInput.value = "";
-
-        loadProducts();
-
-      } catch (err) {
-        console.error("Upload Error:", err);
-        alert("Gagal upload produk. Pastikan API Key ImgBB sudah benar.");
-      } finally {
-        btn.innerText = "Upload Produk";
-        btn.disabled = false;
-      }
+    function setSlide(index) {
+      slides[currentSlide].classList.remove('active');
+      dots[currentSlide].classList.remove('active');
+      currentSlide = index;
+      slides[currentSlide].classList.add('active');
+      dots[currentSlide].classList.add('active');
     }
 
+    setInterval(() => {
+      let next = (currentSlide + 1) % slides.length;
+      setSlide(next);
+    }, 5000);
+
+    // FETCH DATA PRODUCT
     function escapeHtml(str) {
-      if (!str) return "";
-      return String(str)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+      return String(str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
     }
 
-    function loadProducts(field = null, value = null) {
-      const container = document.getElementById("product-container");
-      container.innerHTML = "<p style='text-align:center;padding:20px'>Memuat katalog produk...</p>";
+    function loadProducts(targetId, field = null, value = null) {
+      const container = document.getElementById(targetId);
+      container.innerHTML = "<p style='text-align:center;width:100%;padding:20px;'>Memuat produk...</p>";
 
       let query = db.collection("Products");
-      if (field && value) {
-        query = query.where(field, "==", value);
-      }
+      if (field && value) query = query.where(field, "==", value);
 
       query.get().then(snapshot => {
         let html = "";
         if (snapshot.empty) {
-          html = "<p style='text-align:center;padding:20px'>Produk belum tersedia</p>";
+          html = "<p style='text-align:center;width:100%;padding:20px;'>Produk belum tersedia</p>";
         } else {
           snapshot.forEach(doc => {
             const p = doc.data();
@@ -602,38 +571,30 @@
 
             html += `
               <div class="product-card" data-name="${namaClean}" data-price="${harga}">
-                <img src="${img}" 
-                     onclick="openImageModal('${img}')"
-                     onerror="this.src='https://via.placeholder.com/200'">
-
+                <img src="${img}" onclick="openImageModal('${img}')" onerror="this.src='https://via.placeholder.com/200'">
                 <h3>${namaClean}</h3>
                 <p class="category">${kategori}</p>
                 <p class="price">Rp ${harga.toLocaleString('id-ID')}</p>
-
                 <div class="qty-box">
                   <button type="button" onclick="changeQty(this, -1)">-</button>
                   <span class="qty">1</span>
                   <button type="button" onclick="changeQty(this, 1)">+</button>
                 </div>
-
-                <button type="button" class="buy-btn" onclick="openCheckout(this)">
-                  Beli via WA
-                </button>
+                <button type="button" class="buy-btn" onclick="openCheckout(this)">Beli via WA</button>
               </div>
             `;
           });
         }
         container.innerHTML = html;
       }).catch(err => {
-        console.error("Firestore Error:", err);
-        container.innerHTML = "<p style='text-align:center;color:red;'>Gagal memuat produk.</p>";
+        console.error("Error:", err);
+        container.innerHTML = "<p style='text-align:center;color:red;width:100%;'>Gagal memuat produk.</p>";
       });
     }
 
     function changeQty(btn, change) {
       let el = btn.parentElement.querySelector(".qty");
-      let val = parseInt(el.innerText, 10) || 1;
-      val += change;
+      let val = (parseInt(el.innerText, 10) || 1) + change;
       if (val < 1) val = 1;
       el.innerText = val;
     }
@@ -652,121 +613,38 @@
 
       document.getElementById("produkDipilih").innerText = `Produk: ${name} (${qty} pcs)`;
       document.getElementById("totalHarga").innerText = `Total: Rp ${total.toLocaleString('id-ID')}`;
-
       modal.style.display = "flex";
     }
 
     function closeCheckout() {
-      const modal = document.getElementById("checkoutModal");
-      modal.style.display = "none";
-      document.getElementById("nama").value = "";
-      document.getElementById("alamat").value = "";
-      
-      const btnKirim = document.getElementById("btnKirimWA");
-      btnKirim.innerText = "Kirim ke WhatsApp";
-      btnKirim.disabled = false;
-    }
-
-    document.getElementById("checkoutModal").addEventListener("click", function(e) {
-      if (e.target === this) closeCheckout();
-    });
-
-    function generateInvoice() {
-      let date = new Date();
-      let y = date.getFullYear();
-      let m = String(date.getMonth() + 1).padStart(2, '0');
-      let d = String(date.getDate()).padStart(2, '0');
-      let rand = Math.floor(Math.random() * 900 + 100);
-      return `INV-${y}${m}${d}-${rand}`;
+      document.getElementById("checkoutModal").style.display = "none";
     }
 
     function kirimWA() {
       let namaInput = document.getElementById("nama").value.trim();
       let alamatInput = document.getElementById("alamat").value.trim();
-      const btnKirim = document.getElementById("btnKirimWA");
-
-      if (!namaInput || !alamatInput) {
-        alert("Nama & Alamat wajib diisi!");
-        return;
-      }
-
-      btnKirim.innerText = "Memproses...";
-      btnKirim.disabled = true;
+      if (!namaInput || !alamatInput) return alert("Nama & Alamat wajib diisi!");
 
       const modal = document.getElementById("checkoutModal");
       let productName = modal.getAttribute("data-active-name");
       let price = Number(modal.getAttribute("data-active-price"));
       let qty = Number(modal.getAttribute("data-active-qty"));
       let total = price * qty;
-      let invNum = generateInvoice();
-
-      let orderData = {
-        invoice: invNum,
-        nama: namaInput,
-        alamat: alamatInput,
-        produk: productName,
-        qty: qty,
-        total: total,
-        status: "pending",
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      };
+      let invNum = "INV-" + Date.now();
 
       let phone = "6281353885122";
-      let pesan = `Halo Admin Mutumanikam 👋\n\nSaya mau order:\n🧾 Invoice: ${invNum}\n🛍️ Produk: ${productName}\n📦 Jumlah: ${qty} pcs\n💰 Total: Rp ${total.toLocaleString('id-ID')}\n\n👤 Nama: ${namaInput}\n📍 Alamat: ${alamatInput}\n\nMohon konfirmasi ya 🙏`;
-      let url = `https://wa.me/${phone}?text=${encodeURIComponent(pesan)}`;
-
-      let hasRedirected = false;
-      const executeRedirect = () => {
-        if (!hasRedirected) {
-          hasRedirected = true;
-          window.open(url, "_blank");
-          closeCheckout();
-        }
-      };
-
-      db.collection("Orders").add(orderData)
-        .then(() => executeRedirect())
-        .catch(err => {
-          console.error("Firestore write error:", err);
-          executeRedirect();
-        });
-
-      setTimeout(() => executeRedirect(), 2500);
+      let pesan = `Halo Admin Mutumanikam 👋\n\nSaya mau order:\n🧾 Invoice: ${invNum}\n🛍️ Produk: ${productName}\n📦 Jumlah: ${qty} pcs\n💰 Total: Rp ${total.toLocaleString('id-ID')}\n\n👤 Nama: ${namaInput}\n📍 Alamat: ${alamatInput}`;
+      
+      window.open(`https://wa.me/${phone}?text=${encodeURIComponent(pesan)}`, "_blank");
+      closeCheckout();
     }
-
-    let zoomScale = 1;
 
     function openImageModal(src) {
-      const modal = document.getElementById("imageModal");
-      const img = document.getElementById("imgFull");
-      modal.style.display = "flex";
-      img.src = src;
-      resetZoom();
+      document.getElementById("imgFull").src = src;
+      document.getElementById("imageModal").style.display = "flex";
     }
-
     function closeImageModal() {
       document.getElementById("imageModal").style.display = "none";
-      resetZoom();
-    }
-
-    function toggleZoomImg() {
-      zoomScale = zoomScale > 1 ? 1 : 2;
-      document.getElementById("imgFull").style.transform = `scale(${zoomScale})`;
-    }
-
-    function zoomIn() {
-      zoomScale += 0.3;
-      document.getElementById("imgFull").style.transform = `scale(${zoomScale})`;
-    }
-
-    function zoomOut() {
-      zoomScale = Math.max(1, zoomScale - 0.3);
-      document.getElementById("imgFull").style.transform = `scale(${zoomScale})`;
-    }
-
-    function resetZoom() {
-      zoomScale = 1;
-      document.getElementById("imgFull").style.transform = "scale(1)";
     }
 
     function toggleMenu() {
@@ -775,12 +653,11 @@
     }
 
     function toggleSub(el) {
-      const parent = el.parentElement;
-      document.querySelectorAll(".menu-section").forEach(i => {
-        if (i !== parent) i.classList.remove("active");
-      });
-      parent.classList.toggle("active");
+      el.parentElement.classList.toggle("active");
     }
+
+    // LOAD INITIAL REKOMENDASI DI HOME
+    loadProducts('discover-container');
   </script>
 </body>
 </html>
