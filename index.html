@@ -41,6 +41,7 @@ header {
   text-align:center;
   margin:20px;
 }
+
 .cta button {
   background:#d4af37;
   color:#111;
@@ -81,13 +82,13 @@ header {
   font-weight:bold;
 }
 
-/* QTY */
 .qty {
   display:flex;
   justify-content:center;
   gap:10px;
   margin-top:10px;
 }
+
 .qty button {
   width:30px;
 }
@@ -108,14 +109,76 @@ header {
   width:90%;
   max-width:400px;
 }
+
+/* SIDEBAR */
+#overlay {
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.6);
+  display:none;
+}
+
+#mobileMenu {
+  position:fixed;
+  top:0;
+  left:-260px;
+  width:260px;
+  height:100%;
+  background:#161616;
+  padding:20px;
+  transition:0.3s;
+  z-index:1000;
+}
+
+#mobileMenu.active {
+  left:0;
+}
+
+#overlay.active {
+  display:block;
+}
+
+.menu-item {
+  padding:10px;
+  border-bottom:1px solid #333;
+  cursor:pointer;
+}
+
+.submenu {
+  display:none;
+  padding-left:15px;
+}
+
+.menu-item.active .submenu {
+  display:block;
+}
+
 </style>
 </head>
 
 <body>
 
 <header>
+  <span onclick="toggleMenu()" style="cursor:pointer;font-size:22px;">☰</span>
   <span class="brand" onclick="goHome()">Mutumanikam</span>
 </header>
+
+<!-- SIDEBAR -->
+<div id="overlay" onclick="toggleMenu()"></div>
+
+<div id="mobileMenu">
+  <div class="menu-item" onclick="toggleSub(this)">
+    SHOP
+    <ul class="submenu">
+      <li onclick="filterCategory('Necklace')">Necklace</li>
+      <li onclick="filterCategory('Bracelet')">Bracelet</li>
+      <li onclick="filterCategory('Purse')">Purse</li>
+      <li onclick="filterCategory('Belt')">Belt</li>
+    </ul>
+  </div>
+
+  <div class="menu-item" onclick="filterCategory(null)">ALL PRODUCTS</div>
+</div>
 
 <!-- HOME -->
 <section id="home">
@@ -174,19 +237,48 @@ function goHome(){
   document.getElementById("products").style.display="none";
 }
 
-/* LOAD */
-function loadProducts(){
+/* SIDEBAR */
+function toggleMenu(){
+  document.getElementById("mobileMenu").classList.toggle("active");
+  document.getElementById("overlay").classList.toggle("active");
+}
+
+function toggleSub(el){
+  el.classList.toggle("active");
+}
+
+function filterCategory(cat){
+  document.getElementById("home").style.display="none";
+  document.getElementById("products").style.display="grid";
+  toggleMenu();
+  loadProducts(cat);
+}
+
+/* LOAD PRODUCTS */
+function loadProducts(category=null){
   let el = document.getElementById("products");
   el.innerHTML="Loading...";
 
-  db.collection("Products").get().then(snap=>{
+  let query = db.collection("Products");
+
+  if(category){
+    query = query.where("category","==",category);
+  }
+
+  query.get().then(snap=>{
+    if(snap.empty){
+      el.innerHTML="Produk belum tersedia";
+      return;
+    }
+
     let html="";
+
     snap.forEach(doc=>{
       let p = doc.data();
 
       html += `
       <div class="product-card" data-name="${p.name}" data-price="${p.price}">
-        <img src="${p.image}">
+        <img src="${p.image || 'https://via.placeholder.com/200'}">
         <h3>${p.name}</h3>
         <p>Rp ${p.price}</p>
 
@@ -216,6 +308,7 @@ function qty(btn,change){
 /* CHECKOUT */
 function checkout(btn){
   let card = btn.closest(".product-card");
+
   let name = card.dataset.name;
   let price = Number(card.dataset.price);
   let qty = parseInt(card.querySelector("span").innerText);
@@ -257,7 +350,7 @@ Total: Rp ${total}
 Nama: ${nama}
 Alamat: ${alamat}`;
 
-  let url = `https://wa.me/6281353885122?text=${encodeURIComponent(pesan)}`;
+  let url = "https://wa.me/6281353885122?text=" + encodeURIComponent(pesan);
   window.open(url,"_blank");
 }
 </script>
