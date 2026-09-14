@@ -19,7 +19,7 @@
       letter-spacing: 1px;
     }
 
-    /* HEADER BERSIH GAYA LUXURY */
+    /* HEADER BERSIH GAYA LUXURY (PUTIH) */
     header {
       padding: 18px 20px;
       display: flex;
@@ -187,7 +187,7 @@
       margin-bottom: 30px;
     }
 
-    /* GRID PRODUK KATALOG */
+    /* GRID PRODUK */
     .product-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -270,7 +270,7 @@
       background: #333;
     }
 
-    /* SIDEBAR NAVIGASI MINIMALIS */
+    /* SIDEBAR NAVIGASI MINIMALIS DENGAN FOOTER SUPPORTED BY */
     #overlay {
       position: fixed;
       top: 0;
@@ -306,7 +306,9 @@
 
     .sidebar.active { transform: translateX(300px); }
 
-    .sidebar-menu-content { overflow-y: auto; }
+    .sidebar-menu-content {
+      overflow-y: auto;
+    }
 
     .menu-section {
       border-bottom: 1px solid #eee;
@@ -350,6 +352,7 @@
       font-weight: bold;
     }
 
+    /* FOOTER SIDEBAR SUPPORTED BY */
     .sidebar-footer {
       border-top: 1px solid #eee;
       padding-top: 20px;
@@ -371,129 +374,21 @@
       margin-top: 4px;
     }
 
-    /* MODAL DETAIL PRODUK (SESUAI GAMBAR REFERENSI BARU) */
-    .product-detail-modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: #ffffff;
-      z-index: 1005;
-      overflow-y: auto;
-      padding: 20px;
-    }
-
-    .close-detail-btn {
-      position: absolute;
-      top: 15px;
-      right: 20px;
-      font-size: 28px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: #111;
-    }
-
-    .detail-container {
-      max-width: 600px;
-      margin: 40px auto 20px;
-    }
-
-    .detail-main-img {
-      width: 100%;
-      height: 480px;
-      object-fit: cover;
-      background: #f8f8f8;
-    }
-
-    .detail-thumbnails {
-      display: flex;
-      gap: 10px;
-      margin-top: 15px;
-      overflow-x: auto;
-      padding-bottom: 10px;
-    }
-
-    .thumb-img {
-      width: 80px;
-      height: 100px;
-      object-fit: cover;
-      border: 1px solid #ddd;
-      cursor: pointer;
-      opacity: 0.6;
-      transition: 0.3s;
-    }
-
-    .thumb-img.active, .thumb-img:hover {
-      opacity: 1;
-      border-color: #111;
-    }
-
-    .detail-info {
-      margin-top: 25px;
-      text-align: left;
-    }
-
-    .detail-brand {
-      font-size: 11px;
-      color: #888;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-
-    .detail-title {
-      font-size: 22px;
-      font-weight: 400;
-      margin: 8px 0;
-      letter-spacing: 1px;
-    }
-
-    .detail-price {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 15px;
-    }
-
-    /* TOMBOL TO TOP MELINGKAR */
-    .to-top-btn {
-      position: fixed;
-      bottom: 25px;
-      right: 20px;
-      width: 50px;
-      height: 50px;
-      border: 1px dashed #666;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.9);
-      color: #333;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      font-size: 8px;
-      letter-spacing: 1px;
-      cursor: pointer;
-      z-index: 990;
-      transition: 0.3s;
-    }
-
-    .to-top-btn span {
-      font-size: 12px;
-      margin-top: -2px;
-    }
-
-    .to-top-btn:hover {
-      border-color: #111;
-      color: #111;
-    }
-
-    /* MODAL CHECKOUT ORDER WA */
-    #checkoutModal {
+    /* MODAL STYLES */
+    .image-modal {
       display: none; 
       position: fixed; 
-      z-index: 1010; 
-      inset: 0; 
-      background: rgba(0,0,0,0.6); 
-      justify-content: center; 
+      z-index: 1000; 
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.9);
+      justify-content: center;
       align-items: center;
+    }
+
+    .modal-content {
+      max-width: 90%;
+      max-height: 80vh;
+      border-radius: 4px;
     }
   </style>
 </head>
@@ -537,6 +432,7 @@
         </div>
       </div>
 
+      <!-- ADDED: MOBILE CONTACT SECTION -->
       <div class="menu-section">
         <div class="menu-title" onclick="toggleSub(this)">CONTACT US <span>⌄</span></div>
         <div class="submenu">
@@ -547,6 +443,7 @@
       </div>
     </div>
 
+    <!-- ADDED: SUPPORTED BY AZZA COLLECTION -->
     <div class="sidebar-footer">
       <p>Supported by</p>
       <strong>AZZA COLLECTION</strong>
@@ -556,7 +453,7 @@
   <!-- HALAMAN UTAMA (HOME) -->
   <main id="homePage" class="page-section active-page">
     
-    <!-- SLIDER BANNER -->
+    <!-- SLIDER / BANNER MEDIA -->
     <div class="hero-container">
       <div class="hero-slide active" style="background-image: url('https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=1200');">
         <div class="hero-overlay">
@@ -614,43 +511,13 @@
     </div>
   </main>
 
-  <!-- MODAL DETAIL PRODUK + GALERI THUMBNAILS (SESUAI FOTO) -->
-  <div id="productDetailModal" class="product-detail-modal">
-    <button class="close-detail-btn" onclick="closeProductDetail()">&times;</button>
-    
-    <div class="detail-container">
-      <img id="detailMainImg" class="detail-main-img" src="" alt="Detail Gambar">
-      
-      <!-- THUMBNAILS / FOTO PENDUKUNG -->
-      <div id="detailThumbnails" class="detail-thumbnails">
-        <!-- Generasi via JS -->
-      </div>
-
-      <div class="detail-info">
-        <p class="detail-brand">MUTUMANIKAM.COM</p>
-        <h2 id="detailTitle" class="detail-title">Grape</h2>
-        <p id="detailPrice" class="detail-price">Rp 0</p>
-        
-        <div class="qty-box" style="justify-content:flex-start; margin: 20px 0;">
-          <button type="button" onclick="changeQtyDetail(-1)">-</button>
-          <span id="detailQty" class="qty">1</span>
-          <button type="button" onclick="changeQtyDetail(1)">+</button>
-        </div>
-
-        <button id="btnBeliDetail" class="buy-btn" style="padding: 15px;">Beli via WhatsApp</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- TOMBOL FLOATING "TO TOP" -->
-  <div class="to-top-btn" onclick="scrollToTop()">
-    <span>T O</span>
-    <span>T O P</span>
-    <span>↑</span>
+  <!-- MODAL DISPLAY GAMBAR BESAR -->
+  <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+    <img class="modal-content" id="imgFull" alt="Product Preview">
   </div>
 
   <!-- MODAL CHECKOUT ORDER WA -->
-  <div id="checkoutModal">
+  <div id="checkoutModal" style="display:none; position:fixed; z-index:1002; inset:0; background:rgba(0,0,0,0.6); justify-content:center; align-items:center;">
     <div style="background:#fff; padding:25px; width:90%; max-width:380px; color:#111;">
       <h3 style="margin-top:0; font-size:16px; letter-spacing:1px;">CHECKOUT ORDER</h3>
 
@@ -681,6 +548,7 @@
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
+    // SINKRONISASI SWAP HALAMAN
     function showPage(pageId) {
       document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active-page'));
       document.getElementById(pageId).classList.add('active-page');
@@ -721,6 +589,7 @@
       setSlide(next);
     }, 5000);
 
+    // FETCH DATA PRODUCT
     function escapeHtml(str) {
       return String(str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
     }
@@ -744,17 +613,19 @@
             let harga = Number(p.price) || 0;
             let kategori = escapeHtml(p.category || "Umum");
             let img = p.image ? p.image.trim() : "https://via.placeholder.com/200";
-            
-            // Array foto tambahan/gallery jika ada
-            let imagesArr = p.images || [img];
 
             html += `
               <div class="product-card" data-name="${namaClean}" data-price="${harga}">
-                <img src="${img}" onclick="openProductDetail('${namaClean}', ${harga}, '${img}', ${JSON.stringify(imagesArr).replace(/"/g, '&quot;')})" onerror="this.src='https://via.placeholder.com/200'">
+                <img src="${img}" onclick="openImageModal('${img}')" onerror="this.src='https://via.placeholder.com/200'">
                 <h3>${namaClean}</h3>
                 <p class="category">${kategori}</p>
                 <p class="price">Rp ${harga.toLocaleString('id-ID')}</p>
-                <button type="button" class="buy-btn" onclick="openProductDetail('${namaClean}', ${harga}, '${img}', ${JSON.stringify(imagesArr).replace(/"/g, '&quot;')})">Lihat Detail</button>
+                <div class="qty-box">
+                  <button type="button" onclick="changeQty(this, -1)">-</button>
+                  <span class="qty">1</span>
+                  <button type="button" onclick="changeQty(this, 1)">+</button>
+                </div>
+                <button type="button" class="buy-btn" onclick="openCheckout(this)">Beli via WA</button>
               </div>
             `;
           });
@@ -766,54 +637,20 @@
       });
     }
 
-    // FUINSI DETAIL PRODUK SESUAI FOTO HALTER DRESS
-    let activeDetailProduct = {};
-
-    function openProductDetail(name, price, mainImg, allImages) {
-      activeDetailProduct = { name, price, mainImg, qty: 1 };
-
-      document.getElementById("detailTitle").innerText = name;
-      document.getElementById("detailPrice").innerText = "Rp " + price.toLocaleString('id-ID');
-      document.getElementById("detailMainImg").src = mainImg;
-      document.getElementById("detailQty").innerText = "1";
-
-      const thumbBox = document.getElementById("detailThumbnails");
-      thumbBox.innerHTML = "";
-
-      // Jika gambar hanya 1, buat 3 variasi foto contoh agar galeri thumbnail terlihat penuh seperti di referensi
-      let thumbs = (allImages && allImages.length > 1) ? allImages : [mainImg, mainImg, mainImg];
-
-      thumbs.forEach((srcUrl, idx) => {
-        let imgEl = document.createElement("img");
-        imgEl.src = srcUrl;
-        imgEl.className = "thumb-img" + (idx === 0 ? " active" : "");
-        imgEl.onclick = function() {
-          document.getElementById("detailMainImg").src = srcUrl;
-          document.querySelectorAll(".thumb-img").forEach(el => el.classList.remove("active"));
-          this.classList.add("active");
-        };
-        thumbBox.appendChild(imgEl);
-      });
-
-      document.getElementById("btnBeliDetail").onclick = function() {
-        openCheckoutDirect(name, price, activeDetailProduct.qty);
-      };
-
-      document.getElementById("productDetailModal").style.display = "block";
+    function changeQty(btn, change) {
+      let el = btn.parentElement.querySelector(".qty");
+      let val = (parseInt(el.innerText, 10) || 1) + change;
+      if (val < 1) val = 1;
+      el.innerText = val;
     }
 
-    function closeProductDetail() {
-      document.getElementById("productDetailModal").style.display = "none";
-    }
-
-    function changeQtyDetail(change) {
-      activeDetailProduct.qty = (activeDetailProduct.qty || 1) + change;
-      if (activeDetailProduct.qty < 1) activeDetailProduct.qty = 1;
-      document.getElementById("detailQty").innerText = activeDetailProduct.qty;
-    }
-
-    function openCheckoutDirect(name, price, qty) {
+    function openCheckout(btn) {
+      let card = btn.closest(".product-card");
+      let name = card.getAttribute("data-name");
+      let price = Number(card.getAttribute("data-price")) || 0;
+      let qty = parseInt(card.querySelector(".qty").innerText, 10) || 1;
       let total = price * qty;
+
       const modal = document.getElementById("checkoutModal");
       modal.setAttribute("data-active-name", name);
       modal.setAttribute("data-active-price", price);
@@ -847,8 +684,12 @@
       closeCheckout();
     }
 
-    function scrollToTop() {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    function openImageModal(src) {
+      document.getElementById("imgFull").src = src;
+      document.getElementById("imageModal").style.display = "flex";
+    }
+    function closeImageModal() {
+      document.getElementById("imageModal").style.display = "none";
     }
 
     function toggleMenu() {
@@ -860,7 +701,7 @@
       el.parentElement.classList.toggle("active");
     }
 
-    // INITIAL LOAD
+    // LOAD INITIAL REKOMENDASI DI HOME
     loadProducts('discover-container');
   </script>
 </body>
