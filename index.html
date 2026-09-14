@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mutumanikam - Authentic Store</title>
 
+  <!-- FAVICON / IKON TAB BROWSER -->
+  <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/k4Gk0J71/IMG-20260908-002648-jpg.jpg">
+
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
@@ -35,7 +38,7 @@
 
     /* HEADER */
     header {
-      padding: 15px 24px;
+      padding: 10px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -57,13 +60,26 @@
       justify-content: flex-end;
     }
 
+    .brand-logo-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .brand-logo-img {
+      height: 40px;
+      width: 40px;
+      object-fit: contain;
+      border-radius: 50%;
+    }
+
     .brand-name {
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 600;
       color: var(--primary-color);
-      letter-spacing: 3px;
+      letter-spacing: 2px;
       text-transform: uppercase;
-      cursor: pointer;
     }
 
     .icon-btn {
@@ -114,7 +130,7 @@
     .hero-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(0, 0, 0, 0.35);
+      background: rgba(0, 0, 0, 0.4);
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -122,6 +138,13 @@
       padding: 20px;
       text-align: center;
       color: #fff;
+    }
+
+    .hero-badge-img {
+      width: 90px;
+      height: 90px;
+      margin-bottom: 12px;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
     }
 
     .hero-title {
@@ -547,8 +570,9 @@
     <div class="header-left">
       <button class="icon-btn" onclick="toggleMenu()" aria-label="Toggle Menu">&#9776;</button>
     </div>
-    <div class="logo-container">
-      <span class="brand-name" onclick="showHome()">MUTUMANIKAM</span>
+    <div class="brand-logo-container" onclick="showHome()">
+      <img src="https://i.postimg.cc/k4Gk0J71/IMG-20260908-002648-jpg.jpg" alt="Mutumanikam Symbol" class="brand-logo-img">
+      <span class="brand-name">MUTUMANIKAM</span>
     </div>
     <div class="header-right">
       <button class="icon-btn" aria-label="Cart" onclick="openProducts('Semua Produk')">&#128092;</button>
@@ -560,6 +584,10 @@
   <!-- SIDEBAR MENU -->
   <div id="mobileMenu" class="sidebar">
     <div class="sidebar-menu-content">
+      <div style="text-align: center; padding-bottom: 20px;">
+        <img src="https://i.postimg.cc/k4Gk0J71/IMG-20260908-002648-jpg.jpg" alt="Mutumanikam Symbol" style="width:70px; height:70px; border-radius:50%;">
+      </div>
+
       <div class="menu-section">
         <div class="menu-title" onclick="showHome(); closeMenu();">BERANDA</div>
       </div>
@@ -600,6 +628,7 @@
     <div class="hero-container">
       <div class="hero-slide active" style="background-image: url('https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=1200');">
         <div class="hero-overlay">
+          <img src="https://i.postimg.cc/k4Gk0J71/IMG-20260908-002648-jpg.jpg" alt="Mutumanikam Badge" class="hero-badge-img">
           <h1 class="hero-title">MUTUMANIKAM</h1>
           <div class="hero-buttons">
             <button class="btn-outline" onclick="filterCategory('Necklace')">JEWELRY</button>
@@ -655,12 +684,10 @@
     <section class="section-container" style="margin-top:20px; border-top:1px dashed #eee;">
       <div style="max-width:450px; margin:0 auto;">
         
-        <!-- PENGUNJUNG BIASA: HANYA TAMPIL TOMBOL KECIL DI BAWAH -->
         <div id="adminLoggedOut" style="text-align: center;">
           <button onclick="openLoginModal()" style="background:none; border:none; color:#bbb; cursor:pointer; font-size:10px; letter-spacing:1px;">🔒 Login Admin Store</button>
         </div>
 
-        <!-- JIKA SUDAH LOGIN: BARU FORM INPUT INI MUNCUL -->
         <div id="adminLoggedIn" style="display: none; background:#fafafa; padding:20px; border:1px solid #ddd; border-radius:4px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
             <h3 style="font-size:12px; letter-spacing:1.5px; text-transform:uppercase;">Tambah Produk Baru</h3>
