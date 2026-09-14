@@ -5,7 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mutumanikam - Authentic Store</title>
 
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
   <style>
+    :root {
+      --primary-color: #111111;
+      --accent-color: #666666;
+      --bg-light: #f9f9f9;
+      --border-color: #eeeeee;
+      --transition-speed: 0.3s ease;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -14,19 +28,20 @@
 
     body {
       background-color: #ffffff;
-      color: #111111;
+      color: var(--primary-color);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
+      line-height: 1.5;
     }
 
-    /* HEADER BERSIH GAYA LUXURY (PUTIH) */
+    /* HEADER STICKY & ELEGAN */
     header {
-      padding: 18px 20px;
+      padding: 15px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       background: #ffffff;
-      border-bottom: 1px solid #eeeeee;
+      border-bottom: 1px solid var(--border-color);
       position: sticky;
       top: 0;
       z-index: 900;
@@ -43,14 +58,10 @@
       justify-content: flex-end;
     }
 
-    .logo-container {
-      text-align: center;
-    }
-
     .brand-name {
-      font-size: 20px;
-      font-weight: 500;
-      color: #111;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--primary-color);
       letter-spacing: 3px;
       text-transform: uppercase;
       cursor: pointer;
@@ -59,12 +70,16 @@
     .icon-btn {
       background: none;
       border: none;
-      font-size: 20px;
-      color: #111;
+      font-size: 22px;
+      color: var(--primary-color);
       cursor: pointer;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    /* NAVIGATION PAGE VIEWS */
+    /* PAGE SECTIONS */
     .page-section {
       display: none;
     }
@@ -73,22 +88,20 @@
       display: block;
     }
 
-    /* HERO BANNER SLIDER */
+    /* HERO SLIDER */
     .hero-container {
       position: relative;
       width: 100%;
-      height: 75vh;
-      min-height: 480px;
+      height: 70vh;
+      min-height: 420px;
+      max-height: 650px;
       overflow: hidden;
       background: #f4f4f4;
     }
 
     .hero-slide {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      inset: 0;
       opacity: 0;
       transition: opacity 0.8s ease-in-out;
       background-size: cover;
@@ -102,7 +115,7 @@
     .hero-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(0, 0, 0, 0.25);
+      background: rgba(0, 0, 0, 0.35);
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -113,45 +126,48 @@
     }
 
     .hero-title {
-      font-size: 24px;
+      font-size: 26px;
       font-weight: 500;
-      letter-spacing: 3px;
+      letter-spacing: 4px;
       text-transform: uppercase;
-      margin-bottom: 25px;
+      margin-bottom: 24px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
 
     .hero-buttons {
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       gap: 12px;
       width: 100%;
-      max-width: 280px;
+      max-width: 320px;
+      justify-content: center;
     }
 
     .btn-outline {
-      border: 1.5px solid #ffffff;
+      flex: 1;
+      border: 1px solid #ffffff;
       background: rgba(0, 0, 0, 0.2);
       color: #ffffff;
-      padding: 12px 20px;
-      font-size: 13px;
+      padding: 12px 16px;
+      font-size: 12px;
       letter-spacing: 2px;
       text-transform: uppercase;
       font-weight: 500;
       cursor: pointer;
-      backdrop-filter: blur(2px);
-      transition: 0.3s ease;
+      backdrop-filter: blur(4px);
+      transition: var(--transition-speed);
     }
 
     .btn-outline:hover {
       background: #ffffff;
-      color: #111111;
+      color: var(--primary-color);
     }
 
-    /* SLIDER DOTS INDIKATOR */
     .slider-dots {
       position: absolute;
       bottom: 20px;
-      right: 20px;
+      left: 50%;
+      transform: translateX(-50%);
       display: flex;
       gap: 8px;
       z-index: 10;
@@ -163,16 +179,16 @@
       background: rgba(255, 255, 255, 0.5);
       border-radius: 50%;
       cursor: pointer;
-      transition: 0.3s;
+      transition: var(--transition-speed);
     }
 
     .dot.active {
       background: #ffffff;
-      transform: scale(1.2);
+      transform: scale(1.3);
     }
 
-    /* SECTION DISCOVER */
-    .discover-section {
+    /* SECTION LAYOUTS */
+    .section-container {
       padding: 40px 20px;
       max-width: 1200px;
       margin: 0 auto;
@@ -180,107 +196,165 @@
 
     .section-title {
       font-size: 16px;
-      letter-spacing: 2px;
+      letter-spacing: 3px;
       text-transform: uppercase;
-      color: #666;
+      color: var(--accent-color);
       text-align: center;
       margin-bottom: 30px;
+      font-weight: 500;
     }
 
-    /* GRID PRODUK */
+    /* CATEGORY PILLS NAV (KATALOG) */
+    .category-pills {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 10px 0 20px;
+      margin-bottom: 20px;
+      scrollbar-width: none;
+    }
+
+    .category-pills::-webkit-scrollbar {
+      display: none;
+    }
+
+    .pill-btn {
+      padding: 8px 16px;
+      border: 1px solid var(--border-color);
+      background: #fff;
+      border-radius: 20px;
+      font-size: 12px;
+      letter-spacing: 1px;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: var(--transition-speed);
+    }
+
+    .pill-btn.active, .pill-btn:hover {
+      background: var(--primary-color);
+      color: #fff;
+      border-color: var(--primary-color);
+    }
+
+    /* PRODUCT GRID & CARD IMPROVEMENTS */
     .product-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
       gap: 20px;
-      padding: 20px;
-      max-width: 1200px;
-      margin: 0 auto;
+    }
+
+    @media (min-width: 600px) {
+      .product-grid {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 25px;
+      }
     }
 
     .product-card {
       background: #fff;
-      border: 1px solid #eee;
-      padding: 10px;
-      text-align: center;
-      transition: 0.3s;
+      border: 1px solid var(--border-color);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
 
     .product-card:hover {
-      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    }
+
+    .img-wrapper {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      background: #f8f8f8;
+      margin-bottom: 12px;
     }
 
     .product-card img {
       width: 100%;
-      height: 220px;
+      height: 100%;
       object-fit: cover;
       cursor: pointer;
+      transition: transform 0.3s;
+    }
+
+    .product-card img:hover {
+      transform: scale(1.05);
     }
 
     .product-card h3 {
-      margin: 12px 0 4px;
-      color: #111;
-      font-size: 0.95em;
-      letter-spacing: 1px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--primary-color);
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
     }
 
     .product-card .category {
-      font-size: 0.75em;
-      color: #888;
-      margin-bottom: 6px;
+      font-size: 11px;
+      color: var(--accent-color);
+      margin-bottom: 8px;
       text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .product-card .price {
       font-weight: 600;
-      color: #111;
-      font-size: 0.9em;
+      color: var(--primary-color);
+      font-size: 14px;
+      margin-bottom: 12px;
     }
 
     .qty-box {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 10px;
-      margin: 10px 0;
+      gap: 12px;
+      margin-bottom: 12px;
+      background: var(--bg-light);
+      padding: 4px;
     }
 
     .qty-box button {
-      width: 25px;
-      height: 25px;
-      border: 1px solid #ccc;
+      width: 28px;
+      height: 28px;
+      border: 1px solid #ddd;
       background: #fff;
-      color: #111;
+      color: var(--primary-color);
+      font-size: 14px;
       cursor: pointer;
+      font-weight: bold;
     }
 
     .buy-btn {
       width: 100%;
-      padding: 10px;
-      background: #111;
+      padding: 12px;
+      background: var(--primary-color);
       color: #fff;
       border: none;
-      font-size: 12px;
+      font-size: 11px;
       letter-spacing: 1.5px;
       text-transform: uppercase;
       cursor: pointer;
-      transition: 0.3s;
+      transition: var(--transition-speed);
+      font-weight: 500;
     }
 
     .buy-btn:hover {
       background: #333;
     }
 
-    /* SIDEBAR NAVIGASI MINIMALIS DENGAN FOOTER SUPPORTED BY */
+    /* SIDEBAR & OVERLAY */
     #overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.4);
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
       opacity: 0;
       pointer-events: none;
-      transition: 0.4s;
+      transition: opacity 0.3s ease;
       z-index: 998;
     }
 
@@ -297,7 +371,7 @@
       height: 100%;
       background: #ffffff;
       padding: 30px 20px;
-      transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       z-index: 999;
       display: flex;
       flex-direction: column;
@@ -306,12 +380,8 @@
 
     .sidebar.active { transform: translateX(300px); }
 
-    .sidebar-menu-content {
-      overflow-y: auto;
-    }
-
     .menu-section {
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid var(--border-color);
       padding: 15px 0;
     }
 
@@ -323,13 +393,12 @@
       font-size: 13px;
       font-weight: 600;
       text-transform: uppercase;
-      color: #111;
     }
 
     .submenu {
       max-height: 0;
       overflow: hidden;
-      transition: max-height 0.4s ease;
+      transition: max-height 0.3s ease;
     }
 
     .menu-section.active .submenu {
@@ -339,8 +408,8 @@
 
     .submenu p, .submenu a {
       display: block;
-      margin: 10px 0;
-      color: #666;
+      padding: 8px 0;
+      color: var(--accent-color);
       font-size: 12px;
       letter-spacing: 1px;
       cursor: pointer;
@@ -348,13 +417,12 @@
     }
 
     .submenu p:hover, .submenu a:hover {
-      color: #111;
-      font-weight: bold;
+      color: var(--primary-color);
+      font-weight: 600;
     }
 
-    /* FOOTER SIDEBAR SUPPORTED BY */
     .sidebar-footer {
-      border-top: 1px solid #eee;
+      border-top: 1px solid var(--border-color);
       padding-top: 20px;
       text-align: center;
     }
@@ -363,38 +431,48 @@
       font-size: 10px;
       letter-spacing: 2px;
       text-transform: uppercase;
-      color: #888;
+      color: var(--accent-color);
     }
 
     .sidebar-footer strong {
       font-size: 11px;
-      color: #111;
       letter-spacing: 2.5px;
       display: block;
       margin-top: 4px;
     }
 
-    /* MODAL STYLES */
-    .image-modal {
+    /* MODALS */
+    .image-modal, .custom-modal {
       display: none; 
       position: fixed; 
       z-index: 1000; 
       inset: 0;
-      background-color: rgba(0, 0, 0, 0.9);
+      background-color: rgba(0, 0, 0, 0.75);
       justify-content: center;
       align-items: center;
+      padding: 20px;
     }
 
-    .modal-content {
-      max-width: 90%;
-      max-height: 80vh;
-      border-radius: 4px;
+    .modal-content-box {
+      background: #fff;
+      padding: 25px;
+      width: 100%;
+      max-width: 400px;
+      border-radius: 2px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border: 1px solid #ccc;
+      font-size: 13px;
     }
   </style>
 </head>
 <body>
 
-  <!-- HEADER ELEGAN -->
+  <!-- HEADER -->
   <header>
     <div class="header-left">
       <button class="icon-btn" onclick="toggleMenu()" aria-label="Toggle Menu">&#9776;</button>
@@ -403,8 +481,7 @@
       <span class="brand-name" onclick="showHome()">MUTUMANIKAM</span>
     </div>
     <div class="header-right">
-      <button class="icon-btn" aria-label="Search">&#128093;</button>
-      <button class="icon-btn" aria-label="Cart" onclick="openProducts()">&#128092;</button>
+      <button class="icon-btn" aria-label="Cart" onclick="openProducts('Semua Produk')">&#128092;</button>
     </div>
   </header>
 
@@ -414,11 +491,11 @@
   <div id="mobileMenu" class="sidebar">
     <div class="sidebar-menu-content">
       <div class="menu-section">
-        <div class="menu-title" onclick="showHome(); toggleMenu();">BERANDA</div>
+        <div class="menu-title" onclick="showHome(); closeMenu();">BERANDA</div>
       </div>
 
       <div class="menu-section">
-        <div class="menu-title" onclick="openProducts();">SEMUA PRODUK</div>
+        <div class="menu-title" onclick="openProducts('Semua Produk'); closeMenu();">SEMUA PRODUK</div>
       </div>
 
       <div class="menu-section">
@@ -432,9 +509,8 @@
         </div>
       </div>
 
-      <!-- ADDED: MOBILE CONTACT SECTION -->
       <div class="menu-section">
-        <div class="menu-title" onclick="toggleSub(this)">CONTACT US <span>⌄</span></div>
+        <div class="menu-title" onclick="toggleSub(this)">HUBUNGI KAMI <span>⌄</span></div>
         <div class="submenu">
           <a href="https://wa.me/6281353885122" target="_blank">💬 WhatsApp / Call</a>
           <a href="tel:+6281353885122">📞 +62 813-5388-5122</a>
@@ -443,24 +519,21 @@
       </div>
     </div>
 
-    <!-- ADDED: SUPPORTED BY AZZA COLLECTION -->
     <div class="sidebar-footer">
       <p>Supported by</p>
       <strong>AZZA COLLECTION</strong>
     </div>
   </div>
 
-  <!-- HALAMAN UTAMA (HOME) -->
+  <!-- BERANDA -->
   <main id="homePage" class="page-section active-page">
-    
-    <!-- SLIDER / BANNER MEDIA -->
     <div class="hero-container">
       <div class="hero-slide active" style="background-image: url('https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=1200');">
         <div class="hero-overlay">
-          <h1 class="hero-title">MUTUMANIKAM STORE</h1>
+          <h1 class="hero-title">MUTUMANIKAM</h1>
           <div class="hero-buttons">
-            <button class="btn-outline" onclick="filterCategory('Woman')">WOMAN</button>
-            <button class="btn-outline" onclick="filterCategory('Home Deco')">GX HOME</button>
+            <button class="btn-outline" onclick="filterCategory('Necklace')">JEWELRY</button>
+            <button class="btn-outline" onclick="filterCategory('Home Deco')">HOME DECO</button>
           </div>
         </div>
       </div>
@@ -469,7 +542,7 @@
         <div class="hero-overlay">
           <h1 class="hero-title">NEW COLLECTION</h1>
           <div class="hero-buttons">
-            <button class="btn-outline" onclick="openProducts()">DISCOVER ALL</button>
+            <button class="btn-outline" onclick="openProducts('Semua Produk')">DISCOVER ALL</button>
           </div>
         </div>
       </div>
@@ -480,61 +553,94 @@
       </div>
     </div>
 
-    <!-- DISCOVER / REKOMENDASI -->
-    <section class="discover-section">
+    <section class="section-container">
       <h2 class="section-title">DISCOVER</h2>
       <div id="discover-container" class="product-grid">
         <p style="text-align:center; width:100%; color:#888;">Memuat rekomendasi...</p>
       </div>
     </section>
-
   </main>
 
-  <!-- HALAMAN KATALOG PRODUK -->
+  <!-- KATALOG PRODUK -->
   <main id="productPage" class="page-section">
-    <h2 id="catalogTitle" style="text-align:center; margin-top:30px; letter-spacing: 2px; text-transform: uppercase; font-size:18px;">Katalog Produk</h2>
-    
-    <div id="product-container" class="product-grid">
-      <p style="text-align:center; width:100%;">Memuat produk...</p>
-    </div>
-
-    <!-- FORM UPLOAD PRODUK (ADMIN) -->
-    <div style="padding:20px; border-top:1px solid #eee; max-width:500px; margin: 40px auto; background:#fafafa;">
-      <h3 style="font-size:14px; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:15px;">Upload Produk (Admin)</h3>
-
-      <input type="text" id="pNama" placeholder="Nama Produk" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc;">
-      <input type="number" id="pHarga" placeholder="Harga" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc;">
-      <input type="text" id="pKategori" placeholder="Kategori (contoh: Home Deco)" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc;">
-      <input type="file" id="pGambar" accept="image/*" style="margin-bottom:15px;">
+    <div class="section-container">
+      <h2 id="catalogTitle" class="section-title">Katalog Produk</h2>
       
-      <button id="btnUpload" onclick="uploadProduk()" class="buy-btn">Upload Produk</button>
+      <!-- Quick Filter Pills -->
+      <div class="category-pills">
+        <button class="pill-btn active" onclick="filterCategory('Semua Produk')">Semua</button>
+        <button class="pill-btn" onclick="filterCategory('Necklace')">Necklace</button>
+        <button class="pill-btn" onclick="filterCategory('Bracelet')">Bracelet</button>
+        <button class="pill-btn" onclick="filterCategory('Purse')">Purse</button>
+        <button class="pill-btn" onclick="filterCategory('Belt')">Belt</button>
+        <button class="pill-btn" onclick="filterCategory('Home Deco')">Home Deco</button>
+      </div>
+
+      <div id="product-container" class="product-grid">
+        <p style="text-align:center; width:100%;">Memuat produk...</p>
+      </div>
     </div>
+
+    <!-- ADMIN SECTION -->
+    <section class="section-container" style="background:#fafafa; border-top:1px solid #eee; margin-top:40px;">
+      <div style="max-width:500px; margin:0 auto;">
+        <div id="adminLoggedOut" style="text-align: center;">
+          <p style="font-size:11px; letter-spacing:1px; color:#888; margin-bottom:12px;">KHUSUS PENGELOLA TOKO</p>
+          <button onclick="openLoginModal()" class="btn-outline" style="border-color:#111; color:#111;">Login Admin</button>
+        </div>
+
+        <div id="adminLoggedIn" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h3 style="font-size:13px; letter-spacing:1.5px; text-transform:uppercase;">Upload Produk (Admin)</h3>
+            <button onclick="logoutAdmin()" style="background:none; border:none; color:red; cursor:pointer; font-size:12px;">Logout</button>
+          </div>
+
+          <input type="text" id="pNama" placeholder="Nama Produk" class="form-input">
+          <input type="number" id="pHarga" placeholder="Harga (Contoh: 150000)" class="form-input">
+          <input type="text" id="pKategori" placeholder="Kategori (misal: Necklace)" class="form-input">
+          <input type="file" id="pGambar" accept="image/*" class="form-input">
+          
+          <button id="btnUpload" onclick="uploadProduk()" class="buy-btn" style="margin-top:15px;">Upload Produk</button>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <!-- MODAL DISPLAY GAMBAR BESAR -->
+  <!-- MODAL IMAGE FULL -->
   <div id="imageModal" class="image-modal" onclick="closeImageModal()">
-    <img class="modal-content" id="imgFull" alt="Product Preview">
+    <img style="max-width:90%; max-height:80vh; object-fit:contain;" id="imgFull" alt="Product Preview">
   </div>
 
-  <!-- MODAL CHECKOUT ORDER WA -->
-  <div id="checkoutModal" style="display:none; position:fixed; z-index:1002; inset:0; background:rgba(0,0,0,0.6); justify-content:center; align-items:center;">
-    <div style="background:#fff; padding:25px; width:90%; max-width:380px; color:#111;">
-      <h3 style="margin-top:0; font-size:16px; letter-spacing:1px;">CHECKOUT ORDER</h3>
+  <!-- MODAL CHECKOUT WA -->
+  <div id="checkoutModal" class="custom-modal">
+    <div class="modal-content-box">
+      <h3 style="margin-top:0; font-size:15px; letter-spacing:1px; text-transform:uppercase;">Checkout Order</h3>
+      
+      <p id="produkDipilih" style="margin-top:12px; font-weight:500; font-size:13px;"></p>
+      <p id="totalHarga" style="color:var(--primary-color); font-weight:bold; font-size:1.1em; margin-bottom:10px;"></p>
 
-      <input id="nama" placeholder="Nama Anda" style="width:100%; padding:10px; margin-top:10px; border:1px solid #ccc;">
-      <textarea id="alamat" placeholder="Alamat Lengkap" style="width:100%; padding:10px; margin-top:10px; border:1px solid #ccc; height:80px;"></textarea>
-
-      <p id="produkDipilih" style="margin-top:15px; font-weight:600; font-size:13px;"></p>
-      <p id="totalHarga" style="color:#111; font-weight:bold; font-size:1.1em; margin-top:5px;"></p>
+      <input id="nama" placeholder="Nama Anda" class="form-input">
+      <textarea id="alamat" placeholder="Alamat Lengkap Pengiriman" class="form-input" style="height:70px; resize:none;"></textarea>
 
       <button id="btnKirimWA" onclick="kirimWA()" class="buy-btn" style="margin-top:15px;">Kirim ke WhatsApp</button>
-      <button onclick="closeCheckout()" style="width:100%; padding:10px; margin-top:8px; background:#fff; border:1px solid #ccc; color:#111; cursor:pointer;">Batal</button>
+      <button onclick="closeCheckout()" style="width:100%; padding:10px; margin-top:8px; background:#fff; border:1px solid #ccc; cursor:pointer; font-size:12px;">Batal</button>
     </div>
   </div>
 
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
+  <!-- MODAL LOGIN ADMIN -->
+  <div id="loginModal" class="custom-modal">
+    <div class="modal-content-box">
+      <h3 style="margin-top:0; font-size:14px; letter-spacing:1px; text-transform:uppercase; text-align:center; margin-bottom:15px;">Login Admin</h3>
+
+      <input id="adminEmail" type="email" placeholder="Email Admin" class="form-input">
+      <input id="adminPassword" type="password" placeholder="Password" class="form-input">
+
+      <button id="btnLoginSubmit" onclick="loginAdmin()" class="buy-btn" style="margin-top:15px;">Masuk</button>
+      <button onclick="closeLoginModal()" style="width:100%; padding:10px; margin-top:8px; background:#fff; border:1px solid #ccc; cursor:pointer; font-size:12px;">Batal</button>
+    </div>
+  </div>
+
+  <!-- FIREBASE LOGIC & APP SCRIPT -->
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyBNlsnzbMHKq9gKWe-EvYgrzwohxXLAOs",
@@ -547,31 +653,55 @@
 
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+    const auth = firebase.auth();
 
-    // SINKRONISASI SWAP HALAMAN
+    // AUTH OBSERVER
+    auth.onAuthStateChanged((user) => {
+      const loggedInView = document.getElementById("adminLoggedIn");
+      const loggedOutView = document.getElementById("adminLoggedOut");
+      if (user) {
+        if (loggedInView) loggedInView.style.display = "block";
+        if (loggedOutView) loggedOutView.style.display = "none";
+      } else {
+        if (loggedInView) loggedInView.style.display = "none";
+        if (loggedOutView) loggedOutView.style.display = "block";
+      }
+    });
+
+    // NAVIGATION SYSTEM
     function showPage(pageId) {
       document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active-page'));
       document.getElementById(pageId).classList.add('active-page');
-      window.scrollTo(0, 0);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function showHome() { showPage('homePage'); }
 
-    function openProducts() {
-      document.getElementById("catalogTitle").innerText = "Semua Produk";
+    function openProducts(title = "Semua Produk") {
+      document.getElementById("catalogTitle").innerText = title;
       showPage('productPage');
       loadProducts('product-container');
-      toggleMenu();
     }
 
     function filterCategory(catName) {
-      document.getElementById("catalogTitle").innerText = "Kategori: " + catName;
-      showPage('productPage');
-      loadProducts('product-container', 'category', catName);
-      toggleMenu();
+      if (catName === 'Semua Produk') {
+        openProducts('Semua Produk');
+      } else {
+        document.getElementById("catalogTitle").innerText = "Kategori: " + catName;
+        showPage('productPage');
+        loadProducts('product-container', 'category', catName);
+      }
+      closeMenu();
+      updateActivePill(catName);
     }
 
-    // BANNER SLIDER LOGIC
+    function updateActivePill(catName) {
+      document.querySelectorAll('.pill-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.innerText.toLowerCase() === catName.toLowerCase() || (catName === 'Semua Produk' && btn.innerText === 'Semua'));
+      });
+    }
+
+    // HERO SLIDER
     let currentSlide = 0;
     const slides = document.querySelectorAll('.hero-slide');
     const dots = document.querySelectorAll('.dot');
@@ -585,18 +715,20 @@
     }
 
     setInterval(() => {
-      let next = (currentSlide + 1) % slides.length;
-      setSlide(next);
+      if (slides.length > 0) {
+        let next = (currentSlide + 1) % slides.length;
+        setSlide(next);
+      }
     }, 5000);
 
-    // FETCH DATA PRODUCT
+    // FETCH PRODUCTS
     function escapeHtml(str) {
       return String(str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
     }
 
     function loadProducts(targetId, field = null, value = null) {
       const container = document.getElementById(targetId);
-      container.innerHTML = "<p style='text-align:center;width:100%;padding:20px;'>Memuat produk...</p>";
+      container.innerHTML = "<p style='text-align:center;width:100%;grid-column:1/-1;padding:40px 0;'>Memuat produk...</p>";
 
       let query = db.collection("Products");
       if (field && value) query = query.where(field, "==", value);
@@ -604,7 +736,7 @@
       query.get().then(snapshot => {
         let html = "";
         if (snapshot.empty) {
-          html = "<p style='text-align:center;width:100%;padding:20px;'>Produk belum tersedia</p>";
+          html = "<p style='text-align:center;width:100%;grid-column:1/-1;padding:40px 0;'>Produk tidak ditemukan.</p>";
         } else {
           snapshot.forEach(doc => {
             const p = doc.data();
@@ -612,11 +744,13 @@
             let namaClean = escapeHtml(rawNama);
             let harga = Number(p.price) || 0;
             let kategori = escapeHtml(p.category || "Umum");
-            let img = p.image ? p.image.trim() : "https://via.placeholder.com/200";
+            let img = p.image ? p.image.trim() : "https://via.placeholder.com/300";
 
             html += `
               <div class="product-card" data-name="${namaClean}" data-price="${harga}">
-                <img src="${img}" onclick="openImageModal('${img}')" onerror="this.src='https://via.placeholder.com/200'">
+                <div class="img-wrapper">
+                  <img src="${img}" onclick="openImageModal('${img}')" onerror="this.src='https://via.placeholder.com/300'" alt="${namaClean}">
+                </div>
                 <h3>${namaClean}</h3>
                 <p class="category">${kategori}</p>
                 <p class="price">Rp ${harga.toLocaleString('id-ID')}</p>
@@ -633,7 +767,7 @@
         container.innerHTML = html;
       }).catch(err => {
         console.error("Error:", err);
-        container.innerHTML = "<p style='text-align:center;color:red;width:100%;'>Gagal memuat produk.</p>";
+        container.innerHTML = "<p style='text-align:center;color:red;width:100%;grid-column:1/-1;'>Gagal memuat produk.</p>";
       });
     }
 
@@ -644,6 +778,7 @@
       el.innerText = val;
     }
 
+    // CHECKOUT WA
     function openCheckout(btn) {
       let card = btn.closest(".product-card");
       let name = card.getAttribute("data-name");
@@ -656,7 +791,7 @@
       modal.setAttribute("data-active-price", price);
       modal.setAttribute("data-active-qty", qty);
 
-      document.getElementById("produkDipilih").innerText = `Produk: ${name} (${qty} pcs)`;
+      document.getElementById("produkDipilih").innerText = `${name} (${qty} pcs)`;
       document.getElementById("totalHarga").innerText = `Total: Rp ${total.toLocaleString('id-ID')}`;
       modal.style.display = "flex";
     }
@@ -668,7 +803,7 @@
     function kirimWA() {
       let namaInput = document.getElementById("nama").value.trim();
       let alamatInput = document.getElementById("alamat").value.trim();
-      if (!namaInput || !alamatInput) return alert("Nama & Alamat wajib diisi!");
+      if (!namaInput || !alamatInput) return alert("Mohon lengkapi Nama & Alamat Anda!");
 
       const modal = document.getElementById("checkoutModal");
       let productName = modal.getAttribute("data-active-name");
@@ -678,30 +813,95 @@
       let invNum = "INV-" + Date.now();
 
       let phone = "6281353885122";
-      let pesan = `Halo Admin Mutumanikam 👋\n\nSaya mau order:\n🧾 Invoice: ${invNum}\n🛍️ Produk: ${productName}\n📦 Jumlah: ${qty} pcs\n💰 Total: Rp ${total.toLocaleString('id-ID')}\n\n👤 Nama: ${namaInput}\n📍 Alamat: ${alamatInput}`;
+      let pesan = `Halo Admin Mutumanikam 👋\n\nSaya ingin memesan:\n🧾 Invoice: ${invNum}\n🛍️ Produk: ${productName}\n📦 Jumlah: ${qty} pcs\n💰 Total: Rp ${total.toLocaleString('id-ID')}\n\n👤 Nama: ${namaInput}\n📍 Alamat: ${alamatInput}`;
       
       window.open(`https://wa.me/${phone}?text=${encodeURIComponent(pesan)}`, "_blank");
       closeCheckout();
     }
 
+    // UPLOAD PRODUK & ADMIN
+    async function uploadProduk() {
+      const nama = document.getElementById("pNama").value.trim();
+      const harga = Number(document.getElementById("pHarga").value);
+      const kategori = document.getElementById("pKategori").value.trim();
+      const fileInput = document.getElementById("pGambar");
+      const file = fileInput.files[0];
+
+      if (!nama || !harga || !kategori || !file) {
+        return alert("Harap isi seluruh field data produk dan upload gambar!");
+      }
+
+      const btn = document.getElementById("btnUpload");
+      btn.innerText = "Mengunggah...";
+      btn.disabled = true;
+
+      try {
+        const storageRef = firebase.storage().ref(`products/${Date.now()}_${file.name}`);
+        const snapshot = await storageRef.put(file);
+        const imageUrl = await snapshot.ref.getDownloadURL();
+
+        await db.collection("Products").add({
+          name: nama,
+          price: harga,
+          category: kategori,
+          image: imageUrl,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        alert("Produk berhasil diunggah!");
+        document.getElementById("pNama").value = "";
+        document.getElementById("pHarga").value = "";
+        document.getElementById("pKategori").value = "";
+        fileInput.value = "";
+        loadProducts('product-container');
+      } catch (error) {
+        alert("Gagal mengunggah: " + error.message);
+      } finally {
+        btn.innerText = "Upload Produk";
+        btn.disabled = false;
+      }
+    }
+
+    function openLoginModal() { document.getElementById("loginModal").style.display = "flex"; }
+    function closeLoginModal() { document.getElementById("loginModal").style.display = "none"; }
+
+    async function loginAdmin() {
+      const email = document.getElementById("adminEmail").value.trim();
+      const password = document.getElementById("adminPassword").value.trim();
+      if (!email || !password) return alert("Isi email dan password!");
+
+      try {
+        await auth.signInWithEmailAndPassword(email, password);
+        closeLoginModal();
+      } catch (e) {
+        alert("Login Gagal: " + e.message);
+      }
+    }
+
+    function logoutAdmin() { auth.signOut(); }
+
+    // UI CONTROL HELPERS
     function openImageModal(src) {
       document.getElementById("imgFull").src = src;
       document.getElementById("imageModal").style.display = "flex";
     }
-    function closeImageModal() {
-      document.getElementById("imageModal").style.display = "none";
-    }
+    function closeImageModal() { document.getElementById("imageModal").style.display = "none"; }
 
     function toggleMenu() {
       document.getElementById("mobileMenu").classList.toggle("active");
       document.getElementById("overlay").classList.toggle("active");
     }
 
+    function closeMenu() {
+      document.getElementById("mobileMenu").classList.remove("active");
+      document.getElementById("overlay").classList.remove("active");
+    }
+
     function toggleSub(el) {
       el.parentElement.classList.toggle("active");
     }
 
-    // LOAD INITIAL REKOMENDASI DI HOME
+    // INIT
     loadProducts('discover-container');
   </script>
 </body>
